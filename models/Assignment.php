@@ -12,7 +12,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 2.5
  */
-class Assignment extends \diandi/admin\BaseObject
+class Assignment extends \diandi\admin\BaseObject
 {
     /**
      * @var integer User id
