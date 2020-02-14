@@ -1,6 +1,6 @@
 <?php
 
-namespace mdm\admin;
+namespace diandi\admin;
 
 use Yii;
 use yii\helpers\Inflector;

@@ -1,6 +1,6 @@
 <?php
 
-namespace mdm\admin\components;
+namespace diandi\admin\components;
 
 /**
  * Description of UserStatus

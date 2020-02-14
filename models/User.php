@@ -1,6 +1,6 @@
 <?php
 
-namespace mdm\admin\models;
+namespace diandi\admin\models;
 
 use mdm\admin\components\Configs;
 use mdm\admin\components\UserStatus;

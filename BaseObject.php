@@ -1,6 +1,6 @@
 <?php
 
-namespace mdm\admin;
+namespace diandi\admin;
 
 if(!class_exists('yii\base\BaseObject')){
     class_alias('yii\base\Object', 'yii\base\BaseObject');

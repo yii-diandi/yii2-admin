@@ -7,22 +7,14 @@ The preferred way to install this extension is through [composer](http://getcomp
 
 Either run
 
-```
-php composer.phar require yii-diandi/yii2-admin "~1.0"
-or
-php composer.phar require yii-diandi/yii2-admin "~2.0"
-```
 
-or for the dev-master
-
-```
 php composer.phar require yii-diandi/yii2-admin "2.x-dev"
 ```
 
 Or, you may add
 
 ```
-"yii-diandi/yii2-admin": "~2.0"
+"yii-diandi/yii2-admin": "2.x-dev"
 ```
 
 to the require section of your `composer.json` file and execute `php composer.phar update`.
@@ -37,7 +29,7 @@ return [
     ...
     'aliases' => [
         '@diandi/admin' => 'path/to/your/extracted',
-        // for example: '@diandi/admin' => '@app/extensions/mdm/yii2-admin-2.0.0',
+        // for example: '@diandi/admin' => '@app/extensions/diandi/yii2-admin-2.0.0',
         ...
     ]
 ];

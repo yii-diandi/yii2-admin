@@ -1,6 +1,6 @@
 <?php
 
-namespace mdm\admin\controllers;
+namespace diandi\admin\controllers;
 
 use backend\controllers\BaseController;
 use Yii;
