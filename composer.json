@@ -1,0 +1,21 @@
+{
+    "name": "yii-diandi/yii2-admin",
+    "description": "权限管理",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension"],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "wangchunsheng",
+            "email": "2192138785@qq.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "diandi\\admin\\": ""
+        }
+    }
+}
