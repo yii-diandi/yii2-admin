@@ -4,7 +4,7 @@ use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \mdm\admin\models\form\PasswordResetRequest */
+/* @var $model \diandi/admin\models\form\PasswordResetRequest */
 
 $this->title = 'Request password reset';
 $this->params['breadcrumbs'][] = $this->title;

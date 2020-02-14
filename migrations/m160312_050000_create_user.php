@@ -1,7 +1,7 @@
 <?php
 
 use yii\db\Migration;
-use mdm\admin\components\Configs;
+use diandi/admin\components\Configs;
 
 class m160312_050000_create_user extends Migration
 {

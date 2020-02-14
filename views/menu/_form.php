@@ -2,16 +2,16 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use mdm\admin\models\Menu;
+use diandi/admin\models\Menu;
 use yii\helpers\Json;
-use mdm\admin\AutocompleteAsset;
+use diandi/admin\AutocompleteAsset;
 use common\models\DdMenuCate;
 use yii\helpers\ArrayHelper;
 
 $menucate = DdMenuCate::find()->orderBy('sort')->asArray()->all();
 
 /* @var $this yii\web\View */
-/* @var $model mdm\admin\models\Menu */
+/* @var $model diandi/admin\models\Menu */
 /* @var $form yii\widgets\ActiveForm */
 AutocompleteAsset::register($this);
 $opts = Json::htmlEncode([

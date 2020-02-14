@@ -3,8 +3,8 @@
 namespace diandi\admin\components;
 
 use Yii;
-use mdm\admin\models\AuthItem;
-use mdm\admin\models\searchs\AuthItem as AuthItemSearch;
+use diandi/admin\models\AuthItem;
+use diandi/admin\models\searchs\AuthItem as AuthItemSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\base\NotSupportedException;

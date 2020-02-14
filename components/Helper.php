@@ -2,7 +2,7 @@
 
 namespace diandi\admin\components;
 
-use mdm\admin\models\Route;
+use diandi/admin\models\Route;
 use Yii;
 use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;

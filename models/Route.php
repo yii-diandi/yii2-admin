@@ -3,9 +3,9 @@
 namespace diandi\admin\models;
 
 use Exception;
-use mdm\admin\components\Configs;
-use mdm\admin\components\Helper;
-use mdm\admin\components\RouteRule;
+use diandi/admin\components\Configs;
+use diandi/admin\components\Helper;
+use diandi/admin\components\RouteRule;
 use Yii;
 use yii\caching\TagDependency;
 use yii\helpers\VarDumper;
@@ -16,7 +16,7 @@ use yii\helpers\VarDumper;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 1.0
  */
-class Route extends \mdm\admin\BaseObject
+class Route extends \diandi/admin\BaseObject
 {
     const CACHE_TAG = 'mdm.admin.route';
 

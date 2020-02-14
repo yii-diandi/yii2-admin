@@ -18,7 +18,7 @@ use yii\di\Instance;
  *
  * ```
  * 'as access' => [
- *     'class' => 'mdm\admin\components\AccessControl',
+ *     'class' => 'diandi/admin\components\AccessControl',
  *     'allowActions' => ['site/login', 'site/error']
  * ]
  * ```

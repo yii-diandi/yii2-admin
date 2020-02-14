@@ -5,9 +5,9 @@ namespace diandi\admin\models\searchs;
 use Yii;
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
-use mdm\admin\models\BizRule as MBizRule;
-use mdm\admin\components\RouteRule;
-use mdm\admin\components\Configs;
+use diandi/admin\models\BizRule as MBizRule;
+use diandi/admin\components\RouteRule;
+use diandi/admin\components\Configs;
 
 /**
  * Description of BizRule

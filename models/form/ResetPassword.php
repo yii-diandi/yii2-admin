@@ -2,8 +2,8 @@
 
 namespace diandi\admin\models\form;
 
-use mdm\admin\components\UserStatus;
-use mdm\admin\models\User;
+use diandi/admin\components\UserStatus;
+use diandi/admin\models\User;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\base\Model;
@@ -34,7 +34,7 @@ class ResetPassword extends Model
             throw new InvalidParamException('Password reset token cannot be blank.');
         }
         // check token
-        $class = Yii::$app->getUser()->identityClass ?: 'mdm\admin\models\User';
+        $class = Yii::$app->getUser()->identityClass ?: 'diandi/admin\models\User';
         if (static::isPasswordResetTokenValid($token)) {
             $this->_user = $class::findOne([
                     'password_reset_token' => $token,

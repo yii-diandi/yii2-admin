@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model mdm\admin\models\User */
+/* @var $model diandi/admin\models\User */
 
 $this->title = '添加 User';
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];

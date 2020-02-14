@@ -15,7 +15,7 @@ use yii\helpers\Inflector;
  * 'layout' => 'left-menu', // default to null mean use application layout.
  * 'controllerMap' => [
  *     'assignment' => [
- *         'class' => 'mdm\admin\controllers\AssignmentController',
+ *         'class' => 'diandi/admin\controllers\AssignmentController',
  *         'userClassName' => 'app\models\User',
  *         'idField' => 'id'
  *     ]
@@ -107,7 +107,7 @@ class Module extends \yii\base\Module
             ];
         }
         if (class_exists('yii\jui\JuiAsset')) {
-            Yii::$container->set('mdm\admin\AutocompleteAsset', 'yii\jui\JuiAsset');
+            Yii::$container->set('diandi/admin\AutocompleteAsset', 'yii\jui\JuiAsset');
         }
     }
 

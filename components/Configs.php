@@ -16,7 +16,7 @@ use yii\rbac\ManagerInterface;
  * ```
  * return [
  *
- *     'mdm.admin.configs' => [
+ *     'diandi.admin.configs' => [
  *         'db' => 'customDb',
  *         'menuTable' => '{{%admin_menu}}',
  *         'cache' => [
@@ -30,7 +30,7 @@ use yii\rbac\ManagerInterface;
  * or use [[\Yii::$container]]
  *
  * ```
- * Yii::$container->set('mdm\admin\components\Configs',[
+ * Yii::$container->set('diandi\admin\components\Configs',[
  *     'db' => 'customDb',
  *     'menuTable' => 'admin_menu',
  * ]);
@@ -40,9 +40,9 @@ use yii\rbac\ManagerInterface;
  * @since 1.0
  */
 
-class Configs extends \mdm\admin\BaseObject
+class Configs extends \diandi\admin\BaseObject
 {
-    const CACHE_TAG = 'mdm.admin';
+    const CACHE_TAG = 'diandi.admin';
 
     /**
      * @var ManagerInterface .

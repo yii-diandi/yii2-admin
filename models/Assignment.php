@@ -2,8 +2,8 @@
 
 namespace diandi\admin\models;
 
-use mdm\admin\components\Configs;
-use mdm\admin\components\Helper;
+use diandi/admin\components\Configs;
+use diandi/admin\components\Helper;
 use Yii;
 
 /**
@@ -12,7 +12,7 @@ use Yii;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 2.5
  */
-class Assignment extends \mdm\admin\BaseObject
+class Assignment extends \diandi/admin\BaseObject
 {
     /**
      * @var integer User id

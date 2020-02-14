@@ -4,10 +4,10 @@ namespace diandi\admin\models\searchs;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use mdm\admin\models\User as UserModel;
+use diandi/admin\models\User as UserModel;
 
 /**
- * User represents the model behind the search form of `mdm\admin\models\User`.
+ * User represents the model behind the search form of `diandi/admin\models\User`.
  */
 class User extends UserModel
 {

@@ -3,13 +3,13 @@
 namespace diandi\admin\controllers;
 
 use Yii;
-use mdm\admin\models\BizRule;
+use diandi/admin\models\BizRule;
 use backend\controllers\BaseController;
-use mdm\admin\models\searchs\BizRule as BizRuleSearch;
+use diandi/admin\models\searchs\BizRule as BizRuleSearch;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
-use mdm\admin\components\Helper;
-use mdm\admin\components\Configs;
+use diandi/admin\components\Helper;
+use diandi/admin\components\Configs;
 
 /**
  * Description of RuleController

@@ -4,7 +4,7 @@ namespace diandi\admin\components;
 
 use Yii;
 use yii\caching\TagDependency;
-use mdm\admin\models\Menu;
+use diandi/admin\models\Menu;
 use yii\helpers\Json;
 
 /**
@@ -12,7 +12,7 @@ use yii\helpers\Json;
  * Usage
  * 
  * ```
- * use mdm\admin\components\MenuHelper;
+ * use diandi/admin\components\MenuHelper;
  * use yii\bootstrap\Nav;
  *
  * echo Nav::widget([

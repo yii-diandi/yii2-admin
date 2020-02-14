@@ -1,13 +1,13 @@
 <?php
 
-use mdm\admin\AnimateAsset;
+use diandi/admin\AnimateAsset;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\YiiAsset;
 
 /* @var $this yii\web\View */
-/* @var $model mdm\admin\models\Assignment */
+/* @var $model diandi/admin\models\Assignment */
 /* @var $fullnameField string */
 
 $userName = $model->{$usernameField};

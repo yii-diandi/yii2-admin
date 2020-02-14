@@ -3,13 +3,13 @@
 namespace diandi\admin\controllers;
 
 use Yii;
-use mdm\admin\models\Menu;
-use mdm\admin\models\searchs\Menu as MenuSearch;
+use diandi/admin\models\Menu;
+use diandi/admin\models\searchs\Menu as MenuSearch;
 use  backend\controllers\BaseController;
 use common\models\DdModules;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use mdm\admin\components\Helper;
+use diandi/admin\components\Helper;
 
 /**
  * MenuController implements the CRUD actions for Menu model.
