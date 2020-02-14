@@ -2,9 +2,9 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use diandi/admin\models\Menu;
+use diandi\admin\models\Menu;
 use yii\helpers\Json;
-use diandi/admin\AutocompleteAsset;
+use diandi\admin\AutocompleteAsset;
 use common\models\DdMenuCate;
 use yii\helpers\ArrayHelper;
 

@@ -3,7 +3,7 @@
 namespace diandi\admin\controllers;
 
 use Yii;
-use diandi/admin\models\Route;
+use diandi\admin\models\Route;
 use  backend\controllers\BaseController;
 use yii\filters\VerbFilter;
 

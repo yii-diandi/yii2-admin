@@ -2,7 +2,7 @@
 
 namespace diandi\admin\controllers;
 
-use diandi/admin\components\ItemController;
+use diandi\admin\components\ItemController;
 use yii\rbac\Item;
 
 /**

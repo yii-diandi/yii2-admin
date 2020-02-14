@@ -2,8 +2,8 @@
 
 namespace diandi\admin\models;
 
-use diandi/admin\components\Configs;
-use diandi/admin\components\Helper;
+use diandi\admin\components\Configs;
+use diandi\admin\components\Helper;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Json;

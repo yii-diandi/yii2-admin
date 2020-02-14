@@ -2,10 +2,10 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use diandi/admin\components\RouteRule;
-use diandi/admin\AutocompleteAsset;
+use diandi\admin\components\RouteRule;
+use diandi\admin\AutocompleteAsset;
 use yii\helpers\Json;
-use diandi/admin\components\Configs;
+use diandi\admin\components\Configs;
 
 /* @var $this yii\web\View */
 /* @var $model diandi/admin\models\AuthItem */

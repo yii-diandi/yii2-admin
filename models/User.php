@@ -2,8 +2,8 @@
 
 namespace diandi\admin\models;
 
-use diandi/admin\components\Configs;
-use diandi/admin\components\UserStatus;
+use diandi\admin\components\Configs;
+use diandi\admin\components\UserStatus;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;

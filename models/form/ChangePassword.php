@@ -3,7 +3,7 @@
 namespace diandi\admin\models\form;
 
 use Yii;
-use diandi/admin\models\User;
+use diandi\admin\models\User;
 use yii\base\Model;
 
 /**

@@ -1,8 +1,8 @@
 <?php
 namespace diandi\admin\models\form;
 
-use diandi/admin\components\UserStatus;
-use diandi/admin\models\User;
+use diandi\admin\components\UserStatus;
+use diandi\admin\models\User;
 use Yii;
 use yii\base\Model;
 

@@ -3,7 +3,7 @@
 namespace diandi\admin\models;
 
 use Yii;
-use diandi/admin\components\Configs;
+use diandi\admin\components\Configs;
 use yii\db\Query;
 
 /**

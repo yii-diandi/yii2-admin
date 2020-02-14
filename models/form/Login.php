@@ -4,7 +4,7 @@ namespace diandi\admin\models\form;
 
 use Yii;
 use yii\base\Model;
-use diandi/admin\models\User;
+use diandi\admin\models\User;
 
 /**
  * Login form

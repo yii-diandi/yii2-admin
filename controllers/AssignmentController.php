@@ -3,8 +3,8 @@
 namespace diandi\admin\controllers;
 
 use Yii;
-use diandi/admin\models\Assignment;
-use diandi/admin\models\searchs\Assignment as AssignmentSearch;
+use diandi\admin\models\Assignment;
+use diandi\admin\models\searchs\Assignment as AssignmentSearch;
 use backend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

@@ -4,8 +4,8 @@ namespace diandi\admin\controllers;
 
 use backend\controllers\BaseController;
 use Yii;
-use diandi/admin\models\User;
-use diandi/admin\models\searchs\User as UserSearch;
+use diandi\admin\models\User;
+use diandi\admin\models\searchs\User as UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

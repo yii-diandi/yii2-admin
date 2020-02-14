@@ -4,7 +4,7 @@ namespace diandi\admin\models;
 
 use Yii;
 use yii\rbac\Rule;
-use diandi/admin\components\Configs;
+use diandi\admin\components\Configs;
 
 /**
  * BizRule

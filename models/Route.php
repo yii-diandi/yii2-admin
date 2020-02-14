@@ -3,9 +3,9 @@
 namespace diandi\admin\models;
 
 use Exception;
-use diandi/admin\components\Configs;
-use diandi/admin\components\Helper;
-use diandi/admin\components\RouteRule;
+use diandi\admin\components\Configs;
+use diandi\admin\components\Helper;
+use diandi\admin\components\RouteRule;
 use Yii;
 use yii\caching\TagDependency;
 use yii\helpers\VarDumper;

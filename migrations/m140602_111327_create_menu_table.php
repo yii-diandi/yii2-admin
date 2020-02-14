@@ -1,6 +1,6 @@
 <?php
 
-use diandi/admin\components\Configs;
+use diandi\admin\components\Configs;
 
 /**
  * Migration table of table_menu
