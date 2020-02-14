@@ -19,7 +19,7 @@ class DefaultController extends BaseController
     public function actionIndex($page = 'README.md')
     {
         if (strpos($page, '.png') !== false) {
-            $file = Yii::getAlias("@mdm/admin/{$page}");
+            $file = Yii::getAlias("@diandi/admin/{$page}");
             return Yii::$app->getResponse()->sendFile($file);
         }
         return $this->render('index', ['page' => $page]);
