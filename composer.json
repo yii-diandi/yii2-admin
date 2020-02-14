@@ -2,20 +2,36 @@
     "name": "yii-diandi/yii2-admin",
     "description": "权限管理",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension"],
+    "keywords": ["yii2", "extension"],
     "license": "Apache-2.0",
-    "authors": [
-        {
-            "name": "wangchunsheng",
-            "email": "2192138785@qq.com"
-        }
-    ],
+    "authors": [{
+        "name": "wangchunsheng",
+        "email": "2192138785@qq.com"
+    }],
+    "minimum-stability": "dev",
     "require": {
-        "yiisoft/yii2": "~2.0.0"
+        "yiisoft/yii2": "~2.0.7"
+    },
+    "require-dev": {
+        "yiisoft/yii2-codeception": "~2.0"
+    },
+    "suggest": {
+        "yiisoft/yii2-bootstrap": "Used when using layout 'left-menu', 'right-menu' or 'top-menu'"
     },
     "autoload": {
         "psr-4": {
             "diandi\\admin\\": ""
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-1.0.master": "1.0.x-dev",
+            "dev-master": "2.x-dev"
+        },
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
+
 }
