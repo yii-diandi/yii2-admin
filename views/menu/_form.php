@@ -34,10 +34,14 @@ $this->registerJs($this->render('_script.js'));
             <?= $form->field($model, 'route')->textInput(['id' => 'route']) ?>
             <?= $form->field($model, 'type')->dropDownList(ArrayHelper::map($menucate, 'mark', 'name')) ?>
 
+
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'order')->input('number') ?>
-            <?= $form->field($model, 'icon')->textInput(['id' => 'icon']) ?>
+            <?= $form->field($model, 'icon')->widget('diandi\adminlte\ModalHepler', ['options' => [
+                'label' => '选择图标',
+                'url' => \yii\helpers\Url::to(['/modal/modal/icons'])
+            ]]); ?>
             <?= $form->field($model, 'is_sys')->dropDownList(['system' => '系统菜单', 'addons' => '模块菜单']) ?>
 
             <?= $form->field($model, 'module_name')->dropDownList(ArrayHelper::map($addons, 'name', 'title'), ['prompt' => '请选择']) ?>
