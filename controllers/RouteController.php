@@ -17,7 +17,7 @@ class RouteController extends BaseController
 {
     public function behaviors()
     {
-        Yii::$app->params['plugins']='shop';
+        Yii::$app->params['plugins'] = 'sysai';
 
         return [
             'verbs' => [
@@ -38,6 +38,7 @@ class RouteController extends BaseController
     public function actionIndex()
     {
         $model = new Route();
+
         return $this->render('index', ['routes' => $model->getRoutes()]);
     }
 

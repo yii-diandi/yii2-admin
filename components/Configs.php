@@ -153,7 +153,9 @@ class Configs extends \diandi\admin\BaseObject
     public static function instance()
     {
         if (self::$_instance === null) {
-            $type = ArrayHelper::getValue(Yii::$app->params, 'mdm.admin.configs', []);
+
+            $type = ArrayHelper::getValue(Yii::$app->params, 'diandi.admin.configs', []);
+
             if (is_array($type) && !isset($type['class'])) {
                 $type['class'] = static::className();
             }

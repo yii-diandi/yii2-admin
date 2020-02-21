@@ -25,7 +25,7 @@ class MenuController extends BaseController
      */
     public function behaviors()
     {
-        Yii::$app->params['plugins'] = 'shop';
+        Yii::$app->params['plugins'] = 'sysai';
 
         return [
             'verbs' => [

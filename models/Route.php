@@ -18,7 +18,7 @@ use yii\helpers\VarDumper;
  */
 class Route extends \diandi\admin\BaseObject
 {
-    const CACHE_TAG = 'mdm.admin.route';
+    const CACHE_TAG = 'diandi.admin.route';
 
     const PREFIX_ADVANCED = '@';
     const PREFIX_BASIC = '/';
@@ -133,7 +133,7 @@ class Route extends \diandi\admin\BaseObject
                 // Assemble configuration for current app.
                 foreach ($configPaths as $configPath) {
                     // Merge every new configuration with the old config array.
-                    $config = yii\helpers\ArrayHelper::merge($config, require (Yii::getAlias($configPath)));
+                    $config = yii\helpers\ArrayHelper::merge($config, require(Yii::getAlias($configPath)));
                 }
                 // Create new app using the config array.
                 unset($config['bootstrap']);
@@ -208,6 +208,9 @@ class Route extends \diandi\admin\BaseObject
         Yii::beginProfile($token, __METHOD__);
         try {
             foreach ($module->getModules() as $id => $child) {
+                if($id=='addons'){
+                    continue;
+                }
                 if (($child = $module->getModule($id)) !== null) {
                     $this->getRouteRecursive($child, $result);
                 }
