@@ -5,6 +5,7 @@ namespace diandi\admin\models;
 use Yii;
 use diandi\admin\components\Configs;
 use yii\db\Query;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "menu".
@@ -44,6 +45,12 @@ class Menu extends \yii\db\ActiveRecord
         } else {
             return parent::getDb();
         }
+    }
+
+    public static function getRegion($parentId = 0)
+    {
+        $result = static::find()->where(['parent' => $parentId])->asArray()->all();
+        return ArrayHelper::map($result, 'id', 'name');
     }
 
     /**

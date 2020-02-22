@@ -10,6 +10,7 @@ use common\models\DdModules;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use diandi\admin\components\Helper;
+use yii\data\ActiveDataProvider;
 
 /**
  * MenuController implements the CRUD actions for Menu model.
@@ -44,8 +45,13 @@ class MenuController extends BaseController
     public function actionIndex()
     {
         $searchModel = new MenuSearch;
-        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
+        // $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
+        $query = Menu::find();
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => false
+        ]);
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
