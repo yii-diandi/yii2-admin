@@ -208,9 +208,6 @@ class Route extends \diandi\admin\BaseObject
         Yii::beginProfile($token, __METHOD__);
         try {
             foreach ($module->getModules() as $id => $child) {
-                if($id=='addons'){
-                    continue;
-                }
                 if (($child = $module->getModule($id)) !== null) {
                     $this->getRouteRecursive($child, $result);
                 }
