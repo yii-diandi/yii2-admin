@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-03-08 15:28:03
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-03-08 15:32:03
+ */
+
+
 namespace diandi\admin\controllers;
 
 use Yii;
@@ -47,7 +55,7 @@ class MenuController extends BaseController
         $searchModel = new MenuSearch;
         // $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
-        $query = Menu::find();
+        $query = Menu::find()->where(['is_sys' => 'system']);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => false
