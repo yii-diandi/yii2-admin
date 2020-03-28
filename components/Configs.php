@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-03-27 18:23:37
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-03-27 19:04:44
+ */
+
+
 namespace diandi\admin\components;
 
 use Yii;

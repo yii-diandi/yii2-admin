@@ -1,7 +1,17 @@
 <?php
 
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-03-27 18:10:43
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-03-28 14:43:30
+ */
+
+
 namespace diandi\admin\models;
 
+use ArrayObject;
+use common\helpers\ArrayHelper;
 use Exception;
 use diandi\admin\components\Configs;
 use diandi\admin\components\Helper;
@@ -151,6 +161,7 @@ class Route extends \diandi\admin\BaseObject
             Yii::$app = $yiiApp;
             unset($yiiApp);
         } else {
+
             // Use basic route scheme.
             // Set basic route prefix
             $this->_routePrefix = self::PREFIX_BASIC;
@@ -182,6 +193,7 @@ class Route extends \diandi\admin\BaseObject
         } elseif (is_string($module)) {
             $module = Yii::$app->getModule($module);
         }
+     
         $key = [__METHOD__, Yii::$app->id, $module->getUniqueId()];
         $cache = Configs::instance()->cache;
         if ($cache === null || ($result = $cache->get($key)) === false) {
@@ -203,7 +215,7 @@ class Route extends \diandi\admin\BaseObject
      * @param array $result
      */
     protected function getRouteRecursive($module, &$result)
-    {
+    {        
         $token = "Get Route of '" . get_class($module) . "' with id '" . $module->uniqueId . "'";
         Yii::beginProfile($token, __METHOD__);
         try {
@@ -219,6 +231,7 @@ class Route extends \diandi\admin\BaseObject
 
             $namespace = trim($module->controllerNamespace, '\\') . '\\';
             $this->getControllerFiles($module, $namespace, '', $result);
+           
             $all = '/' . ltrim($module->uniqueId . '/*', '/');
             $result[$all] = $all;
         } catch (\Exception $exc) {

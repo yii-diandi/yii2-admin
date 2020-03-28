@@ -1,10 +1,18 @@
 <?php
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-03-28 16:18:52
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-03-28 17:49:27
+ */
+ 
 
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use leandrogehlen\treegrid\TreeGrid;
-
+use yii2mod\editable\EditableColumn;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -34,9 +42,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
             // 'id',
             // 'parent',
-            'name',
+            [
+                'class' => EditableColumn::class,
+                'attribute' => 'name',
+                'url' => ['update-files']
+            ],
             'route',
-            'order',
+            // 'order',
+            [
+                'class' => EditableColumn::class,
+                'attribute' => 'order',
+                'url' => ['update-files']
+            ],
             ['class' => 'yii\grid\ActionColumn'],
         ]
     ]);

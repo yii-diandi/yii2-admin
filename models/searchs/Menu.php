@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-03-27 16:49:41
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-03-27 16:59:51
+ */
+
+
 namespace diandi\admin\models\searchs;
 
 use Yii;
@@ -24,6 +32,8 @@ class Menu extends MenuModel
         return [
             [['id', 'parent', 'order'], 'integer'],
             [['name', 'route', 'parent_name'], 'safe'],
+            [['type', 'module_name'], 'string'],
+            ['is_sys', 'in', 'range' => ['system', 'addons']],
         ];
     }
 
@@ -46,8 +56,8 @@ class Menu extends MenuModel
         $query = MenuModel::find()
             ->from(MenuModel::tableName() . ' t')
             ->joinWith(['menuParent' => function ($q) {
-            $q->from(MenuModel::tableName() . ' parent');
-        }]);
+                $q->from(MenuModel::tableName() . ' parent');
+            }]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query

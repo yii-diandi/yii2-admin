@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-03-26 12:50:48
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-03-26 12:50:48
+ */
+
+
 namespace diandi\admin\components;
 
 use yii\web\ForbiddenHttpException;
@@ -100,18 +108,16 @@ class AccessControl extends \yii\base\ActionFilter
         }
 
         $user = $this->getUser();
-        if($user->getIsGuest())
-        {
+        if ($user->getIsGuest()) {
             $loginUrl = null;
-            if(is_array($user->loginUrl) && isset($user->loginUrl[0])){
+            if (is_array($user->loginUrl) && isset($user->loginUrl[0])) {
                 $loginUrl = $user->loginUrl[0];
-                }else if(is_string($user->loginUrl)){
-                    $loginUrl = $user->loginUrl;
-                }
-                if(!is_null($loginUrl) && trim($loginUrl,'/') === $uniqueId)
-                {
-                    return false;
-                }
+            } else if (is_string($user->loginUrl)) {
+                $loginUrl = $user->loginUrl;
+            }
+            if (!is_null($loginUrl) && trim($loginUrl, '/') === $uniqueId) {
+                return false;
+            }
         }
 
         if ($this->owner instanceof Module) {

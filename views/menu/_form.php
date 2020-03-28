@@ -1,14 +1,21 @@
 <?php
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-03-28 11:46:12
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-03-28 11:50:50
+ */
+ 
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use diandi\admin\models\Menu;
 use yii\helpers\Json;
 use diandi\admin\AutocompleteAsset;
-use common\models\DdMenuCate;
+use diandi\admin\models\MenuTop;
 use yii\helpers\ArrayHelper;
 
-$menucate = DdMenuCate::find()->orderBy('sort')->asArray()->all();
+$menucate = MenuTop::find()->orderBy('sort')->asArray()->all();
 
 /* @var $this yii\web\View */
 /* @var $model diandi/admin\models\Menu */
@@ -46,18 +53,12 @@ $this->registerJs($this->render('_script.js'));
 
             <?= $form->field($model, 'module_name')->dropDownList(ArrayHelper::map($addons, 'name', 'title'), ['prompt' => '请选择']) ?>
         </div>
-
-    </div>
-    <div class="row">
         <div class="col-sm-12">
             <?= $form->field($model, 'data')->textarea(['rows' => 4]) ?>
-
-        </div>
-        <div class="form-group">
             <?=
                 Html::submitButton($model->isNewRecord ? Yii::t('rbac-admin', 'Create') : Yii::t('rbac-admin', 'Update'), ['class' => $model->isNewRecord
                     ? 'btn btn-success' : 'btn btn-primary'])
             ?>
         </div>
-        <?php ActiveForm::end(); ?>
     </div>
+    <?php ActiveForm::end(); ?>

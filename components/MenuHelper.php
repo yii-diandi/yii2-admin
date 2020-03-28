@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-03-27 20:26:30
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-03-28 11:16:10
+ */
+ 
 
 namespace diandi\admin\components;
 
@@ -121,7 +128,6 @@ class MenuHelper
                 }
             }
             $assigned = static::requiredParent($assigned, $menus);
-
             if ($cache !== null) {
                 $cache->set($key, $assigned, $config->cacheDuration, new TagDependency([
                     'tags' => Configs::CACHE_TAG

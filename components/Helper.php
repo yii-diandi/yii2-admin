@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-03-28 03:21:27
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-03-28 09:55:03
+ */
+ 
 
 namespace diandi\admin\components;
 
@@ -116,8 +123,10 @@ class Helper
             $user = Yii::$app->getUser();
         }
         $userId = $user instanceof User ? $user->getId() : $user;
+     
         
         if ($config->strict) {
+            
             if ($user->can($r, $params)) {
                 return true;
             }
@@ -130,6 +139,7 @@ class Helper
             return $user->can('/*', $params);
         } else {
             $routes = static::getRoutesByUser($userId);
+           
             if (isset($routes[$r])) {
                 return true;
             }

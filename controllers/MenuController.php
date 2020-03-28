@@ -1,24 +1,24 @@
 <?php
-
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
- * @Date:   2020-03-08 15:28:03
+ * @Date:   2020-03-28 16:42:33
  * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-03-08 15:32:03
+ * @Last Modified time: 2020-03-28 17:47:53
  */
-
+ 
 
 namespace diandi\admin\controllers;
 
 use Yii;
 use diandi\admin\models\Menu;
 use diandi\admin\models\searchs\Menu as MenuSearch;
-use  backend\controllers\BaseController;
-use common\models\DdModules;
+use backend\controllers\BaseController;
+use diandi\addons\modules\searchs\DdAddons;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use diandi\admin\components\Helper;
 use yii\data\ActiveDataProvider;
+use yii\web\BadRequestHttpException;
 
 /**
  * MenuController implements the CRUD actions for Menu model.
@@ -55,7 +55,7 @@ class MenuController extends BaseController
         $searchModel = new MenuSearch;
         // $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
-        $query = Menu::find()->where(['is_sys' => 'system']);
+        $query = Menu::find();
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => false
@@ -91,7 +91,7 @@ class MenuController extends BaseController
             Helper::invalidate();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            $addons = DdModules::find()->asArray()->all();
+            $addons = DdAddons::find()->asArray()->all();
             return $this->render('create', [
                 'model' => $model,
                 'addons' => $addons,
@@ -116,13 +116,30 @@ class MenuController extends BaseController
             Helper::invalidate();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            $addons = DdModules::find()->asArray()->all();
+            $addons = DdAddons::find()->asArray()->all();
 
             return $this->render('update', [
                 'model' => $model,
                 'addons' => $addons,
             ]);
         }
+    }
+    
+    public function actionUpdateFiles(){
+        if(Yii::$app->request->isPost){
+            
+            $pk = Yii::$app->request->post('pk');
+            $id =unserialize(base64_decode($pk));
+            
+            $model = $this->findModel($id);
+            
+            $files = Yii::$app->request->post('name');
+            $value = Yii::$app->request->post('value');
+            $Res = $model->updateAll([$files=>$value],['id'=>$id]); 
+            return true;
+        }
+        
+        
     }
 
     /**
