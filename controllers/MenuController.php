@@ -1,11 +1,12 @@
 <?php
+
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 16:42:33
  * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-03-28 17:47:53
+ * @Last Modified time: 2020-03-29 17:39:34
  */
- 
+
 
 namespace diandi\admin\controllers;
 
@@ -55,7 +56,7 @@ class MenuController extends BaseController
         $searchModel = new MenuSearch;
         // $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
-        $query = Menu::find();
+        $query = Menu::find()->where(['is_sys' => 'system'])->orderBy('order');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => false
@@ -124,22 +125,21 @@ class MenuController extends BaseController
             ]);
         }
     }
-    
-    public function actionUpdateFiles(){
-        if(Yii::$app->request->isPost){
-            
+
+    public function actionUpdateFiles()
+    {
+        if (Yii::$app->request->isPost) {
+
             $pk = Yii::$app->request->post('pk');
-            $id =unserialize(base64_decode($pk));
-            
+            $id = unserialize(base64_decode($pk));
+
             $model = $this->findModel($id);
-            
+
             $files = Yii::$app->request->post('name');
             $value = Yii::$app->request->post('value');
-            $Res = $model->updateAll([$files=>$value],['id'=>$id]); 
+            $Res = $model->updateAll([$files => $value], ['id' => $id]);
             return true;
         }
-        
-        
     }
 
     /**
