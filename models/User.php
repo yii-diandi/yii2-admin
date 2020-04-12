@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-04-12 13:49:05
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-04-12 14:55:11
+ */
+
+
 namespace diandi\admin\models;
 
 use diandi\admin\components\Configs;
@@ -10,6 +18,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use yii\db\Expression;
+
 /**
  * User model
  *
@@ -46,11 +55,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function behaviors()
     {
-         return [
-           [
-              'class'=>\common\behaviors\SaveBehavior::className(),
-              'createdAttribute' => 'created_at',
-              'updatedAttribute' => 'updated_at',
+        return [
+            [
+                'class' => \common\behaviors\SaveBehavior::className(),
+                'createdAttribute' => 'created_at',
+                'updatedAttribute' => 'updated_at',
             ],
         ];
     }
@@ -62,17 +71,18 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['status', 'in', 'range' => [UserStatus::ACTIVE, UserStatus::INACTIVE]],
-            [[
-                'username','email',
-               
-                'verification_token',
-                'avatar'
-            ], 'string'           
+            [
+                [
+                    'username', 'email',
+
+                    'verification_token',
+                    'avatar'
+                ], 'string'
             ],
-             [[ 
+            [[
                 'created_at',
                 'updated_at'
-            ],'number'],
+            ], 'number'],
         ];
     }
 
@@ -116,8 +126,8 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         return static::findOne([
-                'password_reset_token' => $token,
-                'status' => UserStatus::ACTIVE,
+            'password_reset_token' => $token,
+            'status' => UserStatus::ACTIVE,
         ]);
     }
 
@@ -210,5 +220,19 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getDb()
     {
         return Configs::userDb();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'username' => '用户名',
+            'email' => '邮箱',
+            'status' => '用户状态',
+            'id' => '用户ID',
+            'created_at' => '注册时间'
+        ];
     }
 }

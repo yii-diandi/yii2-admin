@@ -4,7 +4,7 @@ use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \diandi/admin\models\form\Login */
+/* @var $model \diandi\admin\models\form\Login */
 
 $this->title = Yii::t('rbac-admin', 'Login');
 $this->params['breadcrumbs'][] = $this->title;

@@ -1,4 +1,13 @@
 <?php
+
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-04-12 13:49:58
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-04-12 13:51:26
+ */
+
+
 namespace diandi\admin\models\form;
 
 use diandi\admin\components\UserStatus;
@@ -22,7 +31,7 @@ class Signup extends Model
      */
     public function rules()
     {
-        $class = Yii::$app->getUser()->identityClass ? : 'diandi/admin\models\User';
+        $class = Yii::$app->getUser()->identityClass ?: 'diandi/admin\models\User';
         return [
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'required'],
@@ -43,6 +52,19 @@ class Signup extends Model
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'username' => '用户名',
+            'email' => '邮箱',
+            'password' => '密码',
+            'retypePassword' => '确认密码',
+        ];
+    }
+
+    /**
      * Signs user up.
      *
      * @return User|null the saved model or null if saving fails
@@ -50,7 +72,7 @@ class Signup extends Model
     public function signup()
     {
         if ($this->validate()) {
-            $class = Yii::$app->getUser()->identityClass ? : 'diandi/admin\models\User';
+            $class = Yii::$app->getUser()->identityClass ?: 'diandi\admin\models\User';
             $user = new $class();
             $user->username = $this->username;
             $user->email = $this->email;

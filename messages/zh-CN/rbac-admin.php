@@ -1,4 +1,13 @@
 <?php
+
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-04-12 14:07:51
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-04-12 14:07:51
+ */
+
+
 /**
  * Message translations for \mdmsoft\yii2-admin.
  *
@@ -65,4 +74,5 @@ return [
     'Menu' => '菜单',
     'Help' => '帮助',
     'Application' => '应用',
+    'Signup' => '添加',
 ];

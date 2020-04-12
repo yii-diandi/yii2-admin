@@ -1,26 +1,23 @@
 <?php
 
 use yii\helpers\Html;
-use common\widgets\MyActiveForm;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model diandi/admin\models\User */
-/* @var $form yii\widgets\MyActiveForm */
+/* @var $model diandi\admin\models\User */
+/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="user-form">
 
-    <?php $form = MyActiveForm::begin(); ?>
-    <?= $form->field($model, 'avatar')->widget('manks\FileInput', []); ?>
-    <?= $form->field($model, 'username')->textInput() ?>
-    <?= $form->field($model, 'email')->textInput() ?>
-    <?= $form->field($model, 'status')->radioList(['9'=>'待审核','10'=>'审核成功'])->label('审核状态') ?>
+    <?php $form = ActiveForm::begin(); ?>
+
+    <?= $form->field($model, 'status')->textInput() ?>
+
     <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <?= Html::submitButton('保存', ['class' => 'btn btn-success']) ?>
-        </div>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('rbac-admin', 'Create') : Yii::t('rbac-admin', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
-    <?php MyActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>
