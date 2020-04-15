@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 18:23:37
  * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-03-27 19:04:44
+ * @Last Modified time: 2020-04-13 16:31:58
  */
 
 
@@ -80,12 +80,12 @@ class Configs extends \diandi\admin\BaseObject
     /**
      * @var string Menu table name.
      */
-    public $menuTable = '{{%dd_menu}}';
+    public $menuTable = '{{%menu}}';
 
     /**
      * @var string Menu table name.
      */
-    public $userTable = '{{%dd_user}}';
+    public $userTable = '{{%user}}';
 
     /**
      * @var integer Default status user signup. 10 mean active.

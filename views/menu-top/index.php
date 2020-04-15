@@ -7,15 +7,15 @@ use yii\grid\GridView;
 /* @var $searchModel diandi\admin\models\searchs\MenuTopSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Menu Tops';
+$this->title = '顶部导航s';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <ul class="nav nav-tabs">
     <li>
-        <?= Html::a('添加 Menu Top', ['create'], ['class' => '']) ?>
+        <?= Html::a('添加顶部导航', ['create'], ['class' => '']) ?>
     </li>
     <li class="active">
-        <?= Html::a('Menu Top管理', ['index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('顶部导航管理', ['index'], ['class' => 'btn btn-primary']) ?>
     </li>
 </ul>
 <div class="firetech-main">

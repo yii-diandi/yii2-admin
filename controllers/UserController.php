@@ -4,14 +4,18 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:39:04
  * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-12 13:45:44
+ * @Last Modified time: 2020-04-14 11:12:31
  */
 
 
 namespace diandi\admin\controllers;
 
 use backend\controllers\BaseController;
+use common\helpers\ErrorsHelper;
+use common\helpers\ImageHelper;
 use diandi\admin\components\UserStatus;
+use diandi\admin\models\Assignment;
+use diandi\admin\models\Bloc;
 use diandi\admin\models\form\ChangePassword;
 use diandi\admin\models\form\Login;
 use diandi\admin\models\form\PasswordResetRequest;
@@ -19,6 +23,8 @@ use diandi\admin\models\form\ResetPassword;
 use diandi\admin\models\form\Signup;
 use diandi\admin\models\searchs\User as UserSearch;
 use diandi\admin\models\User;
+use EasyWeChat\Kernel\Exceptions\BadRequestException;
+use GuzzleHttp\Exception\BadResponseException;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\base\UserException;
@@ -91,6 +97,49 @@ class UserController extends BaseController
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * Updates an existing DdUser model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+        if (Yii::$app->request->isPost) {
+
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                $msg = ErrorsHelper::getModelError($model);
+                throw new BadRequestHttpException($msg);
+            }
+        } else {
+            // 获取用户角色
+            $user = User::findIdentity($id);
+            $userassign = new Assignment($id, $user);
+            $assigns = $userassign->getItems();
+
+            $assign = [];
+            if ($assigns['assigned']) {
+                foreach ($assigns['assigned'] as $key => $item) {
+                    $assign[$item][] = $key;
+                }
+            }
+            // 获取集团与分公司
+
+            $Bloc = Bloc::find()->where(['bloc_id' => $model->bloc_id])->select(['business_name'])->one();
+            $ResetPassword = new  ResetPassword($model->password_reset_token);
+            return $this->render('update', [
+                'ResetPassword' => $ResetPassword,
+                'model' => $model,
+                'assign' => $assign,
+                'business_name' => $Bloc['business_name'] ? $Bloc['business_name'] : '暂未分配'
+            ]);
+        }
     }
 
     /**

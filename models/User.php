@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:49:05
  * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-12 14:55:11
+ * @Last Modified time: 2020-04-14 10:27:43
  */
 
 
@@ -80,6 +80,8 @@ class User extends ActiveRecord implements IdentityInterface
                 ], 'string'
             ],
             [[
+                'store_id',
+                'bloc_id',
                 'created_at',
                 'updated_at'
             ], 'number'],
@@ -228,6 +230,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
+            'avatar' => '头像',
             'username' => '用户名',
             'email' => '邮箱',
             'status' => '用户状态',

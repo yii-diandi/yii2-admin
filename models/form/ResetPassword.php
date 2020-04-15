@@ -34,11 +34,11 @@ class ResetPassword extends Model
             throw new InvalidParamException('Password reset token cannot be blank.');
         }
         // check token
-        $class = Yii::$app->getUser()->identityClass ?: 'diandi/admin\models\User';
+        $class = Yii::$app->getUser()->identityClass ?: 'diandi\admin\models\User';
         if (static::isPasswordResetTokenValid($token)) {
             $this->_user = $class::findOne([
-                    'password_reset_token' => $token,
-                    'status' => UserStatus::ACTIVE
+                'password_reset_token' => $token,
+                'status' => UserStatus::ACTIVE
             ]);
         }
         if (!$this->_user) {

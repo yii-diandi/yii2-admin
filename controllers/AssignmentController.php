@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang Chunsheng 2192138785@qq.com
+ * @Date:   2020-04-14 00:49:51
+ * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
+ * @Last Modified time: 2020-04-14 01:07:00
+ */
+ 
 
 namespace diandi\admin\controllers;
 
@@ -32,7 +39,7 @@ class AssignmentController extends BaseController
         parent::init();
         if ($this->userClassName === null) {
             $this->userClassName = Yii::$app->getUser()->identityClass;
-            $this->userClassName = $this->userClassName ? : 'diandi/admin\models\User';
+            $this->userClassName = $this->userClassName ? : 'diandi\admin\models\User';
         }
     }
 
@@ -88,7 +95,7 @@ class AssignmentController extends BaseController
     public function actionView($id)
     {
         $model = $this->findModel($id);
-
+        
         return $this->render('view', [
                 'model' => $model,
                 'idField' => $this->idField,
