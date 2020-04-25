@@ -7,12 +7,10 @@
  * @Last Modified time: 2020-04-14 11:12:31
  */
 
-
 namespace diandi\admin\controllers;
 
 use backend\controllers\BaseController;
 use common\helpers\ErrorsHelper;
-use common\helpers\ImageHelper;
 use diandi\admin\components\UserStatus;
 use diandi\admin\models\Assignment;
 use diandi\admin\models\Bloc;
@@ -23,8 +21,6 @@ use diandi\admin\models\form\ResetPassword;
 use diandi\admin\models\form\Signup;
 use diandi\admin\models\searchs\User as UserSearch;
 use diandi\admin\models\User;
-use EasyWeChat\Kernel\Exceptions\BadRequestException;
-use GuzzleHttp\Exception\BadResponseException;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\base\UserException;
@@ -34,14 +30,14 @@ use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 
 /**
- * User controller
+ * User controller.
  */
 class UserController extends BaseController
 {
     private $_oldMailPath;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {
@@ -58,7 +54,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -68,24 +64,28 @@ class UserController extends BaseController
                 $this->_oldMailPath = $mailer->getViewPath();
                 $mailer->setViewPath('@diandi/admin/mail');
             }
+
             return true;
         }
+
         return false;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterAction($action, $result)
     {
         if ($this->_oldMailPath !== null) {
             Yii::$app->getMailer()->setViewPath($this->_oldMailPath);
         }
+
         return parent::afterAction($action, $result);
     }
 
     /**
      * Lists all User models.
+     *
      * @return mixed
      */
     public function actionIndex()
@@ -102,15 +102,17 @@ class UserController extends BaseController
     /**
      * Updates an existing DdUser model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     *
+     * @param int $id
+     *
      * @return mixed
+     *
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
         if (Yii::$app->request->isPost) {
-
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
@@ -133,18 +135,21 @@ class UserController extends BaseController
 
             $Bloc = Bloc::find()->where(['bloc_id' => $model->bloc_id])->select(['business_name'])->one();
             $ResetPassword = new  ResetPassword($model->password_reset_token);
+
             return $this->render('update', [
                 'ResetPassword' => $ResetPassword,
                 'model' => $model,
                 'assign' => $assign,
-                'business_name' => $Bloc['business_name'] ? $Bloc['business_name'] : '暂未分配'
+                'business_name' => $Bloc['business_name'] ? $Bloc['business_name'] : '暂未分配',
             ]);
         }
     }
 
     /**
      * Displays a single User model.
-     * @param integer $id
+     *
+     * @param int $id
+     *
      * @return mixed
      */
     public function actionView($id)
@@ -157,7 +162,9 @@ class UserController extends BaseController
     /**
      * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     *
+     * @param int $id
+     *
      * @return mixed
      */
     public function actionDelete($id)
@@ -168,7 +175,8 @@ class UserController extends BaseController
     }
 
     /**
-     * Login
+     * Login.
+     *
      * @return string
      */
     public function actionLogin()
@@ -188,7 +196,8 @@ class UserController extends BaseController
     }
 
     /**
-     * Logout
+     * Logout.
+     *
      * @return string
      */
     public function actionLogout()
@@ -199,7 +208,8 @@ class UserController extends BaseController
     }
 
     /**
-     * Signup new user
+     * Signup new user.
+     *
      * @return string
      */
     public function actionSignup()
@@ -207,7 +217,7 @@ class UserController extends BaseController
         $model = new Signup();
         if ($model->load(Yii::$app->getRequest()->post())) {
             if ($user = $model->signup()) {
-                return $this->goHome();
+                Yii::$app->session->setFlash('success', '添加成功');
             }
         }
 
@@ -217,7 +227,8 @@ class UserController extends BaseController
     }
 
     /**
-     * Request reset password
+     * Request reset password.
+     *
      * @return string
      */
     public function actionRequestPasswordReset()
@@ -239,7 +250,8 @@ class UserController extends BaseController
     }
 
     /**
-     * Reset password
+     * Reset password.
+     *
      * @return string
      */
     public function actionResetPassword($token)
@@ -262,7 +274,8 @@ class UserController extends BaseController
     }
 
     /**
-     * Reset password
+     * Reset password.
+     *
      * @return string
      */
     public function actionChangePassword()
@@ -278,9 +291,12 @@ class UserController extends BaseController
     }
 
     /**
-     * Activate new user
-     * @param integer $id
+     * Activate new user.
+     *
+     * @param int $id
+     *
      * @return type
+     *
      * @throws UserException
      * @throws NotFoundHttpException
      */
@@ -297,14 +313,18 @@ class UserController extends BaseController
                 throw new UserException(reset($errors));
             }
         }
+
         return $this->goHome();
     }
 
     /**
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     *
+     * @param int $id
+     *
      * @return User the loaded model
+     *
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
