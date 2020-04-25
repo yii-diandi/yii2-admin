@@ -1,4 +1,13 @@
 <?php
+/*** 
+ * @开源软件: 店滴AI-基于AI的软硬件开源解决方案
+ * @官方地址: http://www.wayfirer.com/
+ * @版本: 1.0
+ * @邮箱: 2192138785@qq.com
+ * @作者: Wang Chunsheng
+ * @Date: 2020-04-25 11:51:40
+ * @LastEditTime: 2020-04-26 01:15:18
+ */
 
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
@@ -10,7 +19,7 @@
 use backend\modules\bloc\models\Bloc;
 use common\helpers\ArrayHelper;
 use yii\helpers\Html;
-use kartik\grid\GridView;
+use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\bloc\models\searchs\BlocSearch */
