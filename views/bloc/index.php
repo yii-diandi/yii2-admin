@@ -1,25 +1,13 @@
 <?php
-/*** 
- * @开源软件: 店滴AI-基于AI的软硬件开源解决方案
- * @官方地址: http://www.wayfirer.com/
- * @版本: 1.0
- * @邮箱: 2192138785@qq.com
- * @作者: Wang Chunsheng
- * @Date: 2020-04-25 11:51:40
- * @LastEditTime: 2020-04-26 01:15:18
- */
-
 /**
- * @Author: Wang Chunsheng 2192138785@qq.com
- * @Date:   2020-03-31 06:45:37
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-05 14:40:20
+ * @Author: Wang chunsheng
+ * @Date:   2020-04-29 16:06:59
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-04-30 23:16:05
  */
-
-use backend\modules\bloc\models\Bloc;
-use common\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\modules\bloc\models\searchs\BlocSearch */
@@ -31,16 +19,16 @@ $this->params['breadcrumbs'][] = $this->title;
 <ul class="nav nav-tabs">
 
     <li class="active">
-        <?= Html::a('公司管理', ['index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('公司管理', ['index'], ['class' => 'btn btn-primary']); ?>
     </li>
     <li>
-        <?= Html::a('添加公司', ['create'], ['class' => '']) ?>
+        <?= Html::a('添加公司', ['create'], ['class' => '']); ?>
     </li>
 </ul>
 <div class="firetech-main">
 
     <div class="bloc-index ">
-        <?php echo $this->render('_search', ['model' => $searchModel]);  ?>
+        <?php echo $this->render('_search', ['model' => $searchModel]); ?>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">公司列表</h3>
@@ -79,8 +67,29 @@ $this->params['breadcrumbs'][] = $this->title;
                         //'other_files:ntext',
                         //'audit_id',
                         //'on_show',
+                        [
+                            'class' => 'yii\grid\ActionColumn',
+                            'header' => '操作',
+                            'template' => '{management}',
+                            'buttons' => [
+                                'management' => function ($url, $model, $key) {
+                                    $url = Url::to(['setting/baidu', 'bloc_id' => $model['bloc_id']]);
 
-                        ['class' => 'yii\grid\ActionColumn'],
+                                    return  Html::a('参数配置', $url, [
+                                        'title' => '进入模块',
+                                        'class' => 'btn btn-primary btn-sm',
+                                        // 'data' => [
+                                        //     'confirm' => Yii::t('app', '确认卸载该模块吗?'),
+                                        //     'method' => 'post',
+                                        // ]
+                                    ]);
+                                },
+                            ],
+                            'contentOptions' => ['class' => 'flex-center-vertically'],
+                            // 'buttons' => [],
+                            'headerOptions' => ['width' => '200px'],
+                        ],
+                        ['class' => 'common\components\ActionColumn'],
                     ],
                 ]); ?>
 

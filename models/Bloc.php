@@ -3,8 +3,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 22:40:56
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-14 09:55:01
+ * @Last Modified by:   Wang chunsheng  <2192138785@qq.com>
+ * @Last Modified time: 2020-04-29 16:38:33
  */
 
 
@@ -72,6 +72,8 @@ class Bloc extends \yii\db\ActiveRecord
         ];
     }
 
+    
+
     /**
      * {@inheritdoc}
      */
@@ -80,7 +82,7 @@ class Bloc extends \yii\db\ActiveRecord
         return [
             'bloc_id' => '公司ID',
             'business_name' => '公司名称',
-            'pid' => '上级商户',
+            'pid' => '上级公司',
             'category' => '分类',
             'province' => '省份',
             'city' => '城市',

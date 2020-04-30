@@ -3,8 +3,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-31 06:41:22
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-05 14:41:22
+ * @Last Modified by:   Wang chunsheng  <2192138785@qq.com>
+ * @Last Modified time: 2020-04-29 16:31:46
  */
 
 
@@ -14,7 +14,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\modules\bloc\models\Bloc */
 
-$this->title = $model->id;
+$this->title = $model->bloc_id;
 $this->params['breadcrumbs'][] = ['label' => 'Blocs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -37,8 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-body">
 
                 <p>
-                    <?= Html::a('更新', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                    <?= Html::a('删除', ['delete', 'id' => $model->id], [
+                    <?= Html::a('更新', ['update', 'id' => $model->bloc_id], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a('删除', ['delete', 'id' => $model->bloc_id], [
                         'class' => 'btn btn-danger',
                         'data' => [
                             'confirm' => 'Are you sure you want to delete this item?',

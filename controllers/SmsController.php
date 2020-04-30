@@ -1,27 +1,19 @@
 <?php
 
-/**
- * @Author: Wang Chunsheng 2192138785@qq.com
- * @Date:   2020-03-30 21:43:33
- * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 16:20:11
- */
-
 namespace diandi\admin\controllers;
 
 use Yii;
-use diandi\admin\models\Bloc;
-use diandi\admin\models\Searchs\BlocSearch;
-use common\helpers\ErrorsHelper;
+use diandi\admin\models\BlocConfSms;
+use diandi\admin\models\searchs\BlocConfSmsSearch;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
-use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use backend\controllers\BaseController;
 
 /**
- * BlocController implements the CRUD actions for Bloc model.
+ * SmsController implements the CRUD actions for BlocConfSms model.
  */
-class BlocController extends Controller
+class SmsController extends BaseController
 {
     /**
      * {@inheritdoc}
@@ -39,13 +31,12 @@ class BlocController extends Controller
     }
 
     /**
-     * Lists all Bloc models.
-     *
+     * Lists all BlocConfSms models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new BlocSearch();
+        $searchModel = new BlocConfSmsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -55,12 +46,9 @@ class BlocController extends Controller
     }
 
     /**
-     * Displays a single Bloc model.
-     *
-     * @param int $id
-     *
+     * Displays a single BlocConfSms model.
+     * @param integer $id
      * @return mixed
-     *
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
@@ -71,63 +59,48 @@ class BlocController extends Controller
     }
 
     /**
-     * Creates a new Bloc model.
+     * Creates a new BlocConfSms model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     *
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Bloc();
-        $parents = $model->findAll(['pid' => 0]);
-        if (Yii::$app->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->bloc_id]);
-            } else {
-                $msg = ErrorsHelper::getModelError($model);
-                throw new BadRequestHttpException($msg);
-            }
+        $model = new BlocConfSms();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
-            'parents' => $parents,
         ]);
     }
 
     /**
-     * Updates an existing Bloc model.
+     * Updates an existing BlocConfSms model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     *
-     * @param int $id
-     *
+     * @param integer $id
      * @return mixed
-     *
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $parents = $model->findAll(['pid' => 0]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->bloc_id]);
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
-            'parents' => $parents,
         ]);
     }
 
     /**
-     * Deletes an existing Bloc model.
+     * Deletes an existing BlocConfSms model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     *
-     * @param int $id
-     *
+     * @param integer $id
      * @return mixed
-     *
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
@@ -138,18 +111,15 @@ class BlocController extends Controller
     }
 
     /**
-     * Finds the Bloc model based on its primary key value.
+     * Finds the BlocConfSms model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     *
-     * @param int $id
-     *
-     * @return Bloc the loaded model
-     *
+     * @param integer $id
+     * @return BlocConfSms the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Bloc::findOne($id)) !== null) {
+        if (($model = BlocConfSms::findOne($id)) !== null) {
             return $model;
         }
 
