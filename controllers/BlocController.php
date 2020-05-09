@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 21:43:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 16:20:11
+ * @Last Modified time: 2020-05-01 19:36:35
  */
 
 namespace diandi\admin\controllers;
@@ -80,6 +80,7 @@ class BlocController extends Controller
     {
         $model = new Bloc();
         $parents = $model->findAll(['pid' => 0]);
+
         if (Yii::$app->request->isPost) {
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->bloc_id]);

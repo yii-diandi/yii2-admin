@@ -2,8 +2,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-14 00:49:51
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-14 01:07:00
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-09 20:43:34
  */
  
 
@@ -13,6 +13,7 @@ use Yii;
 use diandi\admin\models\Assignment;
 use diandi\admin\models\searchs\Assignment as AssignmentSearch;
 use backend\controllers\BaseController;
+use diandi\admin\models\AuthAssignmentGroup;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -31,6 +32,11 @@ class AssignmentController extends BaseController
     public $searchClass;
     public $extraColumns = [];
 
+    public $type;
+    
+    public $module_name;
+    
+    
     /**
      * @inheritdoc
      */
@@ -41,6 +47,8 @@ class AssignmentController extends BaseController
             $this->userClassName = Yii::$app->getUser()->identityClass;
             $this->userClassName = $this->userClassName ? : 'diandi\admin\models\User';
         }
+        $this->module_name =  Yii::$app->request->get('module_name','sys');  
+        $this->type =  $this->module_name=='sys'?0:1;   
     }
 
     /**
@@ -81,6 +89,7 @@ class AssignmentController extends BaseController
         return $this->render('index', [
                 'dataProvider' => $dataProvider,
                 'searchModel' => $searchModel,
+                'module_name' => $this->module_name,
                 'idField' => $this->idField,
                 'usernameField' => $this->usernameField,
                 'extraColumns' => $this->extraColumns,
@@ -95,8 +104,12 @@ class AssignmentController extends BaseController
     public function actionView($id)
     {
         $model = $this->findModel($id);
+       
+        $items = $model->getItems($this->type);
         
         return $this->render('view', [
+                'module_name' => $this->module_name,
+                'items' => $items,
                 'model' => $model,
                 'idField' => $this->idField,
                 'usernameField' => $this->usernameField,
@@ -112,10 +125,14 @@ class AssignmentController extends BaseController
     public function actionAssign($id)
     {
         $items = Yii::$app->getRequest()->post('items', []);
-        $model = new Assignment($id);
+    
+        $model = new Assignment([
+            'id'=>$id,
+            'type'=>$this->type
+            ]);
         $success = $model->assign($items);
         Yii::$app->getResponse()->format = 'json';
-        return array_merge($model->getItems(), ['success' => $success]);
+        return array_merge($model->getItems($this->type), ['success' => $success]);
     }
 
     /**
@@ -126,10 +143,13 @@ class AssignmentController extends BaseController
     public function actionRevoke($id)
     {
         $items = Yii::$app->getRequest()->post('items', []);
-        $model = new Assignment($id);
+        $model = new Assignment([
+            'id'=>$id,
+            'type'=>$this->type
+        ]);
         $success = $model->revoke($items);
         Yii::$app->getResponse()->format = 'json';
-        return array_merge($model->getItems(), ['success' => $success]);
+        return array_merge($model->getItems($this->type), ['success' => $success]);
     }
 
     /**
@@ -143,7 +163,10 @@ class AssignmentController extends BaseController
     {
         $class = $this->userClassName;
         if (($user = $class::findIdentity($id)) !== null) {
-            return new Assignment($id, $user);
+            return new Assignment([
+                'id'=>$id,
+                'type'=>$this->type
+                ], $user);
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }

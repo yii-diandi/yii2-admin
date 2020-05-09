@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-03 22:01:44
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-03 22:01:45
+ */
+ 
 
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -34,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'create_time:datetime',
             //'update_time:datetime',
 
-                    ['class' => 'yii\grid\ActionColumn'],
+                    ['class' => 'common\components\ActionColumn'],
                     ],
                     ]); ?>
                 

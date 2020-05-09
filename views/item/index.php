@@ -1,9 +1,18 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-03 15:12:58
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-08 18:15:39
+ */
+ 
 
 use yii\helpers\Html;
 use yii\grid\GridView;
 use diandi\admin\components\RouteRule;
 use diandi\admin\components\Configs;
+use leandrogehlen\treegrid\TreeGrid;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -19,33 +28,78 @@ $rules = array_keys(Configs::authManager()->getRules());
 $rules = array_combine($rules, $rules);
 unset($rules[RouteRule::RULE_NAME]);
 ?>
+
+<?= $this->render('_tab'); ?>
+<div class="firetech-main">
+<?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+
+
+<div class="panel panel-default">
+      <div class="panel-heading">
+            <h3 class="panel-title">权限列表</h3>
+      </div>
+      <div class="box-body">
+
+      
+    
+
 <div class="role-index">
-    <h1><?= Html::encode($this->title) ?></h1>
-    <p>
-        <?= Html::a(Yii::t('rbac-admin', 'Create ' . $labels['Item']), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-    <?=
-    GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-            [
-                'attribute' => 'name',
-                'label' => Yii::t('rbac-admin', 'Name'),
-            ],
-            [
-                'attribute' => 'ruleName',
-                'label' => Yii::t('rbac-admin', 'Rule Name'),
-                'filter' => $rules
-            ],
-            [
-                'attribute' => 'description',
-                'label' => Yii::t('rbac-admin', 'Description'),
-            ],
-            ['class' => 'yii\grid\ActionColumn',],
-        ],
-    ])
-    ?>
+<?= TreeGrid::widget([
+                    'dataProvider' => $dataProvider,
+                    'keyColumnName' => 'id',
+                    'parentColumnName' => 'parent_id',
+                    'parentRootValue' => '0',
+                    'pluginOptions' => [
+                        'initialState' => 'collapsed',
+                        // 'expanderTemplate'=> '<span>&nbsp&nbsp&nbsp&nbsp|---</span>',
+
+                    ],
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+                        // [
+                        //     'attribute' => 'parent_id',
+                        //     'label' => Yii::t('rbac-admin', 'parent_id'),
+                        // ],
+                        [
+                            'attribute' => 'name',
+                            'label' => Yii::t('rbac-admin', 'Name'),
+                        ],
+                        [
+                            'attribute' => 'description',
+                            'label' => Yii::t('rbac-admin', 'Description'),
+                        ],
+                        [
+                            'attribute' => 'ruleName',
+                            'label' => Yii::t('rbac-admin', 'Rule Name'),
+                            // 'filter' => $rules
+                        ],
+                        
+                        [
+                            'class' => 'common\components\ActionColumn',
+                            'urlCreator' => function ($action, $model, $key, $index) {
+                                switch($action)
+                                {
+                                    case 'delete':
+                                        return Url::to(['delete','id'=>$model->name,'module_name'=>$model->module_name]);
+                                    break;
+                                    case 'view':
+                                        return Url::to(['view','id'=>$model->name,'module_name'=>$model->module_name]);
+                                    
+                                    break;
+                                    case 'update':
+                                        return Url::to(['update','id'=>$model->name,'module_name'=>$model->module_name]);
+                                    break;
+                                }
+                        
+                            },
+                        ],
+                    ],
+                ]);
+
+                ?>
+</div>
+
+</div>
+</div>
 
 </div>

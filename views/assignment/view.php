@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-06 17:24:15
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-09 20:42:00
+ */
+ 
 
 use diandi\admin\AnimateAsset;
 use yii\helpers\ArrayHelper;
@@ -24,7 +31,7 @@ $this->params['breadcrumbs'][] = $userName;
 AnimateAsset::register($this);
 YiiAsset::register($this);
 $opts = Json::htmlEncode([
-    'items' => $model->getItems(),
+    'items' =>$items,
 ]);
 $this->registerJs("var _opts = {$opts};");
 $this->registerJs($this->render('_script.js'));
@@ -42,12 +49,12 @@ $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate
         </div>
         <div class="col-sm-1">
             <br><br>
-            <?=Html::a('&gt;&gt;' . $animateIcon, ['assign', 'id' => (string) $model->id], [
+            <?=Html::a('&gt;&gt;' . $animateIcon, ['assign', 'id' => (string) $model->id,'module_name'=>$module_name], [
     'class' => 'btn btn-success btn-assign',
     'data-target' => 'available',
     'title' => Yii::t('rbac-admin', 'Assign'),
 ]);?><br><br>
-            <?=Html::a('&lt;&lt;' . $animateIcon, ['revoke', 'id' => (string) $model->id], [
+            <?=Html::a('&lt;&lt;' . $animateIcon, ['revoke', 'id' => (string) $model->id,'module_name'=>$module_name], [
     'class' => 'btn btn-danger btn-assign',
     'data-target' => 'assigned',
     'title' => Yii::t('rbac-admin', 'Remove'),

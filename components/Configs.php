@@ -3,8 +3,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 18:23:37
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-13 16:31:58
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-05 22:16:56
  */
 
 
@@ -86,6 +86,9 @@ class Configs extends \diandi\admin\BaseObject
      * @var string Menu table name.
      */
     public $userTable = '{{%user}}';
+    
+    
+    public $groupTable = '{{%auth_user_group}}';
 
     /**
      * @var integer Default status user signup. 10 mean active.
@@ -160,17 +163,15 @@ class Configs extends \diandi\admin\BaseObject
      */
     public static function instance()
     {
-        if (self::$_instance === null) {
 
+        if (self::$_instance === null) {
             $type = ArrayHelper::getValue(Yii::$app->params, 'diandi.admin.configs', []);
 
             if (is_array($type) && !isset($type['class'])) {
                 $type['class'] = static::className();
             }
-
             return self::$_instance = Yii::createObject($type);
         }
-
         return self::$_instance;
     }
 

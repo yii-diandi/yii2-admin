@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-03 15:13:58
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-08 15:26:58
+ */
+ 
 
 use yii\helpers\Html;
 
@@ -13,11 +20,18 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('rbac-admin', $labels['Items
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->name]];
 $this->params['breadcrumbs'][] = Yii::t('rbac-admin', 'Update');
 ?>
-<div class="auth-item-update">
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?=
-    $this->render('_form', [
-        'model' => $model,
-    ]);
-    ?>
+<?= $this->render('_tab'); ?>
+
+<div class="firetech-main">
+
+    <div class="auth-item-update">
+        <?=
+        $this->render('_form', [
+            'addons' => $addons,
+            'module_name' => $module_name,
+            'model' => $model,
+            
+        ]);
+        ?>
+    </div>
 </div>

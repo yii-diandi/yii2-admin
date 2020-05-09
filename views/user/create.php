@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-09 10:20:07
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-09 10:20:20
+ */
+ 
 
 use yii\helpers\Html;
 
@@ -10,14 +17,9 @@ $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<ul class="nav nav-tabs">
-    <li  class="active">
-        <?= Html::a('添加 User', ['create','plugins'=>$plugins], ['class' => 'btn btn-primary']) ?>
-    </li>
-    <li>
-        <?= Html::a('User管理', ['index','plugins'=>$plugins], ['class' => '']) ?>
-    </li>
-</ul>
+<?= $this->render('_tab', [
+                    'model' => $model,
+                ]) ?>
 <div class="firetech-main">
     <div class="panel panel-default">
         <div class="panel-body">

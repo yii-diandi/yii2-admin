@@ -1,3 +1,10 @@
+/*
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-05 20:52:48
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-08 23:11:33
+ */
+
 $('i.glyphicon-refresh-animate').hide();
 function updateItems(r) {
     _opts.items.available = r.available;
@@ -9,9 +16,31 @@ function updateItems(r) {
 $('.btn-assign').click(function () {
     var $this = $(this);
     var target = $this.data('target');
-    var items = $('select.list[data-target="' + target + '"]').val();
 
-    if (items && items.length) {
+    var items = {
+        group: [],
+        permission: [],
+        route: [],
+    }
+    // 分组返回数据
+    var opt = $('select.list[data-target="' + target + '"]').find(':selected');
+    $.each(opt,function(key,name){
+        var og = $(this).closest('optgroup').attr('label')
+        if(og=='Groups'){
+            items.group.push($(this).val())
+        }
+        if(og=='Permission'){
+            items.permission.push($(this).val())
+        }
+        if(og=='Routes'){
+            items.route.push($(this).val())
+        }
+    })
+    
+
+    // var items = $('select.list[data-target="' + target + '"]').val();
+
+    if (items) {
         $this.children('i.glyphicon-refresh-animate').show();
         $.post($this.attr('href'), {items: items}, function (r) {
             updateItems(r);
@@ -32,7 +61,7 @@ function search(target) {
     var q = $('.search[data-target="' + target + '"]').val();
 
     var groups = {
-        role: [$('<optgroup label="Roles">'), false],
+        role: [$('<optgroup label="Groups">'), false],
         permission: [$('<optgroup label="Permission">'), false],
         route: [$('<optgroup label="Routes">'), false],
     };

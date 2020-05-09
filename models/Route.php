@@ -3,8 +3,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 18:10:43
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-03-28 14:43:30
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-06 14:22:19
  */
 
 
@@ -35,6 +35,64 @@ class Route extends \diandi\admin\BaseObject
 
     private $_routePrefix;
 
+    public $id;
+    public $pid;
+    
+    public $module_name;
+    /**
+     * @var int the type of the item. This should be either [[TYPE_ROLE]] or [[TYPE_PERMISSION]].
+     */
+    public $type;
+    /**
+     * @var string the name of the item. This must be globally unique.
+     */
+    public $name;
+    
+    public $title;
+    /**
+     * @var string the item description
+     */
+    public $description;
+        /**
+     * @var int UNIX timestamp representing the item creation time
+     */
+    public $createdAt;
+    /**
+     * @var int UNIX timestamp representing the item updating time
+     */
+    public $updatedAt;
+    /**
+     * @var mixed the additional data associated with this item
+     */
+    public $data;
+
+     /**
+     * @var Item
+     */
+    private $_item;
+
+    /**
+     * Initialize object.
+     *
+     * @param Item  $item
+     * @param array $config
+     */
+    public function __construct($item = null, $config = [])
+    {
+        $this->_item = $item;
+        if ($item !== null) {
+            $this->data = $item->data;
+            $this->pid = $item->pid;
+            $this->title = $item->title;
+            $this->id = $item->id;
+            $this->name = $item->name;
+            $this->module_name = $item->module_name;
+            $this->type = $item->type;
+            $this->description = $item->description;
+        }
+        parent::__construct($config);
+    }
+
     /**
      * Assign or remove items
      * @param array $routes
@@ -46,11 +104,12 @@ class Route extends \diandi\admin\BaseObject
         foreach ($routes as $route) {
             try {
                 $r = explode('&', $route);
-                $item = $manager->createPermission($this->getPermissionName($route));
+                $item = $manager->createRoutePermission($this->getPermissionName($route));
+          
                 if (count($r) > 1) {
                     $action = '/' . trim($r[0], '/');
-                    if (($itemAction = $manager->getPermission($action)) === null) {
-                        $itemAction = $manager->createPermission($action);
+                    if (($itemAction = $manager->getRoutePermission($action)) === null) {
+                        $itemAction = $manager->createRoutePermission($action);
                         $manager->add($itemAction);
                     }
                     unset($r[0]);
@@ -59,7 +118,7 @@ class Route extends \diandi\admin\BaseObject
                         $item->data['params'][$part[0]] = isset($part[1]) ? $part[1] : '';
                     }
                     $this->setDefaultRule();
-                    $item->ruleName = RouteRule::RULE_NAME;
+               
                     $manager->add($item);
                     $manager->addChild($item, $itemAction);
                 } else {
@@ -82,7 +141,7 @@ class Route extends \diandi\admin\BaseObject
         $manager = Configs::authManager();
         foreach ($routes as $route) {
             try {
-                $item = $manager->createPermission($this->getPermissionName($route));
+                $item = $manager->createRoutePermission($this->getPermissionName($route));
                 $manager->remove($item);
             } catch (Exception $exc) {
                 Yii::error($exc->getMessage(), __METHOD__);
@@ -123,7 +182,7 @@ class Route extends \diandi\admin\BaseObject
      */
     public function getRoutes()
     {
-        $manager = Configs::authManager();
+        $manager =  Configs::authManager();
         // Get advanced configuration
         $advanced = Configs::instance()->advanced;
         if ($advanced) {
@@ -161,7 +220,6 @@ class Route extends \diandi\admin\BaseObject
             Yii::$app = $yiiApp;
             unset($yiiApp);
         } else {
-
             // Use basic route scheme.
             // Set basic route prefix
             $this->_routePrefix = self::PREFIX_BASIC;
@@ -169,7 +227,7 @@ class Route extends \diandi\admin\BaseObject
             $routes = $this->getAppRoutes();
         }
         $exists = [];
-        foreach (array_keys($manager->getPermissions()) as $name) {
+        foreach (array_keys($manager->getRoutePermissions()) as $name) {
             if ($name[0] !== $this->routePrefix) {
                 continue;
             }
@@ -199,13 +257,13 @@ class Route extends \diandi\admin\BaseObject
         if ($cache === null || ($result = $cache->get($key)) === false) {
             $result = [];
             $this->getRouteRecursive($module, $result);
+            
             if ($cache !== null) {
                 $cache->set($key, $result, Configs::instance()->cacheDuration, new TagDependency([
                     'tags' => self::CACHE_TAG,
                 ]));
             }
         }
-
         return $result;
     }
 
@@ -215,21 +273,21 @@ class Route extends \diandi\admin\BaseObject
      * @param array $result
      */
     protected function getRouteRecursive($module, &$result)
-    {        
+    {    
         $token = "Get Route of '" . get_class($module) . "' with id '" . $module->uniqueId . "'";
         Yii::beginProfile($token, __METHOD__);
         try {
-            foreach ($module->getModules() as $id => $child) {
+           foreach ($module->getModules() as $id => $child) {
                 if (($child = $module->getModule($id)) !== null) {
                     $this->getRouteRecursive($child, $result);
                 }
             }
-
+            
             foreach ($module->controllerMap as $id => $type) {
                 $this->getControllerActions($type, $id, $module, $result);
             }
-
             $namespace = trim($module->controllerNamespace, '\\') . '\\';
+         
             $this->getControllerFiles($module, $namespace, '', $result);
            
             $all = '/' . ltrim($module->uniqueId . '/*', '/');
@@ -330,6 +388,65 @@ class Route extends \diandi\admin\BaseObject
         }
         Yii::endProfile($token, __METHOD__);
     }
+
+     /**
+     * Adds an item as a child of another item.
+     *
+     * @param array $items
+     *
+     * @return int
+     */
+    public function addChildren($items)
+    {
+        $manager = Configs::authManager();
+        $success = 0;
+        if ($this->_item) {
+            foreach ($items as $name) {
+                $child = $manager->getRoutePermission($name);
+                try {
+                    $manager->addChild($this->_item, $child);
+                    ++$success;
+                } catch (\Exception $exc) {
+                    Yii::error($exc->getMessage(), __METHOD__);
+                }
+            }
+        }
+        if ($success > 0) {
+            Helper::invalidate();
+        }
+
+        return $success;
+    }
+
+    /**
+     * Remove an item as a child of another item.
+     *
+     * @param array $items
+     *
+     * @return int
+     */
+    public function removeChildren($items)
+    {
+        $manager = Configs::authManager();
+        $success = 0;
+        if ($this->_item !== null) {
+            foreach ($items as $name) {
+                $child = $manager->getRoutePermission($name);
+                try {
+                    $manager->removeChild($this->_item, $child);
+                    ++$success;
+                } catch (\Exception $exc) {
+                    Yii::error($exc->getMessage(), __METHOD__);
+                }
+            }
+        }
+        if ($success > 0) {
+            Helper::invalidate();
+        }
+
+        return $success;
+    }
+
 
     /**
      * Ivalidate cache

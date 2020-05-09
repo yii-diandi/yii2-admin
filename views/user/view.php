@@ -1,8 +1,19 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-09 10:22:46
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-09 10:59:22
+ */
 
+use diandi\addons\modules\DdAddons;
+use diandi\admin\AutocompleteAsset;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use diandi\admin\components\Helper;
+use diandi\admin\models\AddonsUser;
+use diandi\admin\models\Menu;
+use yii\helpers\Json;
 
 /* @var $this yii\web\View */
 /* @var $model diandi\admin\models\User */
@@ -12,7 +23,14 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('rbac-admin', 'Users'), 'url
 $this->params['breadcrumbs'][] = $this->title;
 
 $controllerId = $this->context->uniqueId . '/';
+
+AutocompleteAsset::register($this);
+$this->registerJs("var _opts = $opts;");
+$this->registerJs($this->render('_script.js'));
+
 ?>
+<?= $this->render('_tab', []) ?>
+
 <div class="user-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
@@ -53,5 +71,30 @@ $controllerId = $this->context->uniqueId . '/';
         ],
     ])
     ?>
+     <div class="row">
+        <div class="col-sm-5">
+            <input class="form-control search" data-target="available"
+                   placeholder="<?=Yii::t('rbac-admin', 'Search for available');?>">
+            <select multiple size="20" class="form-control list" data-target="available"></select>
+        </div>
+        <div class="col-sm-1">
+            <br><br>
+            <?=Html::a('&gt;&gt;' . $animateIcon, ['assign', 'id' => $model->id], [
+                'class' => 'btn btn-success btn-assign',
+                'data-target' => 'available',
+                'title' => Yii::t('rbac-admin', 'Assign'),
+            ]);?><br><br>
+            <?=Html::a('&lt;&lt;' . $animateIcon, ['remove', 'id' => $model->id], [
+                'class' => 'btn btn-danger btn-assign',
+                'data-target' => 'assigned',
+                'title' => Yii::t('rbac-admin', 'Remove'),
+            ]);?>
+        </div>
+        <div class="col-sm-5">
+            <input class="form-control search" data-target="assigned"
+                   placeholder="<?=Yii::t('rbac-admin', 'Search for assigned');?>">
+            <select multiple size="20" class="form-control list" data-target="assigned"></select>
+        </div>
+    </div>
 
 </div>

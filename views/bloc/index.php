@@ -3,10 +3,10 @@
  * @Author: Wang chunsheng
  * @Date:   2020-04-29 16:06:59
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 23:16:05
+ * @Last Modified time: 2020-05-03 16:40:05
  */
+use leandrogehlen\treegrid\TreeGrid;
 use yii\helpers\Html;
-use yii\grid\GridView;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
@@ -34,12 +34,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h3 class="panel-title">公司列表</h3>
             </div>
             <div class="box-body table-responsive">
-                <?= GridView::widget([
+            <?= TreeGrid::widget([
                     'dataProvider' => $dataProvider,
-                    // 'filterModel' => $searchModel,
+                    'keyColumnName' => 'bloc_id',
+                    'parentColumnName' => 'pid',
+                    'parentRootValue' => '0', //first parentId value
+                    'pluginOptions' => [
+                        'initialState' => 'collapsed',
+                    ],
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
-
                         'bloc_id',
                         'business_name',
                         'pid',
@@ -67,17 +71,31 @@ $this->params['breadcrumbs'][] = $this->title;
                         //'other_files:ntext',
                         //'audit_id',
                         //'on_show',
+
+                        ['class' => 'common\components\ActionColumn'],
                         [
                             'class' => 'yii\grid\ActionColumn',
                             'header' => '操作',
-                            'template' => '{management}',
+                            'template' => '{user}{management}',
                             'buttons' => [
+                                'user' => function ($url, $model, $key) {
+                                    $url = Url::to(['user-bloc/index', 'bloc_id' => $model['bloc_id']]);
+
+                                    return  Html::a('管理员', $url, [
+                                        'title' => '管理员',
+                                        'class' => 'btn btn-default',
+                                        // 'data' => [
+                                        //     'confirm' => Yii::t('app', '确认卸载该模块吗?'),
+                                        //     'method' => 'post',
+                                        // ]
+                                    ]);
+                                },
                                 'management' => function ($url, $model, $key) {
                                     $url = Url::to(['setting/baidu', 'bloc_id' => $model['bloc_id']]);
 
                                     return  Html::a('参数配置', $url, [
                                         'title' => '进入模块',
-                                        'class' => 'btn btn-primary btn-sm',
+                                        'class' => 'btn btn-default',
                                         // 'data' => [
                                         //     'confirm' => Yii::t('app', '确认卸载该模块吗?'),
                                         //     'method' => 'post',
@@ -85,15 +103,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ]);
                                 },
                             ],
-                            'contentOptions' => ['class' => 'flex-center-vertically'],
+                            'contentOptions' => ['class' => 'btn-group'],
                             // 'buttons' => [],
                             'headerOptions' => ['width' => '200px'],
                         ],
-                        ['class' => 'common\components\ActionColumn'],
                     ],
-                ]); ?>
+                ]);
 
-
+                ?>
+      
             </div>
         </div>
     </div>

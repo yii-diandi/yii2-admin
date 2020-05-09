@@ -3,15 +3,17 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:39:04
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-14 11:12:31
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-09 19:17:24
  */
 
 namespace diandi\admin\controllers;
 
 use backend\controllers\BaseController;
 use common\helpers\ErrorsHelper;
+use diandi\addons\modules\DdAddons;
 use diandi\admin\components\UserStatus;
+use diandi\admin\models\AddonsUser;
 use diandi\admin\models\Assignment;
 use diandi\admin\models\Bloc;
 use diandi\admin\models\form\ChangePassword;
@@ -25,8 +27,10 @@ use Yii;
 use yii\base\InvalidParamException;
 use yii\base\UserException;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
 use yii\mail\BaseMailer;
 use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -35,6 +39,13 @@ use yii\web\NotFoundHttpException;
 class UserController extends BaseController
 {
     private $_oldMailPath;
+
+    public $module_name;
+
+    public function actions()
+    {
+        $this->module_name = Yii::$app->request->get('module_name','sys');
+    }
 
     /**
      * {@inheritdoc}
@@ -90,10 +101,25 @@ class UserController extends BaseController
      */
     public function actionIndex()
     {
-        $searchModel = new UserSearch();
+        $module_name = Yii::$app->request->get('module_name','sys');
+        $AddonsUser = new AddonsUser(); 
+        $user_ids = [];
+        if($module_name !='sys'){
+            $list = DdAddons::findOne(['identifie'=>$module_name]);
+            if(!$list){
+               throw new HttpException('400','扩展功能不存在！'); 
+            }
+            $user_ids = $AddonsUser->find()->where(['module_name'=>$module_name])->select(['user_id'])->column();
+                        
+        }
+       
+        $searchModel = new UserSearch([
+            'user_ids'=>$user_ids
+        ]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        
         return $this->render('index', [
+            'module_name' => $this->module_name,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -114,7 +140,8 @@ class UserController extends BaseController
         $model = $this->findModel($id);
         if (Yii::$app->request->isPost) {
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            
+            return $this->redirect(['view', 'id' => $model->id,'module_name' => $this->module_name]);
             } else {
                 $msg = ErrorsHelper::getModelError($model);
                 throw new BadRequestHttpException($msg);
@@ -154,8 +181,12 @@ class UserController extends BaseController
      */
     public function actionView($id)
     {
+        $AddonsUser = new AddonsUser([
+            'user_id'=>$id]);
+        $opts = $AddonsUser->getItems();
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'opts' => Json::htmlEncode($opts),
         ]);
     }
 
@@ -171,9 +202,41 @@ class UserController extends BaseController
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index','module_name' => $this->module_name]);
     }
 
+    public function actionAssign($id)
+    {
+        
+        $items = Yii::$app->getRequest()->post('items', []);
+        $model = $this->findModel($id);
+        $success = $model->addChildren($items);
+        Yii::$app->getResponse()->format = 'json';
+
+        $AddonsUser = new AddonsUser([
+            'user_id'=>$id
+        ]);
+        $opts = $AddonsUser->getItems();
+     
+        return array_merge($opts, ['success' => $success]);
+    }
+
+
+    public function actionRemove($id)
+    {
+        
+        $items = Yii::$app->getRequest()->post('items', []);
+        $model = $this->findModel($id);
+        $success = $model->removeChildren($items);
+        Yii::$app->getResponse()->format = 'json';
+
+        $AddonsUser = new AddonsUser([
+            'user_id'=>$id
+        ]);
+        $opts = $AddonsUser->getItems();
+     
+        return array_merge($opts, ['success' => $success]);
+    }
     /**
      * Login.
      *
@@ -317,6 +380,8 @@ class UserController extends BaseController
         return $this->goHome();
     }
 
+
+
     /**
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -330,7 +395,7 @@ class UserController extends BaseController
     protected function findModel($id)
     {
         if (($model = User::findOne($id)) !== null) {
-            return $model;
+            return  $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }

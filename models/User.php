@@ -3,14 +3,15 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:49:05
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-14 10:27:43
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-09 15:41:58
  */
 
 
 namespace diandi\admin\models;
 
 use diandi\admin\components\Configs;
+use diandi\admin\components\Helper;
 use diandi\admin\components\UserStatus;
 use Yii;
 use yii\base\NotSupportedException;
@@ -39,7 +40,11 @@ class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 10;
-
+    
+    public $type;
+    
+    public $user_id;
+    
     /**
      * @inheritdoc
      */
@@ -132,6 +137,53 @@ class User extends ActiveRecord implements IdentityInterface
             'status' => UserStatus::ACTIVE,
         ]);
     }
+
+        
+    public function addChildren($items)
+    {
+        $AddonsUser = new AddonsUser();
+        $success = 0;
+        $user_id = $this->id;
+        $type = $this->type;
+        foreach ($items as $key => $value) {
+            $_AddonsUser= clone $AddonsUser;
+            $_AddonsUser->setAttributes([
+                'type'=>$value=='sys'?0:1,    
+                'module_name'=>$value,    
+                'user_id'=>$user_id,    
+                'status'=>1,
+            ]);
+           $success +=  $_AddonsUser->save();
+        }
+
+        if ($success > 0) {
+            Helper::invalidate();
+        }
+
+        return $success;
+    }
+
+    public function removeChildren($items)
+    {
+        $AddonsUser = new AddonsUser();
+        $success = 0;
+        $user_id = $this->id;
+        $type = $this->type;
+
+        $success +=  $AddonsUser->deleteAll(['module_name'=>$items]);
+
+        if ($success > 0) {
+            Helper::invalidate();
+        }
+
+        return $success;
+    }
+
+    public function getAddonsUser()
+    {
+        return $this->hasMany(AddonsUser::className(),['user_id'=>'id']);
+    }
+
 
     /**
      * Finds out if password reset token is valid

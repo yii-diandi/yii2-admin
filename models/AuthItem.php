@@ -1,4 +1,10 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-03 15:46:52
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-09 22:05:11
+ */
 
 namespace diandi\admin\models;
 
@@ -7,22 +13,9 @@ use diandi\admin\components\Helper;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Json;
-use yii\rbac\Item;
+use diandi\admin\components\Item;
+use diandi\admin\components\Route;
 
-/**
- * This is the model class for table "tbl_auth_item".
- *
- * @property string $name
- * @property integer $type
- * @property string $description
- * @property string $ruleName
- * @property string $data
- *
- * @property Item $item
- *
- * @author Misbahul D Munir <misbahuldmunir@gmail.com>
- * @since 1.0
- */
 class AuthItem extends Model
 {
     public $name;
@@ -30,22 +23,35 @@ class AuthItem extends Model
     public $description;
     public $ruleName;
     public $data;
+    public $parent_id;
+    public $module_name;
+    public $child_type;
+    // 0:路由1权限2用户组
+    public $parent_type;
+    public $parent_name;
+    
     /**
      * @var Item
      */
     private $_item;
 
     /**
-     * Initialize object
+     * Initialize object.
+     *
      * @param Item  $item
      * @param array $config
      */
     public function __construct($item = null, $config = [])
     {
         $this->_item = $item;
+
         if ($item !== null) {
             $this->name = $item->name;
+            $this->parent_id = $item->parent_id;
+            $this->module_name = $item->module_name;
             $this->type = $item->type;
+            $this->child_type = $item->child_type;
+            $this->parent_type = $item->parent_type;
             $this->description = $item->description;
             $this->ruleName = $item->ruleName;
             $this->data = $item->data === null ? null : Json::encode($item->data);
@@ -54,7 +60,7 @@ class AuthItem extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -64,14 +70,15 @@ class AuthItem extends Model
             [['name'], 'checkUnique', 'when' => function () {
                 return $this->isNewRecord || ($this->_item->name != $this->name);
             }],
-            [['type'], 'integer'],
+            [['type', 'child_type'], 'integer'],
+            [['parent_id'], 'checkParent'],
             [['description', 'data', 'ruleName'], 'default'],
-            [['name'], 'string', 'max' => 64],
+            [['name', 'parent_id', 'module_name'], 'string', 'max' => 64],
         ];
     }
 
     /**
-     * Check role is unique
+     * Check role is unique.
      */
     public function checkUnique()
     {
@@ -87,8 +94,9 @@ class AuthItem extends Model
         }
     }
 
+
     /**
-     * Check for rule
+     * Check for rule.
      */
     public function checkRule()
     {
@@ -108,13 +116,28 @@ class AuthItem extends Model
         }
     }
 
+    public function checkParent()
+    {
+        $parent_id = $this->parent_id;
+
+        $manager = Configs::authManager();
+
+        $item = $manager->getPermission($parent_id);
+        if (!$item) {
+            $this->addError('parent_id', Yii::t('rbac-admin', '父级权限 "{value}" 不存在', ['value' => $parent_id]));
+        }
+    }
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
             'name' => Yii::t('rbac-admin', 'Name'),
+            'parent_id' => Yii::t('rbac-admin', 'parent_id'),
+            'parent_name'=> Yii::t('rbac-admin', 'parent_id'),
+            'module_name' => Yii::t('rbac-admin', 'module_name'),
             'type' => Yii::t('rbac-admin', 'Type'),
             'description' => Yii::t('rbac-admin', 'Description'),
             'ruleName' => Yii::t('rbac-admin', 'Rule Name'),
@@ -124,7 +147,8 @@ class AuthItem extends Model
 
     /**
      * Check if is new record.
-     * @return boolean
+     *
+     * @return bool
      */
     public function getIsNewRecord()
     {
@@ -132,9 +156,11 @@ class AuthItem extends Model
     }
 
     /**
-     * Find role
+     * Find role.
+     *
      * @param string $id
-     * @return null|\self
+     *
+     * @return \self|null
      */
     public static function find($id)
     {
@@ -147,25 +173,32 @@ class AuthItem extends Model
     }
 
     /**
-     * Save role to [[\yii\rbac\authManager]]
-     * @return boolean
+     * Save role to [[\yii\rbac\authManager]].
+     *
+     * @return bool
      */
     public function save()
     {
         if ($this->validate()) {
             $manager = Configs::authManager();
             if ($this->_item === null) {
-                if ($this->type == Item::TYPE_ROLE) {
-                    $this->_item = $manager->createRole($this->name);
-                } else {
-                    $this->_item = $manager->createPermission($this->name);
-                }
+                // if ($this->type == Item::TYPE_PERMISSION) {
+                //     $this->_item = $manager->createRole($this->name);
+                // } else {
+                //     $this->_item = $manager->createPermission($this->name);
+                // }
+                $this->_item = $manager->createPermission($this->name);
+
                 $isNew = true;
             } else {
                 $isNew = false;
                 $oldName = $this->_item->name;
             }
+
             $this->_item->name = $this->name;
+            $this->_item->type = $this->type;
+            $this->_item->module_name = $this->module_name;
+            $this->_item->parent_id = $this->parent_id?$this->parent_id:0;
             $this->_item->description = $this->description;
             $this->_item->ruleName = $this->ruleName;
             $this->_item->data = $this->data === null || $this->data === '' ? null : Json::decode($this->data);
@@ -175,6 +208,7 @@ class AuthItem extends Model
                 $manager->update($oldName, $this->_item);
             }
             Helper::invalidate();
+
             return true;
         } else {
             return false;
@@ -183,36 +217,65 @@ class AuthItem extends Model
 
     /**
      * Adds an item as a child of another item.
+     *
      * @param array $items
+     *
      * @return int
      */
-    public function addChildren($items)
+    public function addChildren($items,$parent_type=1)
     {
         $manager = Configs::authManager();
         $success = 0;
         if ($this->_item) {
-            foreach ($items as $name) {
-                $child = $manager->getPermission($name);
-                if ($this->type == Item::TYPE_ROLE && $child === null) {
-                    $child = $manager->getRole($name);
-                }
-                try {
-                    $manager->addChild($this->_item, $child);
-                    $success++;
-                } catch (\Exception $exc) {
-                    Yii::error($exc->getMessage(), __METHOD__);
+            if ($items['route']) {
+                foreach ($items['route'] as $name) {
+                    $child = $manager->getRoutePermission($name,$this->parent_type);
+                    try {
+                        $manager->addChild($this->_item, $child);
+                        ++$success;
+                    } catch (\Exception $exc) {
+                        p($exc->getMessage());
+                        Yii::error($exc->getMessage(), __METHOD__);
+                    }
                 }
             }
+
+            if ($items['permission']) {
+                foreach ($items['permission'] as $name) {
+                    $child = $manager->getPermission($name);
+                    $child->parent_type = $parent_type;
+                    try {
+                        $manager->addChild($this->_item, $child);
+                        ++$success;
+                    } catch (\Exception $exc) {
+                        Yii::error($exc->getMessage(), __METHOD__);
+                    }
+                }
+            }
+            // foreach ($items as $name) {
+            //     $child = $manager->getPermission($name);
+
+            //     try {
+            //         $manager->addChild($this->_item, $child);
+            //         ++$success;
+            //     } catch (\Exception $exc) {
+            //         print_r($exc->getMessage());
+            //         Yii::error($exc->getMessage(), __METHOD__);
+            //     }
+            // }
         }
         if ($success > 0) {
             Helper::invalidate();
         }
+
         return $success;
     }
 
     /**
      * Remove an item as a child of another item.
+     *
      * @param array $items
+     *
      * @return int
      */
     public function removeChildren($items)
@@ -220,34 +283,48 @@ class AuthItem extends Model
         $manager = Configs::authManager();
         $success = 0;
         if ($this->_item !== null) {
-            foreach ($items as $name) {
-                $child = $manager->getPermission($name);
-                if ($this->type == Item::TYPE_ROLE && $child === null) {
-                    $child = $manager->getRole($name);
+            if ($items['route']) {
+                foreach ($items['route'] as $name) {
+                    $child = $manager->getRoutePermission($name);
+
+                    try {
+                        $manager->removeChild($this->_item, $child);
+                        ++$success;
+                    } catch (\Exception $exc) {
+                        Yii::error($exc->getMessage(), __METHOD__);
+                    }
                 }
-                try {
-                    $manager->removeChild($this->_item, $child);
-                    $success++;
-                } catch (\Exception $exc) {
-                    Yii::error($exc->getMessage(), __METHOD__);
+            }
+
+            if ($items['permission']) {
+                foreach ($items['permission'] as $name) {
+                    $child = $manager->getPermission($name);
+                    try {
+                        $manager->removeChild($this->_item, $child);
+                        ++$success;
+                    } catch (\Exception $exc) {
+                        Yii::error($exc->getMessage(), __METHOD__);
+                    }
                 }
             }
         }
         if ($success > 0) {
             Helper::invalidate();
         }
+
         return $success;
     }
 
     /**
-     * Get items
+     * Get items.
+     *
      * @return array
      */
     public function getItems()
     {
         $manager = Configs::authManager();
         $available = [];
-        if ($this->type == Item::TYPE_ROLE) {
+        if ($this->type == Item::TYPE_PERMISSION) {
             foreach (array_keys($manager->getRoles()) as $name) {
                 $available[$name] = 'role';
             }
@@ -255,13 +332,24 @@ class AuthItem extends Model
         foreach (array_keys($manager->getPermissions()) as $name) {
             $available[$name] = $name[0] == '/' ? 'route' : 'permission';
         }
-
+        // 路由授权
+        foreach (array_keys($manager->getRoutes(Route::TYPE_ROLE)) as $name) {
+            $available[$name] = 'route';
+        }
         $assigned = [];
+
         foreach ($manager->getChildren($this->_item->name) as $item) {
             $assigned[$item->name] = $item->type == 1 ? 'role' : ($item->name[0] == '/' ? 'route' : 'permission');
             unset($available[$item->name]);
         }
+
+        foreach ($manager->getItemChildren($this->_item->name) as $item) {
+            $child_type = ['route', 'permission', 'role'];
+            $assigned[$item->name] = $child_type[$item->child_type];
+            unset($available[$item->name]);
+        }
         unset($available[$this->name]);
+
         return [
             'available' => $available,
             'assigned' => $assigned,
@@ -269,7 +357,8 @@ class AuthItem extends Model
     }
 
     /**
-     * Get item
+     * Get item.
+     *
      * @return Item
      */
     public function getItem()
@@ -278,15 +367,16 @@ class AuthItem extends Model
     }
 
     /**
-     * Get type name
-     * @param  mixed $type
+     * Get type name.
+     *
+     * @param mixed $type
+     *
      * @return string|array
      */
     public static function getTypeName($type = null)
     {
         $result = [
             Item::TYPE_PERMISSION => 'Permission',
-            Item::TYPE_ROLE => 'Role',
         ];
         if ($type === null) {
             return $result;

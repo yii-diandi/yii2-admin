@@ -2,8 +2,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 03:21:27
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-03-28 09:55:03
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-06 22:32:15
  */
  
 
@@ -118,18 +118,17 @@ class Helper
             return true;
         }
 
-
+       
         if ($user === null) {
             $user = Yii::$app->getUser();
         }
         $userId = $user instanceof User ? $user->getId() : $user;
-     
         
         if ($config->strict) {
-            
             if ($user->can($r, $params)) {
                 return true;
             }
+
             while (($pos = strrpos($r, '/')) > 0) {
                 $r = substr($r, 0, $pos);
                 if ($user->can($r . '/*', $params)) {

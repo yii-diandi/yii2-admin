@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'update_time',
             //'icon',
 
-                    ['class' => 'yii\grid\ActionColumn'],
+                    ['class' => 'common\components\ActionColumn'],
                     ],
                     ]); ?>
                 

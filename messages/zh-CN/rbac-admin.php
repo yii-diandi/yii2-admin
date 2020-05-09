@@ -3,8 +3,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 14:07:51
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-12 14:07:51
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-09 20:15:58
  */
 
 
@@ -75,4 +75,7 @@ return [
     'Help' => '帮助',
     'Application' => '应用',
     'Signup' => '添加',
+    'parent_id'=>'父级权限',
+    'module_name'=>'模块',
+    'Are you sure you want to activate this user?'=>'您确定要激活此用户吗?'
 ];

@@ -3,8 +3,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 11:05:44
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-14 10:48:53
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-09 10:20:39
  */
 
 use common\helpers\ImageHelper;
@@ -21,17 +21,9 @@ $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' 
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 
-<ul class="nav nav-tabs">
-    <li>
-        <?= Html::a('管理员管理', ['index'], ['class' => '']) ?>
-    </li>
-    <li>
-        <?= Html::a('添加管理员', ['create'], ['class' => '']) ?>
-    </li>
-    <li class="active">
-        <?= Html::a('个人资料', ['update', 'id' => $model->id], ['class' => '']) ?>
-    </li>
-</ul>
+<?= $this->render('_tab', [
+                    'model' => $model,
+                ]) ?>
 <div class="firetech-main">
     <div class="panel panel-default">
         <div class="box-body">

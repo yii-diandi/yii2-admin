@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-03 15:13:05
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-03 15:36:46
+ */
+ 
 
 use diandi\admin\AnimateAsset;
 use yii\helpers\Html;
@@ -25,17 +32,13 @@ $this->registerJs("var _opts = {$opts};");
 $this->registerJs($this->render('_script.js'));
 $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i>';
 ?>
+
+<?= $this->render('_tab'); ?>
+
+<div class="firetech-main">
+
 <div class="auth-item-view">
-    <h1><?=Html::encode($this->title);?></h1>
-    <p>
-        <?=Html::a(Yii::t('rbac-admin', 'Update'), ['update', 'id' => $model->name], ['class' => 'btn btn-primary']);?>
-        <?=Html::a(Yii::t('rbac-admin', 'Delete'), ['delete', 'id' => $model->name], [
-    'class' => 'btn btn-danger',
-    'data-confirm' => Yii::t('rbac-admin', 'Are you sure to delete this item?'),
-    'data-method' => 'post',
-]);?>
-        <?=Html::a(Yii::t('rbac-admin', 'Create'), ['create'], ['class' => 'btn btn-success']);?>
-    </p>
+
     <div class="row">
         <div class="col-sm-11">
             <?=
@@ -77,4 +80,5 @@ DetailView::widget([
             <select multiple size="20" class="form-control list" data-target="assigned"></select>
         </div>
     </div>
+</div>
 </div>

@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-04 20:13:21
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-04 20:53:42
+ */
+ 
 
 namespace diandi\admin;
 
@@ -51,6 +58,8 @@ class Module extends \yii\base\Module
      * Its used when `layout` set to 'left-menu', 'right-menu' or 'top-menu'.
      */
     public $mainLayout = '@diandi/admin/views/layouts/main.php';
+   
+   
     /**
      * @var array
      * @see [[menus]]
@@ -90,6 +99,7 @@ class Module extends \yii\base\Module
      */
     public function init()
     {
+        
         parent::init();
         if (!isset(Yii::$app->i18n->translations['rbac-admin'])) {
             Yii::$app->i18n->translations['rbac-admin'] = [
@@ -100,12 +110,12 @@ class Module extends \yii\base\Module
         }
 
         //user did not define the Navbar?
-        if ($this->navbar === null && Yii::$app instanceof \yii\web\Application) {
-            $this->navbar = [
-                ['label' => Yii::t('rbac-admin', 'Help'), 'url' => ['default/index']],
-                ['label' => Yii::t('rbac-admin', 'Application'), 'url' => Yii::$app->homeUrl],
-            ];
-        }
+        // if ($this->navbar === null && Yii::$app instanceof \yii\web\Application) {
+        //     $this->navbar = [
+        //         ['label' => Yii::t('rbac-admin', 'Help'), 'url' => ['default/index']],
+        //         ['label' => Yii::t('rbac-admin', 'Application'), 'url' => Yii::$app->homeUrl],
+        //     ];
+        // }
         if (class_exists('yii\jui\JuiAsset')) {
             Yii::$container->set('diandi/admin\AutocompleteAsset', 'yii\jui\JuiAsset');
         }
@@ -117,6 +127,7 @@ class Module extends \yii\base\Module
      */
     public function getMenus()
     {
+
         if ($this->_normalizeMenus === null) {
             $mid = '/' . $this->getUniqueId() . '/';
             // resolve core menus
