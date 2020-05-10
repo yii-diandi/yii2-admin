@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-10 16:06:49
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-10 16:18:28
+ */
+ 
 
 use yii\helpers\Html;
 
@@ -9,9 +16,15 @@ $this->title = Yii::t('rbac-admin', 'Create Rule');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('rbac-admin', 'Rules'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+ <?=
+    $this->render('_tab', [
+        'model' => $model,
+    ]);
+    ?>
+<div class="firetech-main">
+
 <div class="auth-item-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?=
     $this->render('_form', [
@@ -19,4 +32,5 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
     ?>
 
+</div>
 </div>

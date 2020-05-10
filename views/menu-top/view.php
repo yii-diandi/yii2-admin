@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-10 16:24:51
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-10 16:26:03
+ */
+ 
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -11,17 +18,10 @@ $this->params['breadcrumbs'][] = ['label' => '顶部导航s', 'url' => ['index']
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<ul class="nav nav-tabs">
-    <li>
-        <?= Html::a('添加顶部导航', ['create'], ['class' => '']) ?>
-    </li>
-    <li>
-        <?= Html::a('顶部导航管理', ['index'], ['class' => '']) ?>
-    </li>
-    <li class="active">
-        <?= Html::a('顶部导航管理', ['view'], ['class' => '']) ?>
-    </li>
-</ul>
+
+<?= $this->render('_tab', [
+                    'model' => $model,
+                ]) ?>
 <div class=" firetech-main">
     <div class="menu-top-view">
 
@@ -43,13 +43,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'model' => $model,
                 'attributes' => [
                             'id',
-            'name',
-            'mark',
-            'sort',
-            'create_time',
-            'update_time',
-            'icon',
-                ],
+                            'name',
+                            'mark',
+                            'sort',
+                            'create_time',
+                            'update_time',
+                            'icon',
+                                ],
                 ]) ?>
 
             </div>

@@ -3,7 +3,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 13:12:18
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-04 23:27:40
+ * @Last Modified time: 2020-05-10 16:57:45
  */
  
 
@@ -24,9 +24,6 @@ class RouteController extends BaseController
 {
     public function behaviors()
     {
-        
-        Yii::$app->params['plugins'] = 'sysai';
-
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),

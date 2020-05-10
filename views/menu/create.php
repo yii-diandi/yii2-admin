@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-10 17:01:12
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-10 17:04:48
+ */
+ 
 
 use yii\helpers\Html;
 
@@ -10,8 +17,9 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('rbac-admin', 'Menus'), 'url
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="menu-create">
+<?=  $this->render('_tab');   ?>
+<div class="firetech-main">
 
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?=
         $this->render('_form', [
@@ -20,4 +28,5 @@ $this->params['breadcrumbs'][] = $this->title;
         ])
     ?>
 
+</div>
 </div>

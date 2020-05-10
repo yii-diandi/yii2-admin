@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-10 16:03:47
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-10 16:12:36
+ */
+ 
 
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -14,25 +21,29 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="role-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('rbac-admin', 'Create Rule'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+<?=
+    $this->render('_tab', [
+        'model' => $model,
+    ]);
+    ?>
+<div class="firetech-main">
 
     <?=
     GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'layout' => "{items}\n{pager}",
+
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
                 'attribute' => 'name',
                 'label' => Yii::t('rbac-admin', 'Name'),
             ],
-            ['class' => 'yii\grid\ActionColumn',],
+            ['class' => 'common\components\ActionColumn',],
         ],
     ]);
     ?>
 
+</div>
 </div>

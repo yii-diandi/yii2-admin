@@ -3,8 +3,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 12:27:30
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-13 16:24:59
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-10 17:16:20
  */
 
 
@@ -154,7 +154,7 @@ class Menu extends \yii\db\ActiveRecord
     {
         if (self::$_routes === null) {
             self::$_routes = [];
-            foreach (Configs::authManager()->getPermissions() as $name => $value) {
+            foreach (Configs::authManager()->getRoutePermissions() as $name => $value) {
                 if ($name[0] === '/' && substr($name, -1) != '*') {
                     self::$_routes[] = $name;
                 }

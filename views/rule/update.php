@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-10 16:07:21
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-10 16:11:08
+ */
+ 
 
 use yii\helpers\Html;
 
@@ -12,10 +19,17 @@ $this->params['breadcrumbs'][] = Yii::t('rbac-admin', 'Update');
 ?>
 <div class="auth-item-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<?=
+    $this->render('_tab', [
+        'model' => $model,
+    ]);
+    ?>
+<div class="firetech-main">
+
     <?=
     $this->render('_form', [
         'model' => $model,
     ]);
     ?>
+</div>
 </div>

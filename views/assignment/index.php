@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-09 08:38:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 09:09:29
+ * @Last Modified time: 2020-05-10 16:02:31
  */
  
 
@@ -37,25 +37,38 @@ $columns[] = [
         {
             case'view':
             
-            return Url::to(['view','id'=>$model->id,'module_name'=>$module_name]);
+                return Url::to(['view','id'=>$model->id,'module_name'=>$module_name]);
             
             break;
         }
-    }
+    },
+    
 ];
 ?>
 <div class="assignment-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <?php Pjax::begin(); ?>
-    <?=
-    GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => $columns,
-    ]);
-    ?>
-    <?php Pjax::end(); ?>
+    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+   
+    
+    <div class="panel panel-default">
+          <div class="panel-heading">
+                <h3 class="panel-title">管理员列表</h3>
+          </div>
+          <div class="panel-body">
+                
+            <?php Pjax::begin(); ?>
+                <?=
+                GridView::widget([
+                    'layout'=>"{items}\n{pager}",
+                    'dataProvider' => $dataProvider,
+                    // 'filterModel' => $searchModel,
+                    'columns' => $columns,
+                    
+                ]);
+                ?>
+            <?php Pjax::end(); ?>
+          </div>
+    </div>
+    
+    
 
 </div>

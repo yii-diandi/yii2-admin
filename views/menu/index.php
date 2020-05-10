@@ -2,8 +2,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 16:18:52
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-03-28 17:49:27
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-10 17:05:28
  */
  
 
@@ -22,14 +22,19 @@ $this->title = Yii::t('rbac-admin', 'Menus');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="menu-index">
+<?=  $this->render('_tab');   ?>
+<div class="firetech-main">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]);  
+    <?= $this->render('_search', ['model' => $searchModel]);  
     ?>
 
-    <p>
-        <?= Html::a(Yii::t('rbac-admin', 'Create Menu'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+<div class="panel panel-default">
+      <div class="panel-heading">
+            <h3 class="panel-title">菜单列表</h3>
+      </div>
+      <div class="panel-body">
+         
+
     <?= TreeGrid::widget([
         'dataProvider' => $dataProvider,
         'keyColumnName' => 'id',
@@ -60,5 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     ?>
 
-
+      </div>
+</div>
+</div>
 </div>

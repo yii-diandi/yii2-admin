@@ -2,13 +2,13 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 14:54:57
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-03-28 14:54:57
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-10 16:29:21
  */
  
 
 use yii\helpers\Html;
-use common\widgets\MyActiveForm;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model diandi\admin\models\MenuTop */
@@ -17,15 +17,17 @@ use common\widgets\MyActiveForm;
 
 <div class="menu-top-form">
 
-    <?php $form = MyActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'mark')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'sort')->textInput() ?>
-
-    <?= $form->field($model, 'icon')->textInput(['maxlength' => true]) ?>
+    
+    <?= $form->field($model, 'icon')->widget('diandi\adminlte\widgets\icon', ['options' => [
+                'label' => '选择图标',
+            ]]); ?>
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
@@ -33,6 +35,6 @@ use common\widgets\MyActiveForm;
         </div>
     </div>
 
-    <?php MyActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>

@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-10 16:07:33
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-10 16:12:53
+ */
+ 
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -12,8 +19,12 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('rbac-admin', 'Rules'), 'url
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="auth-item-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+<?=
+    $this->render('_tab', [
+        'model' => $model,
+    ]);
+    ?>
+<div class="firetech-main">
 
     <p>
         <?= Html::a(Yii::t('rbac-admin', 'Update'), ['update', 'id' => $model->name], ['class' => 'btn btn-primary']) ?>
@@ -29,10 +40,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
     echo DetailView::widget([
         'model' => $model,
+
         'attributes' => [
             'name',
             'className',
         ],
     ]);
     ?>
+</div>
 </div>

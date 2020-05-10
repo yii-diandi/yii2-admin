@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-05-10 17:01:21
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-10 17:04:38
+ */
+ 
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -12,7 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="menu-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<?=  $this->render('_tab');   ?>
+<div class="firetech-main">
 
     <p>
         <?= Html::a(Yii::t('rbac-admin', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -39,4 +47,5 @@ $this->params['breadcrumbs'][] = $this->title;
     ])
     ?>
 
+</div>
 </div>
