@@ -3,9 +3,10 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-09 08:38:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-10 18:38:25
+ * @Last Modified time: 2020-05-10 18:48:48
  */
 
+use common\addons\diandi_store\models\store;
 use diandi\admin\models\Bloc;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -21,9 +22,7 @@ use yii\widgets\Pjax;
 $this->title = Yii::t('rbac-admin', 'Assignments');
 $this->params['breadcrumbs'][] = $this->title;
 $Bloc = new Bloc();
-$blocs = $Bloc->find()->indexBy('bloc_id')->asArray()->all();
-$Bloc = new Bloc();
-$blocs = $Bloc->find()->indexBy('bloc_id')->asArray()->all();
+$blocs = $Bloc->find()->select(['business_name'])->indexBy('bloc_id')->column();
 $columns = [
     ['class' => 'yii\grid\SerialColumn'],
     $usernameField,
@@ -38,16 +37,6 @@ $columns = [
             }
         },
         
-    ],
-    [
-         'attribute' => 'store_id',
-        'value' => function ($model) use ($stores) {
-            if($model->store_id){
-                return $stores[$model->store_id];                
-            }else{
-                return '未分配';
-            }
-        },
     ],
 ];
 if (!empty($extraColumns)) {
