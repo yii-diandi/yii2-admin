@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:06:25
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-11 15:07:37
+ * @Last Modified time: 2020-05-13 09:05:28
  */
  
 
@@ -20,6 +20,8 @@ class BlocStoreSearch extends BlocStore
 {
     public $bloc_id;
 
+    public $extra;
+    
     public function __construct($items=null)
     {
         if($items['bloc_id']){
