@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:03:01
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-08 23:56:04
+ * @Last Modified time: 2020-05-12 07:17:57
  */
 
 namespace diandi\admin\components;
@@ -20,6 +20,7 @@ use yii\web\NotFoundHttpException;
 use yii\base\NotSupportedException;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
+use yii\web\HttpException;
 
 /**
  * AuthItemController implements the CRUD actions for AuthItem model.
@@ -143,10 +144,16 @@ class ItemController extends Controller
         $model = $this->findModel($id);
         $module_name = $this->module_name;
 
-        if ($model->load(Yii::$app->getRequest()->post()) && $model->save()) {
-             return $this->redirect(['view', 'id' => $model->name,'module_name'=>$module_name]);
+        if(yii::$app->request->isPost){
+            
+            if ($model->load(Yii::$app->getRequest()->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->name,'module_name'=>$module_name]);
 
+            }else{
+                throw new HttpException('400',ErrorsHelper::getModelError($model));
+            }
         }
+
         $addons = DdAddons::find()->asArray()->all();
 
         return $this->render('update', [

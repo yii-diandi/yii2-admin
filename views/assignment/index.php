@@ -3,11 +3,10 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-09 08:38:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-10 18:48:48
+ * @Last Modified time: 2020-05-10 16:02:31
  */
+ 
 
-use common\addons\diandi_store\models\store;
-use diandi\admin\models\Bloc;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -21,23 +20,10 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('rbac-admin', 'Assignments');
 $this->params['breadcrumbs'][] = $this->title;
-$Bloc = new Bloc();
-$blocs = $Bloc->find()->select(['business_name'])->indexBy('bloc_id')->column();
+
 $columns = [
     ['class' => 'yii\grid\SerialColumn'],
     $usernameField,
-    'email',
-    [
-        'attribute' => 'bloc_id',
-        'value' => function ($model) use ($blocs) {
-            if($model->bloc_id){
-                return $blocs[$model->bloc_id];                
-            }else{
-                return '未分配';
-            }
-        },
-        
-    ],
 ];
 if (!empty($extraColumns)) {
     $columns = array_merge($columns, $extraColumns);
@@ -46,13 +32,17 @@ $columns[] = [
     'class' => 'common\components\ActionColumn',
 //    'class' => 'yii\grid\ActionColumn',
     'template' => '{view}',
-    'buttons' => [
-        'view' => function ($url, $model, $key) use ($module_name) {
-            $url = Url::to(['view','id'=>$model->id,'module_name'=>$module_name]);
+    'urlCreator'=>function($action,$model,$key,$index) use ($module_name){
+        switch($action)
+        {
+            case'view':
             
-            return  Html::a('<button type="button" class="btn btn-primary btn-sm">权限分配</button>', $url, ['title' => '权限分配']);
-        },
-    ],
+                return Url::to(['view','id'=>$model->id,'module_name'=>$module_name]);
+            
+            break;
+        }
+    },
+    
 ];
 ?>
 <div class="assignment-index">

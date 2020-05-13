@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 21:44:22
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-01 19:37:11
+ * @Last Modified time: 2020-05-11 15:52:31
  */
 use common\helpers\LevelTplHelper;
 use common\models\DdRegion;
@@ -38,7 +38,7 @@ $Helper = new LevelTplHelper([
             'prompt' => ['text' => '所属集团', 'options' => ['value' => 0]],
         ]); ?>
 
-
+            
         <?= $form->field($model, 'province')->dropDownList($Helper->courseCateMap(), [
             'prompt' => ['text' => '一级分类', 'options' => ['value' => 0]],
             'label' => '一级分类',
@@ -88,6 +88,7 @@ $Helper = new LevelTplHelper([
             2 => '审核中',
             3 => '审核未通过',
         ]); ?>
+        
         <?= $form->field($model, 'license_no')->textInput(['maxlength' => true]); ?>
 
         <?= $form->field($model, 'license_name')->textInput(['maxlength' => true]); ?>

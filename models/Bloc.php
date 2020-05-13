@@ -3,13 +3,12 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 22:40:56
- * @Last Modified by:   Wang chunsheng  <2192138785@qq.com>
- * @Last Modified time: 2020-04-29 16:38:33
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-05-12 21:11:32
  */
 
 
 namespace diandi\admin\models;
-
 
 use Yii;
 
@@ -72,6 +71,16 @@ class Bloc extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getStore()
+    {
+        return $this->hasMany(BlocStore::className(),['bloc_id'=>'bloc_id']);
+    }
+
+    
+    public function getUserBloc()
+    {
+        return $this->hasMany(UserBloc::className(),['bloc_id'=>'bloc_id']);
+    }
     
 
     /**

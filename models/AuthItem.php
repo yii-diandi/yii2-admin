@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 22:05:11
+ * @Last Modified time: 2020-05-10 23:55:35
  */
 
 namespace diandi\admin\models;
@@ -119,13 +119,14 @@ class AuthItem extends Model
     public function checkParent()
     {
         $parent_id = $this->parent_id;
-
-        $manager = Configs::authManager();
-
-        $item = $manager->getPermission($parent_id);
-        if (!$item) {
-            $this->addError('parent_id', Yii::t('rbac-admin', '父级权限 "{value}" 不存在', ['value' => $parent_id]));
+        if($parent_id){
+            $manager = Configs::authManager();
+            $item = $manager->getPermission($parent_id);
+            if (!$item) {
+                $this->addError('parent_id', Yii::t('rbac-admin', '父级权限 "{value}" 不存在', ['value' => $parent_id]));
+            } 
         }
+       
     }
 
     /**

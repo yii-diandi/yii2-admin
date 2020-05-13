@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 22:33:08
+ * @Last Modified time: 2020-05-11 00:04:09
  */
 
 namespace diandi\admin\components;
@@ -1065,8 +1065,8 @@ class DbManager extends \yii\rbac\DbManager
         if ((property_exists($item, 'ruleName') && $item->ruleName === null) || !property_exists($item, 'ruleName')) {
             return true;
         }
-
         $rule = $this->getRule($item->ruleName);
+        
         if ($rule instanceof Rule) {
             return $rule->execute($user, $item, $params);
         }
