@@ -36,7 +36,7 @@ class StoreController extends BaseController
         $this->bloc_id = Yii::$app->request->get('bloc_id',0);
         $actions = parent::actions();
         $actions['get-region'] = [
-            'class' => \chenkby\region\RegionAction::className(),
+            'class' => \diandi\region\RegionAction::className(),
             'model' => DdRegion::className()
         ];
         return $actions;

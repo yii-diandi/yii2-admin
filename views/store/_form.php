@@ -39,7 +39,7 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
-    <?= $form->field($model, '地区')->widget(\chenkby\region\Region::className(), [
+    <?= $form->field($model, '地区')->widget(\diandi\region\Region::className(), [
         'model'=>$model,
         'url'=> \yii\helpers\Url::toRoute(['get-region']),
         'province'=>[
