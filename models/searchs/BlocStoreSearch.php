@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:06:25
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-13 09:05:28
+ * @Last Modified time: 2020-05-15 21:58:07
  */
  
 
@@ -36,7 +36,7 @@ class BlocStoreSearch extends BlocStore
     {
         return [
             [['store_id', 'bloc_id', 'status'], 'integer'],
-            [['name', 'thumb', 'images', 'province', 'city', 'address', 'county', 'mobile', 'create_time', 'update_time', 'lng_lat'], 'safe'],
+            [['name', 'logo', 'province', 'city', 'address', 'county', 'mobile', 'create_time', 'update_time', 'lng_lat'], 'safe'],
         ];
     }
 
@@ -58,7 +58,7 @@ class BlocStoreSearch extends BlocStore
      */
     public function search($params)
     {
-        $query = BlocStore::find();
+        $query = BlocStore::find()->with(['bloc']);
 
         // add conditions that should always apply here
 
@@ -82,8 +82,7 @@ class BlocStoreSearch extends BlocStore
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'thumb', $this->thumb])
-            ->andFilterWhere(['like', 'images', $this->images])
+            ->andFilterWhere(['like', 'logo', $this->logo])
             ->andFilterWhere(['like', 'province', $this->province])
             ->andFilterWhere(['like', 'city', $this->city])
             ->andFilterWhere(['like', 'address', $this->address])

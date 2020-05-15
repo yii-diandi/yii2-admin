@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 16:05:29
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-12 13:07:57
+ * @Last Modified time: 2020-05-15 21:47:59
  */
  
 
@@ -16,8 +16,6 @@ use Yii;
  *
  * @property int $store_id 商户id
  * @property string|null $name 门店名称
- * @property string|null $thumb
- * @property string|null $images
  * @property int|null $bloc_id 关联公司
  * @property string|null $province 省份
  * @property string|null $city 城市
@@ -56,9 +54,7 @@ class BlocStore extends \yii\db\ActiveRecord
     public function beforeValidate()
     {
         if (parent::beforeValidate()) {
-            if($this->images){
-                $this->images = serialize($this->images);            
-            }
+        
     
             if($this->extra){
                 $this->extra = serialize($this->extra);
@@ -75,6 +71,11 @@ class BlocStore extends \yii\db\ActiveRecord
         return $this->extra;
     }
     
+
+    public function getBloc()
+    {
+        return $this->hasOne(bloc::className(),['bloc_id'=>'bloc_id']);
+    }
     
 
     /**
@@ -83,9 +84,8 @@ class BlocStore extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['images'], 'string'],
             [['bloc_id', 'status'], 'integer'],
-            [['name', 'thumb', 'address'], 'string', 'max' => 255],
+            [['name', 'logo', 'address'], 'string', 'max' => 255],
             [['province', 'city', 'county'], 'string', 'max' => 10],
             [['mobile'], 'string', 'max' => 11],
             [['extra'], 'string'],
@@ -102,15 +102,14 @@ class BlocStore extends \yii\db\ActiveRecord
             'store_id' => '商户id',
             'name' => '商户名称',
             'extra'=>'扩展资料',
-            'thumb' => '商户主图',
-            'images' => '商户相册',
+            'logo' => '商户LOGO',
             'bloc_id' => '关联公司',
             'province' => '省份',
             'city' => '城市',
             'address' => '详细地址',
             'county' => '区县',
             'mobile' => '联系电话',
-            'create_time' => 'Create Time',
+            'create_time' => '添加时间',
             'update_time' => 'Update Time',
             'status' => '审核状态',
             'lng_lat' => '经纬度',

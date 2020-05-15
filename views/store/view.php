@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 21:18:31
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-11 21:33:57
+ * @Last Modified time: 2020-05-15 22:02:15
  */
  
 
@@ -44,13 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'store_id',
                     'name',
                     [
-                        'attribute' => 'thumb',
-                        'value' => function ($date) {
-                            return html::img($date->thumb);
-                        },
-                    ],
-                    [
-                        'attribute' => 'images',
+                        'attribute' => 'logo',
                         'value' => function ($date) {
                             return html::img($date->thumb);
                         },

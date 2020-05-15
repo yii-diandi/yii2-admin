@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:15:03
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-11 18:54:44
+ * @Last Modified time: 2020-05-15 21:41:18
  */
 
 use common\models\DdRegion;
@@ -25,16 +25,10 @@ use yii\widgets\ActiveForm;
     )) ?>
     
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'thumb')->widget('manks\FileInput', [])->hint('尺寸：500px*500px'); ?>
     
-    <?= $form->field($model, 'images')->widget('manks\FileInput', [
-        'clientOptions' => [
-            'pick' => [
-                'multiple' => true,
-            ],
-        ]])->hint('尺寸：375px*500px'); 
-    ?>
+  
     <?= $form->field($model, 'lng_lat')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'logo')->widget('manks\FileInput', [])->hint('尺寸：500px*500px'); ?>
         
     </div>
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -56,7 +50,6 @@ use yii\widgets\ActiveForm;
             'options'=>[
                 'class'=>'form-control form-control-inline',
                 'prompt'=>'选择城市',
-                'style'=>'margin-top:10px;'
             ]
         ],
         'district'=>[
@@ -65,7 +58,6 @@ use yii\widgets\ActiveForm;
             'options'=>[
                 'class'=>'form-control form-control-inline',
                 'prompt'=>'选择县/区',
-                'style'=>'margin-top:10px;'
                 
             ]
         ]
