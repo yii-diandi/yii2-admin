@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 16:05:29
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-15 21:47:59
+ * @Last Modified time: 2020-05-16 16:27:08
  */
  
 
@@ -74,7 +74,7 @@ class BlocStore extends \yii\db\ActiveRecord
 
     public function getBloc()
     {
-        return $this->hasOne(bloc::className(),['bloc_id'=>'bloc_id']);
+        return $this->hasOne(Bloc::className(),['bloc_id'=>'bloc_id']);
     }
     
 
