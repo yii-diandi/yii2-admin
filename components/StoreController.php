@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:07:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-15 21:57:35
+ * @Last Modified time: 2020-05-16 14:07:30
  */
  
 
@@ -85,9 +85,8 @@ class StoreController extends BaseController
     public function actionView($id)
     {
         $model = $this->findModel($id); 
-        $model['thumb'] = ImageHelper::tomedia($model['thumb']);
+        $model['logo'] = ImageHelper::tomedia($model['logo']);
         $model['extra'] = unserialize($model['extra']);
-        $model['images'] = ImageHelper::tomedia(unserialize($model['images']));
         return $this->render('view', [
             'model' => $model,
         ]);
