@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 20:53:43
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 20:54:03
+ * @Last Modified time: 2020-05-17 09:00:11
  */
 
 /***
@@ -27,7 +27,7 @@ $this->title = Yii::t('app', '小程序设置');
 ?>
 
 
-<?php echo $this->renderAjax('table'); ?>
+<?php echo $this->renderAjax('_tab'); ?>
 
 <div class="firetech-main"  style="margin-top:20px;">
     <div class="panel panel-default">

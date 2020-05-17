@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-14 01:26:18
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 20:54:14
+ * @Last Modified time: 2020-05-17 09:00:07
  */
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -17,7 +17,7 @@ $this->title = Yii::t('app', '小程序设置');
 ?>
 
 
-<?php echo $this->renderAjax('table'); ?>
+<?php echo $this->renderAjax('_tab'); ?>
 
 <div class="firetech-main" style="margin-top:20px;">
     <div class="panel panel-default">

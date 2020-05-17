@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 16:23:11
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 20:10:18
+ * @Last Modified time: 2020-05-17 08:49:26
  */
 
 namespace diandi\admin\controllers;
@@ -12,6 +12,7 @@ use backend\controllers\BaseController;
 use diandi\admin\models\Bloc;
 use diandi\admin\models\form\Baidu;
 use diandi\admin\models\form\Email;
+use diandi\admin\models\form\Map;
 use diandi\admin\models\form\Sms;
 use diandi\admin\models\form\Wechatpay;
 use diandi\admin\models\form\Wxapp;
@@ -126,6 +127,25 @@ class SettingController extends BaseController
         }
 
         return $this->render('wxapp', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionMap()
+    {
+        $model = new Map();
+        $bloc_id = Yii::$app->request->get('bloc_id');
+        if (Yii::$app->request->isPost) {
+            if ($model->load(Yii::$app->request->post()) && $model->saveConf($bloc_id)) {
+                Yii::$app->session->setFlash('success', '保持成功');
+            } else {
+                Yii::$app->session->setFlash('success', '保持失败');
+            }
+        } else {
+            $model->getConf($bloc_id);
+        }
+
+        return $this->render('map', [
             'model' => $model,
         ]);
     }

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 20:45:36
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 20:51:32
+ * @Last Modified time: 2020-05-17 08:59:55
  */
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -13,7 +13,7 @@ use yii\widgets\ActiveForm;
 /* @var $model common\models\forms\Email */
 /* @var $form ActiveForm */
 ?>
-<?php echo $this->renderAjax('table'); ?>
+<?php echo $this->renderAjax('_tab'); ?>
 
 <div class="firetech-main"  style="margin-top:20px;">
     <div class="panel panel-default">
