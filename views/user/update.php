@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 11:05:44
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 10:20:39
+ * @Last Modified time: 2020-05-19 07:08:21
  */
 
 use common\helpers\ImageHelper;
@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
                                 <h3 class="profile-username text-center"><?= $model['username'] ?></h3>
 
-                                <p class="text-muted text-center"><?= implode('/', $assign['role']);  ?></p>
+                                <p class="text-muted text-center"><?= empty($assign['role'])?'':implode('/', $assign['role']);  ?></p>
 
                                 <ul class="list-group list-group-unbordered">
                                     <li class="list-group-item">
@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = 'Update';
                                     </li>
                                 </ul>
 
-                                <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+                                <!-- <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a> -->
                             </div>
                             <!-- /.box-body -->
                         </div>

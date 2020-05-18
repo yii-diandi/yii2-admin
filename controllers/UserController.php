@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:39:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 19:17:24
+ * @Last Modified time: 2020-05-19 07:06:22
  */
 
 namespace diandi\admin\controllers;
@@ -41,10 +41,13 @@ class UserController extends BaseController
     private $_oldMailPath;
 
     public $module_name;
+    public $type;
 
     public function actions()
     {
-        $this->module_name = Yii::$app->request->get('module_name','sys');
+        $this->module_name = Yii::$app->request->get('module_name', 'sys');
+        $this->type =  $this->module_name=='sys'?0:1;   
+
     }
 
     /**
@@ -101,23 +104,22 @@ class UserController extends BaseController
      */
     public function actionIndex()
     {
-        $module_name = Yii::$app->request->get('module_name','sys');
-        $AddonsUser = new AddonsUser(); 
+        $module_name = Yii::$app->request->get('module_name', 'sys');
+        $AddonsUser = new AddonsUser();
         $user_ids = [];
-        if($module_name !='sys'){
-            $list = DdAddons::findOne(['identifie'=>$module_name]);
-            if(!$list){
-               throw new HttpException('400','扩展功能不存在！'); 
+        if ($module_name != 'sys') {
+            $list = DdAddons::findOne(['identifie' => $module_name]);
+            if (!$list) {
+                throw new HttpException('400', '扩展功能不存在！');
             }
-            $user_ids = $AddonsUser->find()->where(['module_name'=>$module_name])->select(['user_id'])->column();
-                        
+            $user_ids = $AddonsUser->find()->where(['module_name' => $module_name])->select(['user_id'])->column();
         }
-       
+
         $searchModel = new UserSearch([
-            'user_ids'=>$user_ids
+            'user_ids' => $user_ids,
         ]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        
+
         return $this->render('index', [
             'module_name' => $this->module_name,
             'searchModel' => $searchModel,
@@ -140,8 +142,7 @@ class UserController extends BaseController
         $model = $this->findModel($id);
         if (Yii::$app->request->isPost) {
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            
-            return $this->redirect(['view', 'id' => $model->id,'module_name' => $this->module_name]);
+                return $this->redirect(['view', 'id' => $model->id, 'module_name' => $this->module_name]);
             } else {
                 $msg = ErrorsHelper::getModelError($model);
                 throw new BadRequestHttpException($msg);
@@ -149,7 +150,8 @@ class UserController extends BaseController
         } else {
             // 获取用户角色
             $user = User::findIdentity($id);
-            $userassign = new Assignment($id, $user);
+              
+            $userassign = new Assignment(['id'=>$id,'type'=>$this->type], $user);
             $assigns = $userassign->getItems();
 
             $assign = [];
@@ -159,12 +161,11 @@ class UserController extends BaseController
                 }
             }
             // 获取集团与分公司
-
             $Bloc = Bloc::find()->where(['bloc_id' => $model->bloc_id])->select(['business_name'])->one();
-            $ResetPassword = new  ResetPassword($model->password_reset_token);
-
+            // $ResetPassword = new  ResetPassword($model->password_reset_token);
+           
             return $this->render('update', [
-                'ResetPassword' => $ResetPassword,
+                // 'ResetPassword' => $ResetPassword,
                 'model' => $model,
                 'assign' => $assign,
                 'business_name' => $Bloc['business_name'] ? $Bloc['business_name'] : '暂未分配',
@@ -182,8 +183,9 @@ class UserController extends BaseController
     public function actionView($id)
     {
         $AddonsUser = new AddonsUser([
-            'user_id'=>$id]);
+            'user_id' => $id, ]);
         $opts = $AddonsUser->getItems();
+
         return $this->render('view', [
             'model' => $this->findModel($id),
             'opts' => Json::htmlEncode($opts),
@@ -202,41 +204,39 @@ class UserController extends BaseController
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index','module_name' => $this->module_name]);
+        return $this->redirect(['index', 'module_name' => $this->module_name]);
     }
 
     public function actionAssign($id)
     {
-        
         $items = Yii::$app->getRequest()->post('items', []);
         $model = $this->findModel($id);
         $success = $model->addChildren($items);
         Yii::$app->getResponse()->format = 'json';
 
         $AddonsUser = new AddonsUser([
-            'user_id'=>$id
+            'user_id' => $id,
         ]);
         $opts = $AddonsUser->getItems();
-     
+
         return array_merge($opts, ['success' => $success]);
     }
 
-
     public function actionRemove($id)
     {
-        
         $items = Yii::$app->getRequest()->post('items', []);
         $model = $this->findModel($id);
         $success = $model->removeChildren($items);
         Yii::$app->getResponse()->format = 'json';
 
         $AddonsUser = new AddonsUser([
-            'user_id'=>$id
+            'user_id' => $id,
         ]);
         $opts = $AddonsUser->getItems();
-     
+
         return array_merge($opts, ['success' => $success]);
     }
+
     /**
      * Login.
      *
@@ -286,6 +286,7 @@ class UserController extends BaseController
 
         return $this->render('signup', [
             'model' => $model,
+            'module_name'=>$this->module_name
         ]);
     }
 
@@ -379,8 +380,6 @@ class UserController extends BaseController
 
         return $this->goHome();
     }
-
-
 
     /**
      * Finds the User model based on its primary key value.
