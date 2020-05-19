@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:12:58
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-08 18:15:39
+ * @Last Modified time: 2020-05-19 08:55:51
  */
  
 
@@ -69,7 +69,7 @@ unset($rules[RouteRule::RULE_NAME]);
                             'label' => Yii::t('rbac-admin', 'Description'),
                         ],
                         [
-                            'attribute' => 'ruleName',
+                            'attribute' => 'rule_name',
                             'label' => Yii::t('rbac-admin', 'Rule Name'),
                             // 'filter' => $rules
                         ],

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:03:01
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-12 07:17:57
+ * @Last Modified time: 2020-05-19 08:08:07
  */
 
 namespace diandi\admin\components;
@@ -67,6 +67,7 @@ class ItemController extends Controller
         $authManager = Configs::authManager();
         $searchModel = new SearchsAuthItemSearch(['type' => $this->type,'module_name'=>$this->module_name]);
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
+      
         // $query = AuthItemModel::find();
         
 

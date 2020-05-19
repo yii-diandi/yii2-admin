@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-08 15:47:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-08 17:59:08
+ * @Last Modified time: 2020-05-19 08:19:19
  */
  
 
@@ -70,6 +70,7 @@ class AuthItemSearch extends AuthItemModel
         // grid filtering conditions
         $query->andFilterWhere([
             'type' => $this->type,
+            'module_name' => $this->module_name,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
@@ -78,8 +79,7 @@ class AuthItemSearch extends AuthItemModel
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'rule_name', $this->rule_name])
             ->andFilterWhere(['like', 'parent_id', $this->parent_id])
-            ->andFilterWhere(['like', 'data', $this->data])
-            ->andFilterWhere(['=', 'module_name', $this->module_name]);
+            ->andFilterWhere(['like', 'data', $this->data]);
         return $dataProvider;
     }
 }
