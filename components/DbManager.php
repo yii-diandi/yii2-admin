@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-11 00:04:09
+ * @Last Modified time: 2020-05-21 09:24:59
  */
 
 namespace diandi\admin\components;
@@ -153,9 +153,9 @@ class DbManager extends \yii\rbac\DbManager
     /**
      * 获取所有路由.
      */
-    public function getRoutePermissions()
+    public function getRoutePermissions($type=1)
     {
-        return $this->getRoutes(Route::TYPE_ROLE);
+        return $this->getRoutes($type);
     }
 
     /**
@@ -163,9 +163,14 @@ class DbManager extends \yii\rbac\DbManager
      */
     public function getRoutes($type)
     {
+        $where = [];
+        if(in_array($type,[0,1])){
+            $where['type'] = $type;
+        }
+        
         $query = (new Query())
             ->from($this->routeTable)
-            ->where(['type' => $type]);
+            ->where($where);
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
@@ -639,6 +644,7 @@ class DbManager extends \yii\rbac\DbManager
                 'created_at' => $item->createdAt,
                 'updated_at' => $item->updatedAt,
             ])->execute();
+           
         $this->invalidateCache();
 
         return true;

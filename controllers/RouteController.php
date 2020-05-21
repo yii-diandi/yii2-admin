@@ -3,9 +3,8 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 13:12:18
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-10 16:57:45
+ * @Last Modified time: 2020-05-21 08:30:45
  */
- 
 
 namespace diandi\admin\controllers;
 
@@ -15,9 +14,10 @@ use  backend\controllers\BaseController;
 use yii\filters\VerbFilter;
 
 /**
- * Description of RuleController
+ * Description of RuleController.
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
+ *
  * @since 1.0
  */
 class RouteController extends BaseController
@@ -36,20 +36,23 @@ class RouteController extends BaseController
             ],
         ];
     }
+
     /**
      * Lists all Route models.
+     *
      * @return mixed
      */
     public function actionIndex()
     {
         $model = new Route();
-        
+
         return $this->render('index', ['routes' => $model->getRoutes()]);
     }
 
     /**
      * Creates a new AuthItem model.
      * If creation is successful, the browser will be redirected to the 'view' page.
+     *
      * @return mixed
      */
     public function actionCreate()
@@ -59,25 +62,28 @@ class RouteController extends BaseController
         $routes = preg_split('/\s*,\s*/', trim($routes), -1, PREG_SPLIT_NO_EMPTY);
         $model = new Route();
         $model->addNew($routes);
+
         return $model->getRoutes();
     }
 
     /**
-     * Assign routes
+     * Assign routes.
+     *
      * @return array
      */
     public function actionAssign()
     {
         $routes = Yii::$app->getRequest()->post('routes', []);
         $model = new Route();
-        $model->addNew($routes);
-        
+        $Res = $model->addNew($routes);
         Yii::$app->getResponse()->format = 'json';
+
         return $model->getRoutes();
     }
 
     /**
-     * Remove routes
+     * Remove routes.
+     *
      * @return array
      */
     public function actionRemove()
@@ -86,11 +92,13 @@ class RouteController extends BaseController
         $model = new Route();
         $model->remove($routes);
         Yii::$app->getResponse()->format = 'json';
+
         return $model->getRoutes();
     }
 
     /**
-     * Refresh cache
+     * Refresh cache.
+     *
      * @return type
      */
     public function actionRefresh()
@@ -98,6 +106,7 @@ class RouteController extends BaseController
         $model = new Route();
         $model->invalidate();
         Yii::$app->getResponse()->format = 'json';
+
         return $model->getRoutes();
     }
 }
