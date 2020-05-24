@@ -3,9 +3,8 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-09 15:23:37
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 18:59:56
+ * @Last Modified time: 2020-05-24 08:09:31
  */
- 
 
 namespace diandi\admin\models\searchs;
 
@@ -20,23 +19,21 @@ use Yii;
  */
 class User extends UserModel
 {
-   
     public $module_name;
-    
+
     public $user_ids;
 
-      /**
-     * @inheritdoc
+    /**
+     * {@inheritdoc}
      */
     public function __construct($item, $config = array())
     {
-        $this->module_name = Yii::$app->request->get('module_name','sys');
-        if($item['user_ids']){
-            $this->user_ids = $item['user_ids'];
+        $this->module_name = Yii::$app->request->get('module_name', 'sys');
+        if (isset($item['user_ids'])) {
+            $this->user_ids = $item['user_ids'] ? $item['user_ids'] : [0];
         }
     }
-    
-    
+
     /**
      * {@inheritdoc}
      */
@@ -48,7 +45,6 @@ class User extends UserModel
         ];
     }
 
-  
     /**
      * {@inheritdoc}
      */
@@ -59,7 +55,7 @@ class User extends UserModel
     }
 
     /**
-     * Creates data provider instance with search query applied
+     * Creates data provider instance with search query applied.
      *
      * @param array $params
      *
@@ -68,7 +64,7 @@ class User extends UserModel
     public function search($params)
     {
         $query = UserModel::find();
-        
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -87,7 +83,7 @@ class User extends UserModel
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
-            'id'=>$this->user_ids,
+            'id' => $this->user_ids,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             // 'addonsUser.module_name'=>$this->module_name
@@ -100,7 +96,7 @@ class User extends UserModel
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'verification_token', $this->verification_token])
             ->andFilterWhere(['like', 'avatar', $this->avatar]);
-            
+
         return $dataProvider;
     }
 }

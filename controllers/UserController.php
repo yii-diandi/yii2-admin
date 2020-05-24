@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:39:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-19 07:06:22
+ * @Last Modified time: 2020-05-24 08:11:17
  */
 
 namespace diandi\admin\controllers;
@@ -46,8 +46,7 @@ class UserController extends BaseController
     public function actions()
     {
         $this->module_name = Yii::$app->request->get('module_name', 'sys');
-        $this->type =  $this->module_name=='sys'?0:1;   
-
+        $this->type = $this->module_name == 'sys' ? 0 : 1;
     }
 
     /**
@@ -104,7 +103,7 @@ class UserController extends BaseController
      */
     public function actionIndex()
     {
-        $module_name = Yii::$app->request->get('module_name', 'sys');
+        $module_name = $this->module_name;
         $AddonsUser = new AddonsUser();
         $user_ids = [];
         if ($module_name != 'sys') {
@@ -114,7 +113,6 @@ class UserController extends BaseController
             }
             $user_ids = $AddonsUser->find()->where(['module_name' => $module_name])->select(['user_id'])->column();
         }
-
         $searchModel = new UserSearch([
             'user_ids' => $user_ids,
         ]);
@@ -150,8 +148,8 @@ class UserController extends BaseController
         } else {
             // 获取用户角色
             $user = User::findIdentity($id);
-              
-            $userassign = new Assignment(['id'=>$id,'type'=>$this->type], $user);
+
+            $userassign = new Assignment(['id' => $id, 'type' => $this->type], $user);
             $assigns = $userassign->getItems();
 
             $assign = [];
@@ -163,7 +161,7 @@ class UserController extends BaseController
             // 获取集团与分公司
             $Bloc = Bloc::find()->where(['bloc_id' => $model->bloc_id])->select(['business_name'])->one();
             // $ResetPassword = new  ResetPassword($model->password_reset_token);
-           
+
             return $this->render('update', [
                 // 'ResetPassword' => $ResetPassword,
                 'model' => $model,
@@ -280,13 +278,18 @@ class UserController extends BaseController
         $model = new Signup();
         if ($model->load(Yii::$app->getRequest()->post())) {
             if ($user = $model->signup()) {
+                if ($this->module_name) {
+                    $id = $user->id;
+                    $childmodel = $this->findModel($id);
+                    $childmodel->addChildren([$this->module_name]);
+                }
                 Yii::$app->session->setFlash('success', '添加成功');
             }
         }
 
         return $this->render('signup', [
             'model' => $model,
-            'module_name'=>$this->module_name
+            'module_name' => $this->module_name,
         ]);
     }
 
