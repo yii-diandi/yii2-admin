@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:15:03
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-17 13:28:02
+ * @Last Modified time: 2020-05-25 13:28:02
  */
 use common\models\DdRegion;
 use yii\helpers\Html;
@@ -26,10 +26,11 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]); ?>
     
   
-    <?= $form->field($model, 'lng_lat')->widget('diandi\adminlte\widgets\selectmap\map', [
-        'type'=>'baidu',
-        'secret_key'=>Yii::$app->settings->get('Map','baiduApk')
+    <?= $form->field($model, 'lng_lat')->widget('diandi\adminlte\widgets\selectmap\Map', [
+        'type' => 'baidu',
+        'secret_key' => Yii::$app->settings->get('Map', 'baiduApk'),
     ]); ?>
+    
     <?= $form->field($model, 'logo')->widget('manks\FileInput', [])->hint('尺寸：500px*500px'); ?>
         
     </div>
