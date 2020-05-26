@@ -3,7 +3,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 11:46:12
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-10 14:00:07
+ * @Last Modified time: 2020-05-25 19:04:50
  */
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -43,7 +43,7 @@ $this->registerJs($this->render('_script.js'));
         </div>
         <div class="col-sm-6">
             <?= $form->field($model, 'order')->input('number'); ?>
-            <?= $form->field($model, 'icon')->widget('diandi\adminlte\widgets\icon', ['options' => [
+            <?= $form->field($model, 'icon')->widget('common\widgets\adminlte\Icon', ['options' => [
                 'label' => '选择图标',
             ]]); ?>
             <?= $form->field($model, 'is_sys')->dropDownList(['system' => '系统菜单', 'addons' => '模块菜单']); ?>

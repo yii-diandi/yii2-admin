@@ -25,7 +25,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'sort')->textInput() ?>
     
-    <?= $form->field($model, 'icon')->widget('diandi\adminlte\widgets\icon', ['options' => [
+    <?= $form->field($model, 'icon')->widget('common\widgets\adminlte\Icon', ['options' => [
                 'label' => '选择图标',
             ]]); ?>
 
