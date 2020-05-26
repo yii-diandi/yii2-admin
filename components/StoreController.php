@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:07:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-26 13:47:48
+ * @Last Modified time: 2020-05-26 23:17:13
  */
 
 namespace diandi\admin\components;
@@ -105,10 +105,9 @@ class StoreController extends BaseController
             $model = new BlocStore([
                 'extras' => $this->extras,
                 ]);
-
             if (Yii::$app->request->isPost) {
                 $data = Yii::$app->request->post();
-                $data['BlocStore']['lng_lat'] = implode(',',$data['BlocStore']['lng_lat']);
+                // $data['BlocStore']['lng_lat'] = implode(',',$data['BlocStore']['lng_lat']);
                 if ($model->load($data) && $model->save()) {
                     return $this->redirect(['view', 'id' => $model->store_id]);
                 } else {
@@ -140,8 +139,14 @@ class StoreController extends BaseController
         $model = $this->findModel($id);
         $model['extra'] = unserialize($model['extra']);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->store_id]);
+        if(Yii::$app->request->isPost){
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->store_id]);
+            }else{
+                $error = ErrorsHelper::getModelError($model);
+                Yii::$app->session->setFlash('error',$error);
+                return  $this->refresh();
+            }
         }
 
         return $this->render('update', [
@@ -180,7 +185,7 @@ class StoreController extends BaseController
     {
         $BlocStore = new BlocStore([
             'extras' => $this->extras,
-            ]);
+        ]);     
         if (($model = $BlocStore::findOne($id)) !== null) {
             return $model;
         }

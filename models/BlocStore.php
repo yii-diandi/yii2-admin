@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 16:05:29
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-16 16:27:08
+ * @Last Modified time: 2020-05-26 23:16:53
  */
  
 
@@ -54,10 +54,13 @@ class BlocStore extends \yii\db\ActiveRecord
     public function beforeValidate()
     {
         if (parent::beforeValidate()) {
-        
     
             if($this->extra){
                 $this->extra = serialize($this->extra);
+            }
+            
+            if(is_array($this->lng_lat)){
+                $this->lng_lat = implode(',',$this->lng_lat);
             }
 
             return true;
