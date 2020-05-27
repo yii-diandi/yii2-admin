@@ -42,7 +42,7 @@ $this->title = Yii::t('app', '小程序设置');
                 <?php echo $form->field($model, 'original'); ?>
                 <?php echo $form->field($model, 'AppId'); ?>
                 <?php echo $form->field($model, 'AppSecret'); ?>
-                <?= $form->field($model, 'headimg')->widget('manks\FileInput', []); ?>
+                <?= $form->field($model, 'headimg')->widget('common\widgets\webuploader\FileInput', []); ?>
                 <div class="form-group">
                         <?= Html::submitButton('保存', ['class' => 'btn btn-primary']); ?>
                         <?= Html::a('返回公司', Url::to(['bloc/index']), ['class' => 'btn btn-primary']); ?>

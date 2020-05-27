@@ -19,7 +19,7 @@ use yii\widgets\ActiveForm;
 <div class="user-form">
 
     <?php $form = ActiveForm::begin(); ?>
-   <?= $form->field($model, 'avatar')->widget('manks\FileInput', []); ?>
+   <?= $form->field($model, 'avatar')->widget('common\widgets\webuploader\FileInput', []); ?>
     <?= $form->field($model, 'username')->textInput() ?>
     <?= $form->field($model, 'email')->textInput() ?>
     <?= $form->field($model, 'status')->radioList(['0' => '待审核', '10' => '审核通过'])->label('审核状态') ?>
