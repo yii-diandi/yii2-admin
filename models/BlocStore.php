@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 16:05:29
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-26 23:16:53
+ * @Last Modified time: 2020-05-27 15:43:27
  */
  
 
@@ -54,13 +54,11 @@ class BlocStore extends \yii\db\ActiveRecord
     public function beforeValidate()
     {
         if (parent::beforeValidate()) {
-    
-            if($this->extra){
-                $this->extra = serialize($this->extra);
-            }
+            
+            $this->extra = serialize($this->extra);
             
             if(is_array($this->lng_lat)){
-                $this->lng_lat = implode(',',$this->lng_lat);
+                $this->lng_lat = json_encode($this->lng_lat);
             }
 
             return true;
@@ -91,8 +89,8 @@ class BlocStore extends \yii\db\ActiveRecord
             [['name', 'logo', 'address'], 'string', 'max' => 255],
             [['province', 'city', 'county'], 'string', 'max' => 10],
             [['mobile'], 'string', 'max' => 11],
-            [['extra'], 'string'],
-            [['create_time', 'update_time', 'lng_lat'], 'string', 'max' => 30],
+            [['extra', 'lng_lat'], 'string'],
+            [['create_time', 'update_time'], 'string', 'max' => 30],
         ];
     }
 

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:07:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-26 23:17:13
+ * @Last Modified time: 2020-05-27 15:33:34
  */
 
 namespace diandi\admin\components;
@@ -138,7 +138,6 @@ class StoreController extends BaseController
     {
         $model = $this->findModel($id);
         $model['extra'] = unserialize($model['extra']);
-
         if(Yii::$app->request->isPost){
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->store_id]);
