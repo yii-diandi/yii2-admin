@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:15:03
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-26 12:57:30
+ * @Last Modified time: 2020-05-27 17:47:15
  */
 use common\models\DdRegion;
 use yii\helpers\Html;
@@ -20,7 +20,7 @@ use yii\widgets\ActiveForm;
 
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
     <?= Html::activeHiddenInput($model, 'bloc_id', array(
-        'value' => Yii::$app->request->get('bloc_id', 0),
+        'value' => Yii::$app->params['bloc_id'],
     )); ?>
     
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]); ?>
