@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:07:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-27 15:33:34
+ * @Last Modified time: 2020-05-29 23:16:43
  */
 
 namespace diandi\admin\components;
@@ -109,7 +109,7 @@ class StoreController extends BaseController
                 $data = Yii::$app->request->post();
                 // $data['BlocStore']['lng_lat'] = implode(',',$data['BlocStore']['lng_lat']);
                 if ($model->load($data) && $model->save()) {
-                    return $this->redirect(['view', 'id' => $model->store_id]);
+                    return $this->redirect(['view', 'id' => $model->store_id, 'bloc_id' => $model->bloc_id]);
                 } else {
                     $msg = ErrorsHelper::getModelError($model);
                     throw new HttpException(400, $msg);
@@ -138,12 +138,13 @@ class StoreController extends BaseController
     {
         $model = $this->findModel($id);
         $model['extra'] = unserialize($model['extra']);
-        if(Yii::$app->request->isPost){
+        if (Yii::$app->request->isPost) {
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->store_id]);
-            }else{
+                return $this->redirect(['view', 'id' => $model->store_id, 'bloc_id' => $model->bloc_id]);
+            } else {
                 $error = ErrorsHelper::getModelError($model);
-                Yii::$app->session->setFlash('error',$error);
+                Yii::$app->session->setFlash('error', $error);
+
                 return  $this->refresh();
             }
         }
@@ -166,8 +167,9 @@ class StoreController extends BaseController
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
+        $bloc_id = $this->bloc_id;
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index', 'bloc_id' => $bloc_id]);
     }
 
     /**
@@ -184,7 +186,7 @@ class StoreController extends BaseController
     {
         $BlocStore = new BlocStore([
             'extras' => $this->extras,
-        ]);     
+        ]);
         if (($model = $BlocStore::findOne($id)) !== null) {
             return $model;
         }

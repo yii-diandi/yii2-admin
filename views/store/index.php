@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:43:40
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-29 16:24:10
+ * @Last Modified time: 2020-05-29 23:18:16
  */
 use common\helpers\ImageHelper;
 use yii\helpers\Html;
@@ -64,6 +64,21 @@ $this->params['breadcrumbs'][] = $this->title;
                                         case'update':
 
                                             return Url::to(['update',
+                                                'id' => $model->store_id,
+                                                'bloc_id' => $model->bloc_id,
+                                            ]);
+
+                                        break;
+                                        case'view':
+
+                                            return Url::to(['view',
+                                                'id' => $model->store_id,
+                                                'bloc_id' => $model->bloc_id,
+                                            ]);
+
+                                        break;
+                                        case'delete':
+                                            return Url::to(['delete',
                                                 'id' => $model->store_id,
                                                 'bloc_id' => $model->bloc_id,
                                             ]);
