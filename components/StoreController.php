@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:07:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-29 23:16:43
+ * @Last Modified time: 2020-05-29 23:22:36
  */
 
 namespace diandi\admin\components;
@@ -62,8 +62,9 @@ class StoreController extends BaseController
      */
     public function actionIndex()
     {
+        $bloc_id = $this->bloc_id ? $this->bloc_id : Yii::$app->params['bloc_id'];
         $searchModel = new BlocStoreSearch([
-            'bloc_id' => $this->bloc_id,
+            'bloc_id' => $bloc_id,
         ]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
