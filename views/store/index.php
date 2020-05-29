@@ -3,12 +3,12 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:43:40
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-15 22:01:54
+ * @Last Modified time: 2020-05-29 16:24:10
  */
-
 use common\helpers\ImageHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel diandi\admin\models\searchs\BlocStoreSearch */
@@ -18,7 +18,7 @@ $this->title = '商户管理';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?= $this->render('_tab') ?>
+<?= $this->render('_tab'); ?>
                 
 <div class="firetech-main">
 
@@ -57,7 +57,21 @@ $this->params['breadcrumbs'][] = $this->title;
                         //'status',
                         //'lng_lat',
 
-                        ['class' => 'common\components\ActionColumn'],
+                        [
+                            'class' => 'common\components\ActionColumn',
+                            'urlCreator' => function ($action, $model, $key, $index) {
+                                switch ($action) {
+                                        case'update':
+
+                                            return Url::to(['update',
+                                                'id' => $model->store_id,
+                                                'bloc_id' => $model->bloc_id,
+                                            ]);
+
+                                        break;
+                                }
+                            },
+                        ],
                     ],
                     ]); ?>
                 
