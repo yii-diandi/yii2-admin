@@ -3,15 +3,15 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:06:25
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-15 21:58:07
+ * @Last Modified time: 2020-05-29 23:30:38
  */
- 
 
 namespace diandi\admin\models\searchs;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use diandi\admin\models\BlocStore;
+use Yii;
 
 /**
  * BlocStoreSearch represents the model behind the search form of `diandi\admin\models\BlocStore`.
@@ -19,14 +19,19 @@ use diandi\admin\models\BlocStore;
 class BlocStoreSearch extends BlocStore
 {
     public $bloc_id;
+    public $store_id;
 
     public $extra;
-    
-    public function __construct($items=null)
+
+    public function __construct($items = null)
     {
-        if($items['bloc_id']){
+        if ($items['bloc_id']) {
             $this->bloc_id = $items['bloc_id'];
-        }   
+        }
+
+        if (Yii::$app->controller->module->id != 'admin') {
+            $this->store_id = Yii::$app->params['store_id'];
+        }
     }
 
     /**
@@ -50,7 +55,7 @@ class BlocStoreSearch extends BlocStore
     }
 
     /**
-     * Creates data provider instance with search query applied
+     * Creates data provider instance with search query applied.
      *
      * @param array $params
      *
