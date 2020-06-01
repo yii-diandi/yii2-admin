@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 18:10:43
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-21 09:27:13
+ * @Last Modified time: 2020-05-31 12:30:59
  */
 
 namespace diandi\admin\models;
@@ -234,7 +234,7 @@ class Route extends \diandi\admin\BaseObject
             $routes = $this->getAppRoutes();
         }
         $exists = [];
-        // 获取当前类型0：系统1模块 2全部
+        // 获取当前类型--系统:0  模块:1 全部:2
         foreach (array_keys($manager->getRoutePermissions(2)) as $name) {
             if ($name[0] !== $this->routePrefix) {
                 continue;
@@ -261,7 +261,6 @@ class Route extends \diandi\admin\BaseObject
         } elseif (is_string($module)) {
             $module = Yii::$app->getModule($module);
         }
-
         $key = [__METHOD__, Yii::$app->id, $module->getUniqueId()];
         $cache = Configs::instance()->cache;
         if ($cache === null || ($result = $cache->get($key)) === false) {
