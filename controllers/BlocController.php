@@ -4,16 +4,16 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 21:43:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-12 20:47:02
+ * @Last Modified time: 2020-06-24 10:49:06
  */
 
 namespace diandi\admin\controllers;
 
+use backend\controllers\BaseController;
 use Yii;
 use diandi\admin\models\Bloc;
 use diandi\admin\models\searchs\BlocSearch;
 use common\helpers\ErrorsHelper;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
@@ -21,7 +21,7 @@ use yii\web\NotFoundHttpException;
 /**
  * BlocController implements the CRUD actions for Bloc model.
  */
-class BlocController extends Controller
+class BlocController extends BaseController
 {
     /**
      * {@inheritdoc}

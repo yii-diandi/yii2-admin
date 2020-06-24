@@ -1,3 +1,9 @@
+/*
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-06-24 10:16:55
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-06-24 10:21:10
+ */
 $('i.glyphicon-refresh-animate').hide();
 function updateRoutes(r) {
     _opts.routes.available = r.available;
@@ -40,7 +46,9 @@ $('.btn-assign').click(function () {
 $('#btn-refresh').click(function () {
     var $icon = $(this).children('span.glyphicon');
     $icon.addClass('glyphicon-refresh-animate');
-    $.post($(this).attr('href'), function (r) {
+    $.post($(this).attr('data-url'), function (r) {
+        console.log('aaa',r)
+        return false;
         updateRoutes(r);
     }).always(function () {
         $icon.removeClass('glyphicon-refresh-animate');

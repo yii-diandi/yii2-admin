@@ -1,8 +1,16 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-06-24 10:06:30
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-06-24 11:15:49
+ */
+ 
 
 use diandi\admin\AnimateAsset;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
 use yii\web\YiiAsset;
 
 /* @var $this yii\web\View */
@@ -41,12 +49,11 @@ $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate
         <div class="input-group">
             <input class="form-control search" data-target="available"
                    placeholder="<?=Yii::t('rbac-admin', 'Search for available');?>">
-            <span class="input-group-btn">
-                <?=Html::a('<span class="glyphicon glyphicon-refresh"></span>', ['refresh'], [
-    'class' => 'btn btn-default',
-    'id' => 'btn-refresh',
-]);?>
-            </span>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" id="btn-refresh" data-url="<?= Url::to(['refresh']) ?>">
+                            <span class="glyphicon glyphicon-refresh" style="font-size: 20px;"></span>
+                        </button>    
+                    </span>
         </div>
         <select multiple size="20" class="form-control list" data-target="available"></select>
     </div>

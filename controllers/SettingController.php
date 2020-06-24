@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 16:23:11
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-17 08:49:26
+ * @Last Modified time: 2020-06-24 11:03:48
  */
 
 namespace diandi\admin\controllers;
@@ -29,17 +29,17 @@ class SettingController extends BaseController
 {
     public function actions()
     {
-        $bloc_id = Yii::$app->request->get('bloc_id');
+        global $_GPC,$_W;
+        $bloc_id = $_GPC['bloc_id'];
         $bloc = Bloc::findOne($bloc_id);
-        if (empty($bloc)) {
-            $this->redirect(['bloc/index']);
-        }
     }
 
     public function actionBaidu()
     {
+        global $_GPC,$_W;
+
         $model = new Baidu();
-        $bloc_id = Yii::$app->request->get('bloc_id');
+        $bloc_id = $_GPC['bloc_id'];
         if (Yii::$app->request->isPost) {
             if ($model->load(Yii::$app->request->post()) && $model->saveConf($bloc_id)) {
                 Yii::$app->session->setFlash('success', '保持成功');

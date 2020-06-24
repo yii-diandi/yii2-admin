@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 21:44:22
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-11 15:52:31
+ * @Last Modified time: 2020-06-24 10:13:02
  */
 use common\helpers\LevelTplHelper;
 use common\models\DdRegion;
@@ -31,7 +31,7 @@ $Helper = new LevelTplHelper([
 
     <?php $form = MyActiveForm::begin(); ?>
 
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+    <div class="col-xs-12 col-sm-8 col-md-6 col-lg-6">
         <?= $form->field($model, 'business_name')->textInput(['maxlength' => true]); ?>
 
         <?= $form->field($model, 'pid')->dropDownlist(ArrayHelper::map($parents, 'bloc_id', 'business_name'), [
@@ -71,7 +71,7 @@ $Helper = new LevelTplHelper([
 
     </div>
 
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+    <div class="col-xs-12 col-sm-8 col-md-6 col-lg-6">
         <?= $form->field($model, 'open_time')->textInput(['maxlength' => true]); ?>
         <?= $form->field($model, 'address')->textInput(['maxlength' => true]); ?>
 

@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 18:10:43
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-31 12:30:59
+ * @Last Modified time: 2020-06-24 10:27:30
  */
 
 namespace diandi\admin\models;
@@ -242,7 +242,6 @@ class Route extends \diandi\admin\BaseObject
             $exists[] = $name;
             unset($routes[$name]);
         }
-
         return [
             'available' => array_keys($routes),
             'assigned' => $exists,
@@ -263,6 +262,7 @@ class Route extends \diandi\admin\BaseObject
         }
         $key = [__METHOD__, Yii::$app->id, $module->getUniqueId()];
         $cache = Configs::instance()->cache;
+        
         if ($cache === null || ($result = $cache->get($key)) === false) {
             $result = [];
             $this->getRouteRecursive($module, $result);
