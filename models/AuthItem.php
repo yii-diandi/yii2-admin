@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-10 23:55:35
+ * @Last Modified time: 2020-07-01 10:31:46
  */
 
 namespace diandi\admin\models;
@@ -29,7 +29,7 @@ class AuthItem extends Model
     // 0:路由1权限2用户组
     public $parent_type;
     public $parent_name;
-    
+
     /**
      * @var Item
      */
@@ -94,7 +94,6 @@ class AuthItem extends Model
         }
     }
 
-
     /**
      * Check for rule.
      */
@@ -119,14 +118,13 @@ class AuthItem extends Model
     public function checkParent()
     {
         $parent_id = $this->parent_id;
-        if($parent_id){
+        if ($parent_id) {
             $manager = Configs::authManager();
             $item = $manager->getPermission($parent_id);
             if (!$item) {
                 $this->addError('parent_id', Yii::t('rbac-admin', '父级权限 "{value}" 不存在', ['value' => $parent_id]));
-            } 
+            }
         }
-       
     }
 
     /**
@@ -137,7 +135,7 @@ class AuthItem extends Model
         return [
             'name' => Yii::t('rbac-admin', 'Name'),
             'parent_id' => Yii::t('rbac-admin', 'parent_id'),
-            'parent_name'=> Yii::t('rbac-admin', 'parent_id'),
+            'parent_name' => Yii::t('rbac-admin', 'parent_id'),
             'module_name' => Yii::t('rbac-admin', 'module_name'),
             'type' => Yii::t('rbac-admin', 'Type'),
             'description' => Yii::t('rbac-admin', 'Description'),
@@ -199,7 +197,7 @@ class AuthItem extends Model
             $this->_item->name = $this->name;
             $this->_item->type = $this->type;
             $this->_item->module_name = $this->module_name;
-            $this->_item->parent_id = $this->parent_id?$this->parent_id:0;
+            $this->_item->parent_id = $this->parent_id ? $this->parent_id : 0;
             $this->_item->description = $this->description;
             $this->_item->ruleName = $this->ruleName;
             $this->_item->data = $this->data === null || $this->data === '' ? null : Json::decode($this->data);
@@ -223,14 +221,14 @@ class AuthItem extends Model
      *
      * @return int
      */
-    public function addChildren($items,$parent_type=1)
+    public function addChildren($items, $parent_type = 1)
     {
         $manager = Configs::authManager();
         $success = 0;
         if ($this->_item) {
             if ($items['route']) {
                 foreach ($items['route'] as $name) {
-                    $child = $manager->getRoutePermission($name,$this->parent_type);
+                    $child = $manager->getRoutePermission($name, $this->parent_type);
                     try {
                         $manager->addChild($this->_item, $child);
                         ++$success;
@@ -334,11 +332,10 @@ class AuthItem extends Model
             $available[$name] = $name[0] == '/' ? 'route' : 'permission';
         }
         // 路由授权
-        foreach (array_keys($manager->getRoutes(Route::TYPE_ROLE)) as $name) {
+        foreach (array_keys($manager->getRoutes($this->type)) as $name) {
             $available[$name] = 'route';
         }
         $assigned = [];
-
         foreach ($manager->getChildren($this->_item->name) as $item) {
             $assigned[$item->name] = $item->type == 1 ? 'role' : ($item->name[0] == '/' ? 'route' : 'permission');
             unset($available[$item->name]);

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-01 11:43:39
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-01 19:46:48
+ * @Last Modified time: 2020-06-27 11:06:04
  */
 
 namespace diandi\admin\controllers;
@@ -14,7 +14,11 @@ use diandi\admin\models\searchs\UserBlocSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\controllers\BaseController;
+use common\helpers\ImageHelper;
+use common\helpers\ResultHelper;
 use diandi\admin\components\BlocUser;
+use diandi\admin\models\BlocStore;
+use diandi\admin\models\searchs\User;
 
 /**
  * UserBlocController implements the CRUD actions for UserBloc model.
@@ -123,6 +127,23 @@ class UserBlocController extends BaseController
             'model' => $model,
             'bloc_id' => $this->bloc_id,
         ]);
+    }
+
+    public function actionGetstore()
+    {
+        global $_GPC;
+        $bloc_id = $_GPC['bloc_id'];
+        $list = BlocStore::find()->where(['bloc_id'=>$bloc_id])->asArray()->all();
+        foreach ($list as $key => &$value) {
+            $value['logo'] = ImageHelper::tomedia($value['logo']);
+        }
+
+        // 查询普通的管理员
+        $userlist =  User::find()->where([])->select(['username','avatar'])->asArray()->all();
+        foreach ($userlist as $key => &$value) {
+            $value['avatar'] = ImageHelper::tomedia($value['avatar']);
+        }   
+        return  ResultHelper::json(200,'请求成功',['store'=>$list,'user'=>$userlist]);
     }
 
     /**

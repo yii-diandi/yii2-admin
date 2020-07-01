@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-01 11:46:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-03 07:02:41
+ * @Last Modified time: 2020-06-27 09:58:24
  */
 use diandi\admin\AutocompleteAsset;
 use diandi\admin\models\Menu;
@@ -29,7 +29,7 @@ $this->registerJs($this->render('_script.js'));
                 'bloc_id' => $bloc_id,
                 ]); ?>
 
-<div class="firetech-main">
+<div class="firetech-main" id="user-bloc">
     <div class="panel panel-default">
         <div class="box-body">
             <div class="user-bloc-create">
