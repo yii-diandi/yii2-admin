@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-06-16 18:39:38
+ * @Last Modified time: 2020-07-04 17:41:26
  */
 
 namespace diandi\admin\components;
@@ -825,9 +825,29 @@ class DbManager extends \yii\rbac\DbManager
         if ($this->isEmptyUserId($userId)) {
             return [];
         }
-        $directPermission = $this->getDirectPermissionsByUser($userId);
-        $inheritedPermission = $this->getInheritedPermissionsByUser($userId);
+        
+        $key1 = 'getDirectPermissionsByUser_'.$userId;
+        $key2 = 'getInheritedPermissionsByUser_'.$userId;
+        
+        if(Yii::$app->cache->get($key1)){
+            $directPermission = Yii::$app->cache->get($key1);
+        }else{
+            $directPermission = $this->getDirectPermissionsByUser($userId);
+            Yii::$app->cache->set($key1,$directPermission);
+        }
 
+        if(Yii::$app->cache->get($key2)){
+            $inheritedPermission = Yii::$app->cache->get($key2);
+            
+        }else{
+            $inheritedPermission = $this->getInheritedPermissionsByUser($userId);
+            Yii::$app->cache->set($key2,$directPermission);
+        }
+        
+
+        
+        
+    
         return array_merge($directPermission, $inheritedPermission);
     }
 

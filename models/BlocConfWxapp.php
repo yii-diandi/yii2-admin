@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 22:41:16
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 23:14:56
+ * @Last Modified time: 2020-07-04 18:37:00
  */
 
 namespace diandi\admin\models;
@@ -54,7 +54,7 @@ class BlocConfWxapp extends \yii\db\ActiveRecord
             [['bloc_id', 'name', 'AppId', 'headimg', 'AppSecret'], 'required'],
             [['bloc_id', 'create_time', 'update_time'], 'integer'],
             [['name'], 'string', 'max' => 50],
-            [['original', 'headimg', 'description'], 'string', 'max' => 255],
+            [['original', 'headimg', 'description','codeUrl'], 'string', 'max' => 255],
             [['AppId',  'AppSecret'], 'string', 'max' => 100],
         ];
     }
@@ -68,6 +68,7 @@ class BlocConfWxapp extends \yii\db\ActiveRecord
             'id' => 'ID',
             'bloc_id' => 'Bloc ID',
             'name' => '公司名称',
+            'codeUrl'=>'普通二维码链接',
             'description' => '小程序简介',
             'original' => 'Original',
             'AppId' => 'AppId',
