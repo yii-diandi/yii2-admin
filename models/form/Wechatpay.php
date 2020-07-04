@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-14 01:25:51
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 20:04:53
+ * @Last Modified time: 2020-07-05 02:56:26
  */
 
 namespace diandi\admin\models\form;
@@ -27,7 +27,6 @@ class Wechatpay extends Model
     public $mch_id;
     public $app_id;
     public $key;
-    public $notify_url;
 
     /**
      * {@inheritdoc}
@@ -39,7 +38,6 @@ class Wechatpay extends Model
                 'mch_id',
                 'app_id',
                 'key',
-                'notify_url',
             ], 'string'],
             [['id', 'bloc_id'], 'integer'],
         ];
@@ -55,7 +53,6 @@ class Wechatpay extends Model
         $this->mch_id = $bloc->mch_id;
         $this->app_id = $bloc->app_id;
         $this->key = $bloc->key;
-        $this->notify_url = $bloc->notify_url;
     }
 
     public function saveConf($bloc_id)
@@ -73,7 +70,6 @@ class Wechatpay extends Model
         $conf->mch_id = $this->mch_id;
         $conf->app_id = $this->app_id;
         $conf->key = $this->key;
-        $conf->notify_url = $this->notify_url;
 
         return $conf->save();
     }
@@ -87,7 +83,6 @@ class Wechatpay extends Model
             'mch_id' => '支付商户号',
             'app_id' => 'AppId',
             'key' => '秘钥',
-            'notify_url' => '回调地址',
         ];
     }
 }
