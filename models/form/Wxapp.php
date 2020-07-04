@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 17:04:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 22:40:29
+ * @Last Modified time: 2020-07-04 18:40:40
  */
 
 namespace diandi\admin\models\form;
@@ -29,6 +29,8 @@ class Wxapp extends Model
     public $AppId;
     public $AppSecret;
     public $headimg;
+    public $codeUrl;
+    
 
     /**
      * {@inheritdoc}
@@ -43,6 +45,7 @@ class Wxapp extends Model
                 'AppId',
                 'AppSecret',
                 'headimg',
+                'codeUrl',
             ], 'string'],
             [['id', 'bloc_id'], 'integer'],
         ];
@@ -98,6 +101,7 @@ class Wxapp extends Model
             'AppId' => 'AppId',
             'AppSecret' => 'AppSecret',
             'headimg' => '二维码',
+            'codeUrl'=>'普通二维码链接'
         ];
     }
 }

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 20:53:43
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-04 18:33:13
+ * @Last Modified time: 2020-07-04 18:42:06
  */
 
 /***
@@ -42,7 +42,9 @@ $this->title = Yii::t('app', '小程序设置');
                 <?php echo $form->field($model, 'original'); ?>
                 <?php echo $form->field($model, 'AppId'); ?>
                 <?php echo $form->field($model, 'AppSecret'); ?>
+                
                 <?php echo $form->field($model, 'codeUrl'); ?>
+                
                 <?= $form->field($model, 'headimg')->widget('common\widgets\webuploader\FileInput', []); ?>
                 <div class="form-group">
                         <?= Html::submitButton('保存', ['class' => 'btn btn-primary']); ?>
