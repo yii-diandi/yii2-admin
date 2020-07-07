@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-01 11:43:39
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-06-27 11:06:04
+ * @Last Modified time: 2020-07-07 16:17:50
  */
 
 namespace diandi\admin\controllers;
@@ -14,6 +14,7 @@ use diandi\admin\models\searchs\UserBlocSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\controllers\BaseController;
+use common\helpers\ErrorsHelper;
 use common\helpers\ImageHelper;
 use common\helpers\ResultHelper;
 use diandi\admin\components\BlocUser;
@@ -55,7 +56,8 @@ class UserBlocController extends BaseController
      */
     public function actionIndex()
     {
-        $searchModel = new UserBlocSearch();
+        $bloc_id = Yii::$app->request->get('bloc_id');
+        $searchModel = new UserBlocSearch(['bloc_id'=>$bloc_id]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         // 获取当前用户所有的公司
@@ -93,11 +95,39 @@ class UserBlocController extends BaseController
      */
     public function actionCreate()
     {
+        
         $model = new UserBloc();
         $model->status = 1;
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        
+        if(Yii::$app->request->isPost){
+            $data = Yii::$app->request->post();
+            $user_id  = $data['user_id'];
+            $store_id = $data['store_id'];
+            $status = $data['status'];
+            
+            $list = BlocStore::find()->where(['store_id'=>$store_id])->select(['bloc_id','store_id'])->asArray()->all();
+            foreach ($list as $key => $value) {
+                $_model = clone $model;
+                $_model->setAttributes([
+                    'user_id'   =>$user_id,
+                    'bloc_id'   =>$value['bloc_id'],
+                    'store_id'   =>$value['store_id'],
+                    'status'   =>$status,
+                    'create_time'=>time()
+                ]);
+                if(!$_model->save()){
+                    $msg = ErrorsHelper::getModelError($_model);
+                    return ResultHelper::json(200,$msg,[]);
+                    
+                }
+            }
+            
+            
+           
+            return ResultHelper::json(200,'添加成功',[]);
         }
+
+      
 
         return $this->render('create', [
             'model' => $model,
@@ -139,7 +169,7 @@ class UserBlocController extends BaseController
         }
 
         // 查询普通的管理员
-        $userlist =  User::find()->where([])->select(['username','avatar'])->asArray()->all();
+        $userlist =  User::find()->where([])->select(['username','avatar','id'])->asArray()->all();
         foreach ($userlist as $key => &$value) {
             $value['avatar'] = ImageHelper::tomedia($value['avatar']);
         }   

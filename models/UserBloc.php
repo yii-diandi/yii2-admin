@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-01 19:12:40
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-01 19:13:05
+ * @Last Modified time: 2020-07-07 16:14:17
  */
 
 namespace diandi\admin\models;
@@ -35,8 +35,40 @@ class UserBloc extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'bloc_id', 'store_id', 'status'], 'integer'],
-            [['create_time', 'update_time'], 'string', 'max' => 30],
+            [['create_time', 'update_time'], 'integer'],
+            ['user_id', 'check','on'=>['create']]
         ];
+    }
+
+    public function check($attribute,$params){
+        if (empty($this->user_id)) {
+            return $this->addError($attribute,'请选择管理员');
+        }
+        $dish=$this->find()->where([
+                'user_id'=>$this->user_id,
+                'bloc_id'=>$this->bloc_id,
+                'store_id'=>$this->store_id
+            ])->one();
+        if($dish){
+            $this->addError($attribute, '管理员已经绑定了该商户!');
+        }else{
+            $this->clearErrors($attribute);
+        }
+    }
+    
+    public function getUser()
+    {
+        return $this->hasOne(User::className(),['id'=>'user_id']);
+    }
+    
+    public function getBloc()
+    {
+        return $this->hasOne(Bloc::className(),['bloc_id'=>'bloc_id']);
+    }
+
+    public function getStore()
+    {
+        return $this->hasOne(BlocStore::className(),['store_id'=>'store_id']);
     }
 
     /**
@@ -47,9 +79,9 @@ class UserBloc extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'status' => '审核状态',
-            'user_id' => '管理员id',
-            'bloc_id' => '集团id',
-            'store_id' => '子公司id',
+            'user_id' => '管理员',
+            'bloc_id' => '集团',
+            'store_id' => '子公司',
             'create_time' => 'Create Time',
             'update_time' => 'Update Time',
         ];

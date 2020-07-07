@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-01 11:46:24
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-01 19:42:24
+ * @Last Modified time: 2020-07-07 16:08:30
  */
 use yii\grid\GridView;
 
@@ -28,19 +28,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h3 class="panel-title">列表</h3>
             </div>
             <div class="box-body table-responsive">
-                                    <?= GridView::widget([
+                    <?= GridView::widget([
                     'dataProvider' => $dataProvider,
                     'layout' => "{items}\n{pager}",
-                    'filterModel' => $searchModel,
-        'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
-
-                                'id',
-            'user_id',
-            'bloc_id',
-            'store_id',
-            'create_time',
-            //'update_time',
+                    'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+                        'user.username',
+                        'bloc.business_name',
+                        'store.name',
+                        'create_time',
+                        //'update_time',
 
                     ['class' => 'common\components\ActionColumn'],
                     ],

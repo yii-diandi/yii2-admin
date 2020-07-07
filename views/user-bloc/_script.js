@@ -2,7 +2,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-06-27 10:01:37
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-06-27 11:07:57
+ * @Last Modified time: 2020-07-07 15:48:33
  */
 
 new Vue({
@@ -10,12 +10,15 @@ new Vue({
     data: {
         title: "打印标题",
         user_id:'',
+        user_name:'',
         storelist:[],
+        store_names:[],
         userlist:[],
+        store_ids:[],
         formLabelAlign:{},
         bloc_id:0,
         store_id:'',
-        status:1,
+        status:'1',
         dialogStore:false,
         dialogUser:false,
     },
@@ -54,23 +57,50 @@ new Vue({
             
         },
         submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
-              if (valid) {
-                alert('submit!');
-              } else {
-                console.log('error submit!!');
-                return false;
-              }
+            let that = this
+            that.$http.post('create', {
+                    'user_id': that.user_id,
+                    'store_id': that.store_ids,
+                    'status': that.status,
+            }).then((response) => {
+              console.log('response',response)
+                //响应成功回调
+                if (response.data.code == 200) {  
+                    console.log(response.data)
+                    that.$message({
+                        message:response.data.message,
+                        type: 'success'
+                      });
+                }
+            }, (response) => {
+                //响应错误回调
+                this.$message.error(response.data.message);
+                console.log('错误了',response)
             });
+            
         },
         resetForm(formName) {
         this.$refs[formName].resetFields();
         },
-        selectStore(index, row) {
-            console.log(index, row);
+        handleSelectionChange(val) {
+            console.log(val)
+            let store_names = []
+            let store_ids=[] 
+            val.forEach((item,index)=>{
+                store_names.push(item.name)
+                store_ids.push(item.store_id)
+            })
+            
+            this.store_names = store_names
+            this.store_ids = store_ids;
+       
         },
         selectUser(index, row) {
-        console.log(index, row);
+                console.log(index, row);
+                this.user_id = row.id
+                this.user_name = row.username
+                this.dialogUser= false
+                
         }
     }
 });   

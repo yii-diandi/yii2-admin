@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-07-07 15:59:19
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-07-07 16:16:59
+ */
+ 
 
 namespace diandi\admin\models\searchs;
 
@@ -11,6 +18,16 @@ use diandi\admin\models\UserBloc;
  */
 class UserBlocSearch extends UserBloc
 {
+    public $bloc_id;
+
+
+    public function __construct($items = null)
+    {
+        if ($items['bloc_id']) {
+            $this->bloc_id = $items['bloc_id'];
+        }
+    }
+    
     /**
      * {@inheritdoc}
      */
@@ -40,7 +57,7 @@ class UserBlocSearch extends UserBloc
      */
     public function search($params)
     {
-        $query = UserBloc::find();
+        $query = UserBloc::find()->with(['bloc','store','user']);
 
         // add conditions that should always apply here
 

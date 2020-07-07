@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-01 19:13:36
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-06-27 11:10:31
+ * @Last Modified time: 2020-07-07 15:27:22
  */
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
@@ -18,12 +18,12 @@ use yii\helpers\Html;
 
     <el-form label-position="top" label-width="80px" :model="formLabelAlign">
         <el-form-item label="管理员">
-            <el-input placeholder="管理员" :disabled="true" v-model="user_id">
+            <el-input placeholder="管理员" :disabled="true" v-model="user_name">
                 <el-button slot="append"   @click="UserDialog">选择管理员</el-button>
             </el-input>
         </el-form-item>
         <el-form-item label="商户">
-            <el-input placeholder="商户" :disabled="true" v-model="store_id">
+            <el-input placeholder="商户" :disabled="true" v-model="store_names">
                 <el-button slot="append"   @click="StoreDialog">选择商户</el-button>
             </el-input>
         </el-form-item>
@@ -42,7 +42,6 @@ use yii\helpers\Html;
 
 </div>
 
-<el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>
 
 <el-dialog title="选择管理员" :visible.sync="dialogUser">
   <el-table :data="userlist">
@@ -67,7 +66,15 @@ use yii\helpers\Html;
 </el-dialog>
 
 <el-dialog title="选择商户" :visible.sync="dialogStore" style="width: 85%">
-  <el-table :data="storelist">
+    <el-table 
+    :data="storelist"
+    @selection-change="handleSelectionChange"
+    style="width: 100%">
+    <el-table-column
+    type="selection"
+    width="55">
+    </el-table-column>
+            
     <el-table-column property="logo" label="LOGO" width="150">
         <template slot-scope="scope">
             <el-image
@@ -78,12 +85,9 @@ use yii\helpers\Html;
        
     </el-table-column>
     <el-table-column property="name" label="商户名称" ></el-table-column>
-    <el-table-column label="操作">
-      <template slot-scope="scope">
-        <el-button
-          size="mini"
-          @click="selectStore(scope.$index, scope.row)">选择</el-button>
-      </template>
-    </el-table-column>
   </el-table>
+
+  <span slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="dialogStore = false">确 定</el-button>
+  </span>
 </el-dialog>
