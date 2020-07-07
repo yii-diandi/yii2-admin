@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:07:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-29 23:22:36
+ * @Last Modified time: 2020-07-07 09:03:44
  */
 
 namespace diandi\admin\components;
@@ -119,6 +119,7 @@ class StoreController extends BaseController
 
             return $this->render('create', [
                 'model' => $model,
+                'bloc_id' => $this->bloc_id,
             ]);
         } else {
             throw new HttpException('400', '请在公司管理中添加商户');
@@ -151,7 +152,8 @@ class StoreController extends BaseController
         }
 
         return $this->render('update', [
-            'model' => $model,
+                'bloc_id' => $this->bloc_id,
+                'model' => $model,
         ]);
     }
 

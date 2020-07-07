@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng
  * @Date:   2020-04-29 16:06:59
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-11 15:18:45
+ * @Last Modified time: 2020-07-07 08:39:25
  */
 use leandrogehlen\treegrid\TreeGrid;
 use yii\helpers\Html;
@@ -78,8 +78,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'header' => '操作',
                             'template' => '{user}{management}{stores}',
                             'buttons' => [
-                                'stores'=> function ($url, $model, $key) {
+                                'stores' => function ($url, $model, $key) {
                                     $url = Url::to(['/admin/store/index', 'bloc_id' => $model['bloc_id']]);
+
                                     return  Html::a('商户管理', $url, [
                                         'title' => '商户管理',
                                         'class' => 'btn btn-default',

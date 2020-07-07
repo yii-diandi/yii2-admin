@@ -3,7 +3,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 20:26:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-07 09:27:40
+ * @Last Modified time: 2020-07-07 09:38:48
  */
 
 namespace diandi\admin\components;
@@ -74,7 +74,7 @@ class MenuHelper
     public static function getAssignedMenu($userId, $root = null, $callback = null, $menuwhere = ['is_sys' => 'system'], $refresh = false)
     {
         $config = Configs::instance();
-
+        
         /* @var $manager \yii\rbac\BaseManager */
         $manager = Configs::authManager();
         $menus = Menu::find()->where($menuwhere)->asArray()->indexBy('id')->all();
