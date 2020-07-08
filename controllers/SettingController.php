@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 16:23:11
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-06-24 11:03:48
+ * @Last Modified time: 2020-07-08 22:16:46
  */
 
 namespace diandi\admin\controllers;
@@ -29,14 +29,14 @@ class SettingController extends BaseController
 {
     public function actions()
     {
-        global $_GPC,$_W;
+        global $_GPC;
         $bloc_id = $_GPC['bloc_id'];
         $bloc = Bloc::findOne($bloc_id);
     }
 
     public function actionBaidu()
     {
-        global $_GPC,$_W;
+        global $_GPC;
 
         $model = new Baidu();
         $bloc_id = $_GPC['bloc_id'];
