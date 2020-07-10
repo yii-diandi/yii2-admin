@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng
  * @Date:   2020-04-29 16:06:59
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-07 08:39:25
+ * @Last Modified time: 2020-07-10 20:59:45
  */
 use leandrogehlen\treegrid\TreeGrid;
 use yii\helpers\Html;
@@ -16,15 +16,8 @@ use yii\helpers\Url;
 $this->title = '公司';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<ul class="nav nav-tabs">
+<?= $this->render('_tab'); ?>
 
-    <li class="active">
-        <?= Html::a('公司管理', ['index'], ['class' => 'btn btn-primary']); ?>
-    </li>
-    <li>
-        <?= Html::a('添加公司', ['create'], ['class' => '']); ?>
-    </li>
-</ul>
 <div class="firetech-main">
 
     <div class="bloc-index ">

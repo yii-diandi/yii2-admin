@@ -3,8 +3,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-31 06:41:22
- * @Last Modified by:   Wang chunsheng  <2192138785@qq.com>
- * @Last Modified time: 2020-04-29 16:31:46
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-07-10 20:59:57
  */
 
 
@@ -19,17 +19,8 @@ $this->params['breadcrumbs'][] = ['label' => 'Blocs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<ul class="nav nav-tabs">
-    <li>
-        <?= Html::a('公司管理', ['index'], ['class' => '']) ?>
-    </li>
-    <li>
-        <?= Html::a('添加公司', ['create'], ['class' => '']) ?>
-    </li>
-    <li class="active">
-        <?= Html::a('公司详情', ['view'], ['class' => '']) ?>
-    </li>
-</ul>
+<?= $this->render('_tab'); ?>
+
 <div class=" firetech-main">
     <div class="bloc-view">
 

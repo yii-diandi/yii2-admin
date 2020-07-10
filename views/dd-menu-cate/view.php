@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-07-10 21:01:10
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-07-10 21:01:11
+ */
+ 
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -11,17 +18,8 @@ $this->params['breadcrumbs'][] = ['label' => '顶部导航', 'url' => ['index']]
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<ul class="nav nav-tabs">
-    <li>
-        <?= Html::a('添加 顶部导航', ['create'], ['class' => '']) ?>
-    </li>
-    <li>
-        <?= Html::a('顶部导航管理', ['index'], ['class' => '']) ?>
-    </li>
-    <li  class="active">
-        <?= Html::a('顶部导航管理', ['view'], ['class' => '']) ?>
-    </li>
-</ul>
+<?= $this->render('_tab'); ?>
+
 <div class=" firetech-main">
 <div class="dd-menu-cate-view">
 

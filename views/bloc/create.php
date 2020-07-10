@@ -3,8 +3,8 @@
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 21:44:10
- * @Last Modified by:   Wang Chunsheng 2192138785@qq.com
- * @Last Modified time: 2020-04-05 14:40:05
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-07-10 20:59:36
  */
 
 
@@ -18,15 +18,8 @@ $this->params['breadcrumbs'][] = ['label' => 'Blocs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<ul class="nav nav-tabs">
-    <li>
-        <?= Html::a('公司管理', ['index'], ['class' => '']) ?>
-    </li>
-    <li class="active">
-        <?= Html::a('添加公司', ['create'], ['class' => '']) ?>
-    </li>
+<?= $this->render('_tab'); ?>
 
-</ul>
 <div class="firetech-main">
     <div class="panel panel-default">
         <div class="box-body">

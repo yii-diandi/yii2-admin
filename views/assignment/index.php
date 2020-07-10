@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-09 08:38:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-10 16:02:31
+ * @Last Modified time: 2020-07-10 21:10:37
  */
  
 
@@ -45,30 +45,33 @@ $columns[] = [
     
 ];
 ?>
-<div class="assignment-index">
-    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
-   
-    
-    <div class="panel panel-default">
-          <div class="panel-heading">
-                <h3 class="panel-title">管理员列表</h3>
-          </div>
-          <div class="panel-body">
-                
-            <?php Pjax::begin(); ?>
-                <?=
-                GridView::widget([
-                    'layout'=>"{items}\n{pager}",
-                    'dataProvider' => $dataProvider,
-                    // 'filterModel' => $searchModel,
-                    'columns' => $columns,
-                    
-                ]);
-                ?>
-            <?php Pjax::end(); ?>
-          </div>
-    </div>
-    
-    
+<div class="firetech-main">
 
+    <div class="assignment-index">
+        <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+    
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                    <h3 class="panel-title">管理员列表</h3>
+            </div>
+            <div class="panel-body">
+                    
+                <?php Pjax::begin(); ?>
+                    <?=
+                    GridView::widget([
+                        'layout'=>"{items}\n{pager}",
+                        'dataProvider' => $dataProvider,
+                        // 'filterModel' => $searchModel,
+                        'columns' => $columns,
+                        
+                    ]);
+                    ?>
+                <?php Pjax::end(); ?>
+            </div>
+        </div>
+        
+        
+
+    </div>
 </div>
