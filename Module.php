@@ -42,7 +42,8 @@ use yii\helpers\Inflector;
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 1.0
- */ 
+ */
+ 
 class Module extends \yii\base\Module
 {
     /**
