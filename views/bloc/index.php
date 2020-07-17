@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng
  * @Date:   2020-04-29 16:06:59
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-10 20:59:45
+ * @Last Modified time: 2020-07-17 16:24:25
  */
 use leandrogehlen\treegrid\TreeGrid;
 use yii\helpers\Html;
@@ -74,38 +74,30 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'stores' => function ($url, $model, $key) {
                                     $url = Url::to(['/admin/store/index', 'bloc_id' => $model['bloc_id']]);
 
-                                    return  Html::a('商户管理', $url, [
+                                    return  Html::button('商户管理',[
                                         'title' => '商户管理',
                                         'class' => 'btn btn-default',
-                                        // 'data' => [
-                                        //     'confirm' => Yii::t('app', '确认卸载该模块吗?'),
-                                        //     'method' => 'post',
-                                        // ]
+                                        'onclick'=>"dialog('商户管理','{$url}')",
                                     ]);
                                 },
                                 'user' => function ($url, $model, $key) {
                                     $url = Url::to(['user-bloc/index', 'bloc_id' => $model['bloc_id']]);
 
-                                    return  Html::a('管理员', $url, [
+                                    return  Html::button('管理员',[
                                         'title' => '管理员',
                                         'class' => 'btn btn-default',
-                                        // 'data' => [
-                                        //     'confirm' => Yii::t('app', '确认卸载该模块吗?'),
-                                        //     'method' => 'post',
-                                        // ]
+                                        'onclick'=>"dialog('管理员', '{$url}')",
                                     ]);
                                 },
                                 'management' => function ($url, $model, $key) {
                                     $url = Url::to(['setting/baidu', 'bloc_id' => $model['bloc_id']]);
 
-                                    return  Html::a('参数配置', $url, [
+                                    return  Html::button('参数配置',[
                                         'title' => '进入模块',
                                         'class' => 'btn btn-default',
-                                        // 'data' => [
-                                        //     'confirm' => Yii::t('app', '确认卸载该模块吗?'),
-                                        //     'method' => 'post',
-                                        // ]
+                                        'onclick'=>"dialog('参数配置', '{$url}')",
                                     ]);
+                                    
                                 },
                             ],
                             'contentOptions' => ['class' => 'btn-group'],
