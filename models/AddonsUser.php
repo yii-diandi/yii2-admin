@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-09 10:51:10
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 15:01:42
+ * @Last Modified time: 2020-07-18 00:22:05
  */
  
 
@@ -43,6 +43,11 @@ class AddonsUser extends \yii\db\ActiveRecord
             [['type', 'user_id', 'status', 'create_time', 'update_time'], 'integer'],
             [['module_name'], 'string', 'max' => 50],
         ];
+    }
+
+    public function getAddons()
+    {
+        return $this->hasOne(DdAddons::className(),['identifie'=>'module_name']);
     }
 
      /**
