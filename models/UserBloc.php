@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-01 19:12:40
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-07 16:14:17
+ * @Last Modified time: 2020-07-29 01:41:20
  */
 
 namespace diandi\admin\models;
@@ -25,7 +25,7 @@ class UserBloc extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'diandi_user_bloc';
+        return '{{%diandi_user_bloc}}';
     }
 
     /**

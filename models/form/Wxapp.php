@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 17:04:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-05 02:50:40
+ * @Last Modified time: 2020-07-25 00:12:02
  */
 
 namespace diandi\admin\models\form;
@@ -85,10 +85,14 @@ class Wxapp extends Model
         $conf->AppSecret = $this->AppSecret;
         $conf->headimg = $this->headimg;
         $conf->codeUrl = $this->codeUrl;
-        $conf->save();
-        print_r(ErrorsHelper::getModelError($conf));
+        if($conf->save()){
+             return $conf->save();
+            
+        }else{
+            return ErrorsHelper::getModelError($conf);
+            
+        }
 
-        return $conf->save();
     }
 
     /**

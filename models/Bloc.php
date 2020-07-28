@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 22:40:56
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-12 21:11:32
+ * @Last Modified time: 2020-07-29 01:39:34
  */
 
 
@@ -50,7 +50,7 @@ class Bloc extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'diandi_bloc';
+        return '{{%diandi_bloc}}';
     }
 
     /**

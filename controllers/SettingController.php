@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 16:23:11
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-06-24 11:03:48
+ * @Last Modified time: 2020-07-25 00:31:25
  */
 
 namespace diandi\admin\controllers;
@@ -116,6 +116,7 @@ class SettingController extends BaseController
     {
         $model = new Wxapp();
         $bloc_id = Yii::$app->request->get('bloc_id');
+         
         if (Yii::$app->request->isPost) {
             if ($model->load(Yii::$app->request->post()) && $model->saveConf($bloc_id)) {
                 Yii::$app->session->setFlash('success', '保持成功');

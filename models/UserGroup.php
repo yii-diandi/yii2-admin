@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 15:21:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 21:45:22
+ * @Last Modified time: 2020-07-29 01:42:05
  */
 
 namespace diandi\admin\models;
@@ -30,7 +30,7 @@ class UserGroup extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'dd_auth_user_group';
+        return '{{%auth_user_group}}';
     }
 
      /**

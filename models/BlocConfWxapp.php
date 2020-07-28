@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 22:41:16
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-04 18:37:00
+ * @Last Modified time: 2020-07-29 01:40:39
  */
 
 namespace diandi\admin\models;
@@ -29,7 +29,7 @@ class BlocConfWxapp extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'diandi_bloc_conf_wxapp';
+        return '{{%diandi_bloc_conf_wxapp}}';
     }
 
     /**

@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-07-29 01:42:25
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-07-29 01:42:29
+ */
+ 
 
 namespace diandi\admin\models;
 
@@ -20,7 +27,7 @@ class AuthAssignmentGroup extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'dd_auth_assignment_group';
+        return '{{%auth_assignment_group}}';
     }
 
     /**
