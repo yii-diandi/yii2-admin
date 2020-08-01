@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-11 10:05:50
+ * @Last Modified time: 2020-08-01 10:55:29
  */
 
 namespace diandi\admin\components;
@@ -79,7 +79,7 @@ class DbManager extends \yii\rbac\DbManager
         $query = (new Query())->from($this->itemTable);
         $this->items = [];
         foreach ($query->all($this->db) as $row) {
-            $this->items[$row['name']] = $this->populateItem($row);
+            $this->items[$row['name']] = $this->populateItem($row,'itemTable');
         }
 
         $query = (new Query())->from($this->routeTable);
@@ -120,7 +120,7 @@ class DbManager extends \yii\rbac\DbManager
             ->where(['parent' => $name, 'name' => new Expression('[[child]]')]);
         $children = [];
         foreach ($query->all($this->db) as $row) {
-            $children[$row['name']] = $this->populateItem($row);
+            $children[$row['name']] = $this->populateItem($row,'itemTable');
         }
 
         return $children;
@@ -143,7 +143,7 @@ class DbManager extends \yii\rbac\DbManager
         ]);
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row);
+            $permissions[$row['name']] = $this->populateItem($row,'routeTable');
         }
 
         return $permissions;
@@ -230,7 +230,7 @@ class DbManager extends \yii\rbac\DbManager
             ->from([$this->itemTable, $this->itemChildTable])
             ->where(['parent' => $name, 'name' => new Expression('[[child]]')]);
         foreach ($query->all($this->db) as $row) {
-            $children[$row['name']] = $this->populateItem($row);
+            $children[$row['name']] = $this->populateItem($row,'itemTable');
         }
         // 获取role已授权
         $query = (new Query())
@@ -239,7 +239,7 @@ class DbManager extends \yii\rbac\DbManager
             ->where(['parent' => $name, 'name' => new Expression('[[child]]')]);
 
         foreach ($query->all($this->db) as $row) {
-            $children[$row['name']] = $this->populateItem($row);
+            $children[$row['name']] = $this->populateItem($row,'groupTable');
         }
         // 获取route已授权
         $query = (new Query())
@@ -247,7 +247,7 @@ class DbManager extends \yii\rbac\DbManager
         ->from([$this->routeTable, $this->itemChildTable])
         ->where(['parent' => $name, 'name' => new Expression('[[child]]')]);
         foreach ($query->all($this->db) as $row) {
-            $children[$row['name']] = $this->populateItem($row);
+            $children[$row['name']] = $this->populateItem($row,'routeTable');
         }
 
         return $children;
@@ -278,7 +278,7 @@ class DbManager extends \yii\rbac\DbManager
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
-            $items[$row['name']] = $this->populateItem($row);
+            $items[$row['name']] = $this->populateItem($row,'groupTable');
         }
 
         return $items;
@@ -424,7 +424,7 @@ class DbManager extends \yii\rbac\DbManager
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
-            $items[$row['name']] = $this->populateItem($row);
+            $items[$row['name']] = $this->populateItem($row,'itemTable');
         }
 
         return $items;
@@ -453,7 +453,7 @@ class DbManager extends \yii\rbac\DbManager
         }
         $row['child_type'] = 1;
 
-        return $this->populateItem($row);
+        return $this->populateItem($row,'itemTable');
     }
 
     /**
@@ -706,30 +706,70 @@ class DbManager extends \yii\rbac\DbManager
      *
      * @return Item the populated auth item instance (either Role or Permission)
      */
-    protected function populateItem($row)
+    protected function populateItem($row,$type='itemTable')
     {
-        // $class = $row['type'] == Item::TYPE_PERMISSION ? Permission::className() : Role::className();
+        // $class =   $type=='Permission' ? Permission::className() : Role::className();
         $class = Permission::className();
 
         if (!isset($row['data']) || ($data = @unserialize(is_resource($row['data']) ? stream_get_contents($row['data']) : $row['data'])) === false) {
             $data = null;
         }
-
-        return new $class([
-            'id' => $row['id'],
-            'name' => $row['name'],
-            'parent_id' => $row['parent_id'],
-            'module_name' => $row['module_name'],
-            'type' => $row['type'],
-            'child_type' => $row['child_type'],
-            'parent_type' => 1,
-            'description' => $row['description'],
-            'ruleName' => $row['rule_name'] ?: null,
-            'data' => $data,
-            'createdAt' => $row['created_at'],
-            'updatedAt' => $row['updated_at'],
-        ]);
+        
+        switch ($type) {
+            case 'itemTable':
+                return new $class([
+                    'name' => $row['name'],
+                    'type' => $row['type'],
+                    'description' => $row['description'],
+                    'ruleName' => $row['rule_name'] ?: null,
+                    'data' => $data,
+                    'createdAt' => $row['created_at'],
+                    'updatedAt' => $row['updated_at'],
+                ]);
+                break;
+            case 'routeTable':
+                return new $class([
+                    'name' => $row['name'],
+                    'type' => $row['type'],
+                    'description' => $row['description'],
+                    // 'ruleName' => $row['rule_name'] ?: null,
+                    'data' => $data,
+                    'createdAt' => $row['created_at'],
+                    'updatedAt' => $row['updated_at'],
+                ]);
+                break;
+            case 'groupTable':
+                return new $class([
+                    'name' => $row['name'],
+                    'type' => $row['type'],
+                    'description' => $row['description'],
+                    'ruleName' => $row['rule_name'] ?: null,
+                    'data' => $data,
+                    'createdAt' => $row['created_at'],
+                    'updatedAt' => $row['updated_at'],
+                ]);
+                break;
+            case 'assignmentTable':
+                return new $class([
+                    'id' => $row['id'],
+                    'name' => $row['name'],
+                    'parent_id' => $row['parent_id'],
+                    'module_name' => $row['module_name'],
+                    'type' => $row['type'],
+                    'child_type' => $row['child_type'],
+                    'parent_type' => 1,
+                    'description' => $row['description'],
+                    'ruleName' => $row['rule_name'] ?: null,
+                    'data' => $data,
+                    'createdAt' => $row['created_at'],
+                    'updatedAt' => $row['updated_at'],
+                ]);
+                break;
+            default:
+        }
     }
+
+    
 
     /**
      * {@inheritdoc}
@@ -903,7 +943,7 @@ class DbManager extends \yii\rbac\DbManager
         // ->andWhere(['b.type' => Item::TYPE_PERMISSION]);
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row);
+            $permissions[$row['name']] = $this->populateItem($row,'assignmentTable');
         }
 
         return $permissions;
@@ -993,8 +1033,18 @@ class DbManager extends \yii\rbac\DbManager
             'name' => array_keys($result),
         ]);
         $permissions = [];
+        foreach (array_keys($result) as $itemName) {
+            if (isset($this->items[$itemName]) && $this->items[$itemName] instanceof Permission) {
+                $permissions[$itemName] = $this->items[$itemName];
+            }
+        }
+        
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row);
+            $row['parent_id'] = 0;
+            $row['child_type'] = 0;
+            $row['rule_name'] = 0;
+            
+            $permissions[$row['name']] = $this->populateItem($row,'Role');
         }
 
         return $permissions;

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 07:41:27
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-08 23:38:45
+ * @Last Modified time: 2020-08-01 10:18:49
  */
  
 /**
@@ -31,6 +31,8 @@ class Permission extends Item
     public $parent_type = 1;
     
     public $id;
+
+    
     
     public $module_name = 'sys';
     
