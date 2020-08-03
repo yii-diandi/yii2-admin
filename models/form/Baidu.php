@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 17:03:31
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 20:08:14
+ * @Last Modified time: 2020-08-03 14:54:59
  */
 
 /***
@@ -57,14 +57,14 @@ class Baidu extends Model
     public function getConf($bloc_id)
     {
         $conf = new BlocConfBaidu();
-        $bloc = $conf::findOne(['bloc_id' => $bloc_id]);
-        $this->id = $bloc->id;
-        $this->bloc_id = $bloc->bloc_id;
+        $bloc = $conf::find()->where(['bloc_id' => $bloc_id])->asArray()->one();
+        $this->id = $bloc['id'];
+        $this->bloc_id = $bloc['bloc_id'];
 
-        $this->APP_ID = $bloc->APP_ID;
-        $this->API_KEY = $bloc->API_KEY;
-        $this->SECRET_KEY = $bloc->SECRET_KEY;
-        $this->name = $bloc->name;
+        $this->APP_ID = $bloc['APP_ID'];
+        $this->API_KEY = $bloc['API_KEY'];
+        $this->SECRET_KEY = $bloc['SECRET_KEY'];
+        $this->name = $bloc['name'];
     }
 
     public function saveConf($bloc_id)
@@ -83,7 +83,19 @@ class Baidu extends Model
         $conf->SECRET_KEY = $this->SECRET_KEY;
         $conf->name = $this->name;
 
-        return $conf->save();
+        if($conf->save()){
+            return [
+                'code'=>200,
+                'message'=>'保存成功'
+            ];
+       }else{
+           $msg = ErrorsHelper::getModelError($conf);
+           return [
+               'code'=>400,
+               'message'=>$msg
+           ];
+           
+       }
     }
 
     /**

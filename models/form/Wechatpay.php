@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-14 01:25:51
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-05 02:56:26
+ * @Last Modified time: 2020-08-03 10:52:11
  */
 
 namespace diandi\admin\models\form;
@@ -46,13 +46,13 @@ class Wechatpay extends Model
     public function getConf($bloc_id)
     {
         $conf = new BlocConfWechatpay();
-        $bloc = $conf::findOne(['bloc_id' => $bloc_id]);
+        $bloc = $conf::find()->where(['bloc_id' => $bloc_id])->asArray()->one();
 
-        $this->id = $bloc->id;
-        $this->bloc_id = $bloc->bloc_id;
-        $this->mch_id = $bloc->mch_id;
-        $this->app_id = $bloc->app_id;
-        $this->key = $bloc->key;
+        $this->id = $bloc['id'];
+        $this->bloc_id = $bloc['bloc_id'];
+        $this->mch_id = $bloc['mch_id'];
+        $this->app_id = $bloc['app_id'];
+        $this->key = $bloc['key'];
     }
 
     public function saveConf($bloc_id)

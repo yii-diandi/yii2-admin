@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  &#60;2192138785@qq.com&#62;
  * @Date:   2020-04-29 17:21:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 22:36:55
+ * @Last Modified time: 2020-08-03 14:54:39
  */
 
 namespace diandi\admin\models\form;
@@ -46,13 +46,13 @@ class Sms extends Model
     public function getConf($bloc_id)
     {
         $conf = new BlocConfSms();
-        $bloc = $conf::findOne(['bloc_id' => $bloc_id]);
-        $this->id = $bloc->id;
-        $this->bloc_id = $bloc->bloc_id;
-        $this->access_key_id = $bloc->access_key_id;
-        $this->access_key_secret = $bloc->access_key_secret;
-        $this->sign_name = $bloc->sign_name;
-        $this->template_code = $bloc->template_code;
+        $bloc = $conf::find()->where(['bloc_id' => $bloc_id])->asArray()->one();
+        $this->id = $bloc['id'];
+        $this->bloc_id = $bloc['bloc_id'];
+        $this->access_key_id = $bloc['access_key_id'];
+        $this->access_key_secret = $bloc['access_key_secret'];
+        $this->sign_name = $bloc['sign_name'];
+        $this->template_code = $bloc['template_code'];
     }
 
     public function saveConf($bloc_id)
@@ -70,9 +70,20 @@ class Sms extends Model
         $conf->access_key_secret = $this->access_key_secret;
         $conf->sign_name = $this->sign_name;
         $conf->template_code = $this->template_code;
-        $conf->save();
-
-        return $conf->save();
+       
+        if($conf->save()){
+            return [
+                'code'=>200,
+                'message'=>'保存成功'
+            ];
+       }else{
+           $msg = ErrorsHelper::getModelError($conf);
+           return [
+               'code'=>400,
+               'message'=>$msg
+           ];
+           
+       }
     }
 
     /**

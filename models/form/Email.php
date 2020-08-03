@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 17:03:38
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-04-30 23:13:34
+ * @Last Modified time: 2020-08-03 14:54:55
  */
 
 namespace diandi\admin\models\form;
@@ -40,16 +40,16 @@ class Email extends Model
     public function getConf($bloc_id)
     {
         $conf = new BlocConfEmail();
-        $bloc = $conf::findOne(['bloc_id' => $bloc_id]);
+        $bloc = $conf::find()->where(['bloc_id' => $bloc_id])->asArray()->one();
 
-        $this->id = $bloc->id;
-        $this->bloc_id = $bloc->bloc_id;
-        $this->host = $bloc->host;
-        $this->port = $bloc->port;
-        $this->username = $bloc->username;
-        $this->password = $bloc->password;
-        $this->title = $bloc->title;
-        $this->encryption = $bloc->encryption;
+        $this->id = $bloc['id'];
+        $this->bloc_id = $bloc['bloc_id'];
+        $this->host = $bloc['host'];
+        $this->port = $bloc['port'];
+        $this->username = $bloc['username'];
+        $this->password = $bloc['password'];
+        $this->title = $bloc['title'];
+        $this->encryption = $bloc['encryption'];
     }
 
     public function saveConf($bloc_id)
@@ -70,9 +70,20 @@ class Email extends Model
         $conf->password = $this->password;
         $conf->title = $this->title;
         $conf->encryption = $this->encryption;
-        $conf->save();
-
-        return $conf->save();
+      
+        if($conf->save()){
+            return [
+                'code'=>200,
+                'message'=>'保存成功'
+            ];
+       }else{
+           $msg = ErrorsHelper::getModelError($conf);
+           return [
+               'code'=>400,
+               'message'=>$msg
+           ];
+           
+       }
     }
 
     /**

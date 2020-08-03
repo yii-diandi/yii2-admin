@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 16:23:11
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-25 00:31:25
+ * @Last Modified time: 2020-08-03 14:55:50
  */
 
 namespace diandi\admin\controllers;
@@ -17,6 +17,8 @@ use diandi\admin\models\form\Sms;
 use diandi\admin\models\form\Wechatpay;
 use diandi\admin\models\form\Wxapp;
 use Yii;
+use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * Description of RuleController.
@@ -40,16 +42,19 @@ class SettingController extends BaseController
 
         $model = new Baidu();
         $bloc_id = $_GPC['bloc_id'];
+         
         if (Yii::$app->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->saveConf($bloc_id)) {
-                Yii::$app->session->setFlash('success', '保持成功');
+            $model->load(Yii::$app->request->post());
+            $Res = $model->saveConf($bloc_id);
+            if ($Res['code']==200) {
+                Yii::$app->session->setFlash('success',$Res['message']);
             } else {
-                Yii::$app->session->setFlash('success', '保持失败');
+                Yii::$app->session->setFlash('error',$Res['message']);
             }
+            
         } else {
             $model->getConf($bloc_id);
         }
-
         return $this->render('baidu', [
             'model' => $model,
         ]);
@@ -59,16 +64,19 @@ class SettingController extends BaseController
     {
         $model = new Wechatpay();
         $bloc_id = Yii::$app->request->get('bloc_id');
+          
         if (Yii::$app->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->saveConf($bloc_id)) {
-                Yii::$app->session->setFlash('success', '保持成功');
+            $model->load(Yii::$app->request->post());
+            $Res = $model->saveConf($bloc_id);
+            if ($Res['code']==200) {
+                Yii::$app->session->setFlash('success',$Res['message']);
             } else {
-                Yii::$app->session->setFlash('success', '保持失败');
+                Yii::$app->session->setFlash('error',$Res['message']);
             }
+            
         } else {
             $model->getConf($bloc_id);
         }
-
         return $this->render('wechatpay', [
             'model' => $model,
         ]);
@@ -78,12 +86,16 @@ class SettingController extends BaseController
     {
         $model = new Sms();
         $bloc_id = Yii::$app->request->get('bloc_id');
+         
         if (Yii::$app->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->saveConf($bloc_id)) {
-                Yii::$app->session->setFlash('success', '保持成功');
+            $model->load(Yii::$app->request->post());
+            $Res = $model->saveConf($bloc_id);
+            if ($Res['code']==200) {
+                Yii::$app->session->setFlash('success',$Res['message']);
             } else {
-                Yii::$app->session->setFlash('success', '保持失败');
+                Yii::$app->session->setFlash('error',$Res['message']);
             }
+            
         } else {
             $model->getConf($bloc_id);
         }
@@ -97,12 +109,16 @@ class SettingController extends BaseController
     {
         $model = new Email();
         $bloc_id = Yii::$app->request->get('bloc_id');
+         
         if (Yii::$app->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->saveConf($bloc_id)) {
-                Yii::$app->session->setFlash('success', '保持成功');
+            $model->load(Yii::$app->request->post());
+            $Res = $model->saveConf($bloc_id);
+            if ($Res['code']==200) {
+                Yii::$app->session->setFlash('success',$Res['message']);
             } else {
-                Yii::$app->session->setFlash('success', '保持失败');
+                Yii::$app->session->setFlash('error',$Res['message']);
             }
+            
         } else {
             $model->getConf($bloc_id);
         }
@@ -117,12 +133,16 @@ class SettingController extends BaseController
         $model = new Wxapp();
         $bloc_id = Yii::$app->request->get('bloc_id');
          
+         
         if (Yii::$app->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->saveConf($bloc_id)) {
-                Yii::$app->session->setFlash('success', '保持成功');
+            $model->load(Yii::$app->request->post());
+            $Res = $model->saveConf($bloc_id);
+            if ($Res['code']==200) {
+                Yii::$app->session->setFlash('success',$Res['message']);
             } else {
-                Yii::$app->session->setFlash('success', '保持失败');
+                Yii::$app->session->setFlash('error',$Res['message']);
             }
+            
         } else {
             $model->getConf($bloc_id);
         }
@@ -136,16 +156,20 @@ class SettingController extends BaseController
     {
         $model = new Map();
         $bloc_id = Yii::$app->request->get('bloc_id');
+         
         if (Yii::$app->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->saveConf($bloc_id)) {
-                Yii::$app->session->setFlash('success', '保持成功');
+            $model->load(Yii::$app->request->post());
+            $Res = $model->saveConf($bloc_id);
+            if ($Res['code']==200) {
+                Yii::$app->session->setFlash('success',$Res['message']);
             } else {
-                Yii::$app->session->setFlash('success', '保持失败');
+                Yii::$app->session->setFlash('error',$Res['message']);
             }
+            
         } else {
             $model->getConf($bloc_id);
         }
-
+        
         return $this->render('map', [
             'model' => $model,
         ]);

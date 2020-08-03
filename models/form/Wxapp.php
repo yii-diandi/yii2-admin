@@ -3,12 +3,13 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 17:04:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-25 00:12:02
+ * @Last Modified time: 2020-08-03 14:54:34
  */
 
 namespace diandi\admin\models\form;
 
 use common\helpers\ErrorsHelper;
+use common\helpers\ResultHelper;
 use diandi\admin\models\BlocConfWxapp;
 use yii\base\Model;
 
@@ -54,26 +55,27 @@ class Wxapp extends Model
     public function getConf($bloc_id)
     {
         $conf = new BlocConfWxapp();
-        $bloc = $conf::findOne(['bloc_id' => $bloc_id]);
-        $this->id = $bloc->id;
-        $this->bloc_id = $bloc->bloc_id;
+        $bloc = $conf::find()->where(['bloc_id' => $bloc_id])->asArray()->one();
+        $this->id = $bloc['id'];
+        $this->bloc_id = $bloc['bloc_id'];
 
-        $this->name = $bloc->name;
-        $this->description = $bloc->description;
-        $this->original = $bloc->original;
-        $this->AppId = $bloc->AppId;
-        $this->AppSecret = $bloc->AppSecret;
-        $this->headimg = $bloc->headimg;
-        $this->codeUrl = $bloc->codeUrl;
+        $this->name = $bloc['name'];
+        $this->description = $bloc['description'];
+        $this->original = $bloc['original'];
+        $this->AppId = $bloc['AppId'];
+        $this->AppSecret = $bloc['AppSecret'];
+        $this->headimg = $bloc['headimg'];
+        $this->codeUrl = $bloc['codeUrl'];
     }
 
     public function saveConf($bloc_id)
     {
         if (!$this->validate()) {
-            return null;
+            return $this->validate();
         }
 
         $conf = BlocConfWxapp::findOne(['bloc_id' => $bloc_id]);
+      
         if (!$conf) {
             $conf = new BlocConfWxapp();
         }
@@ -85,11 +87,18 @@ class Wxapp extends Model
         $conf->AppSecret = $this->AppSecret;
         $conf->headimg = $this->headimg;
         $conf->codeUrl = $this->codeUrl;
+    
         if($conf->save()){
-             return $conf->save();
-            
+             return [
+                 'code'=>200,
+                 'message'=>'保存成功'
+             ];
         }else{
-            return ErrorsHelper::getModelError($conf);
+            $msg = ErrorsHelper::getModelError($conf);
+            return [
+                'code'=>400,
+                'message'=>$msg
+            ];
             
         }
 

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 17:04:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-17 08:47:49
+ * @Last Modified time: 2020-08-03 14:54:52
  */
 
 namespace diandi\admin\models\form;
@@ -45,12 +45,12 @@ class Map extends Model
     public function getConf($bloc_id)
     {
         $conf = new BlocConfMap();
-        $bloc = $conf::findOne(['bloc_id' => $bloc_id]);
-        $this->id = $bloc->id;
-        $this->bloc_id = $bloc->bloc_id;
-        $this->baiduApk = $bloc->baiduApk;
-        $this->amapApk = $bloc->amapApk;
-        $this->tencentApk = $bloc->tencentApk;
+        $bloc = $conf::find()->where(['bloc_id' => $bloc_id])->asArray()->one();
+        $this->id = $bloc['id'];
+        $this->bloc_id = $bloc['bloc_id'];
+        $this->baiduApk = $bloc['baiduApk'];
+        $this->amapApk = $bloc['amapApk'];
+        $this->tencentApk = $bloc['tencentApk'];
     }
 
     public function saveConf($bloc_id)
@@ -68,9 +68,20 @@ class Map extends Model
         $conf->baiduApk = $this->baiduApk;
         $conf->amapApk = $this->amapApk;
         $conf->tencentApk = $this->tencentApk;
-        $conf->save();
-
-        return $conf->save();
+       
+        if($conf->save()){
+            return [
+                'code'=>200,
+                'message'=>'保存成功'
+            ];
+       }else{
+           $msg = ErrorsHelper::getModelError($conf);
+           return [
+               'code'=>400,
+               'message'=>$msg
+           ];
+           
+       }
     }
 
     /**
