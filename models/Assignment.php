@@ -60,7 +60,7 @@ class Assignment extends \diandi\admin\BaseObject
     {
         $manager = Configs::authManager();
         $success = 0;
-        if ($items['group']) {
+        if (!empty($items['group'])) {
             foreach ($items['group'] as $name) {
                 try {
                     $item = $manager->getGroup($name, $this->type);
@@ -76,11 +76,12 @@ class Assignment extends \diandi\admin\BaseObject
             }
         }
 
-        if ($items['permission']) {
+        if (!empty($items['permission'])) {
             foreach ($items['permission'] as $name) {
                 try {
                     $item = $manager->getRole($name);
                     $item = $item ?: $manager->getPermission($name);
+                
                     $manager->assign($item, $this->id);
                     ++$success;
                 } catch (\Exception $exc) {
@@ -107,7 +108,7 @@ class Assignment extends \diandi\admin\BaseObject
         $manager = Configs::authManager();
         $success = 0;
 
-        if ($items['group']) {
+        if (isset($items['group'])) {
             foreach ($items['group'] as $name) {
                 try {
                     $item = $manager->getGroup($name, $this->type);
@@ -121,7 +122,7 @@ class Assignment extends \diandi\admin\BaseObject
             }
         }
 
-        if ($items['permission']) {
+        if (isset($items['permission'])) {
             foreach ($items['permission'] as $name) {
                 try {
                     $item = $manager->getRole($name);

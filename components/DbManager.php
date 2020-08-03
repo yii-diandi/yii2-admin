@@ -714,10 +714,10 @@ class DbManager extends \yii\rbac\DbManager
         if (!isset($row['data']) || ($data = @unserialize(is_resource($row['data']) ? stream_get_contents($row['data']) : $row['data'])) === false) {
             $data = null;
         }
-        
         switch ($type) {
             case 'itemTable':
                 return new $class([
+                    'id' => $row['id'],
                     'name' => $row['name'],
                     'type' => $row['type'],
                     'description' => $row['description'],
@@ -729,6 +729,7 @@ class DbManager extends \yii\rbac\DbManager
                 break;
             case 'routeTable':
                 return new $class([
+                    'id' => $row['id'],
                     'name' => $row['name'],
                     'type' => $row['type'],
                     'description' => $row['description'],
@@ -740,10 +741,10 @@ class DbManager extends \yii\rbac\DbManager
                 break;
             case 'groupTable':
                 return new $class([
+                    'id' => $row['id'],
                     'name' => $row['name'],
                     'type' => $row['type'],
                     'description' => $row['description'],
-                    'ruleName' => $row['rule_name'] ?: null,
                     'data' => $data,
                     'createdAt' => $row['created_at'],
                     'updatedAt' => $row['updated_at'],

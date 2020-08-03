@@ -130,6 +130,7 @@ class AssignmentController extends BaseController
             'id'=>$id,
             'type'=>$this->type
             ]);
+            
         $success = $model->assign($items);
         Yii::$app->getResponse()->format = 'json';
         return array_merge($model->getItems($this->type), ['success' => $success]);
