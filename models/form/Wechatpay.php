@@ -4,11 +4,12 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-14 01:25:51
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-03 10:52:11
+ * @Last Modified time: 2020-08-04 11:15:20
  */
 
 namespace diandi\admin\models\form;
 
+use common\helpers\ErrorsHelper;
 use diandi\admin\models\BlocConfWechatpay;
 use yii\base\Model;
 
@@ -71,7 +72,21 @@ class Wechatpay extends Model
         $conf->app_id = $this->app_id;
         $conf->key = $this->key;
 
-        return $conf->save();
+       
+        if($conf->save()){
+            return [
+                'code'=>200,
+                'message'=>'保存成功'
+            ];
+       }else{
+           $msg = ErrorsHelper::getModelError($conf);
+           return [
+               'code'=>400,
+               'message'=>$msg
+           ];
+           
+       }
+
     }
 
     /**

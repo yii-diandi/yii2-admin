@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 22:47:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-29 01:40:32
+ * @Last Modified time: 2020-08-04 11:17:27
  */
 
 namespace diandi\admin\models;
@@ -49,10 +49,10 @@ class BlocConfWechatpay extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['bloc_id', 'mch_id', 'notify_url'], 'required'],
+            [['bloc_id', 'mch_id'], 'required'],
             [['bloc_id', 'create_time', 'update_time'], 'integer'],
             [['notify_url', 'app_id', 'mch_id'], 'string', 'max' => 100],
-            [['key'], 'string', 'max' => 255],
+            [['key','notify_url'], 'string', 'max' => 255],
         ];
     }
 

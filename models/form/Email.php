@@ -3,13 +3,14 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 17:03:38
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-03 14:54:55
+ * @Last Modified time: 2020-08-04 11:15:44
  */
 
 namespace diandi\admin\models\form;
 
 use diandi\admin\models\BlocConfEmail;
 use yii\base\Model;
+use common\helpers\ErrorsHelper;
 
 class Email extends Model
 {
