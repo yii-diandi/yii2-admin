@@ -2,12 +2,13 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-05 20:46:57
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-06 11:13:49
+ * @Last Modified time: 2020-08-06 23:16:00
  */
 $('i.glyphicon-refresh-animate').hide();
 function updateItems(r) {
     _opts.items.available = r.available;
     _opts.items.assigned = r.assigned;
+  
     search('available');
     search('assigned');
 }
@@ -61,8 +62,9 @@ function search(target) {
         permission: [$('<optgroup label="Permission">'), false],
         route: [$('<optgroup label="Routes">'), false],
     };
+    console.log('_opts',_opts.items)
     $.each(_opts.items[target], function (name, group) {
-        console.log(name,group)
+        // console.log(name,group)
         if (name.indexOf(q) >= 0) {
             $('<option>').text(name).val(name).appendTo(groups[group][0]);
             groups[group][1] = true;

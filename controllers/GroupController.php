@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 17:44:12
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 22:03:36
+ * @Last Modified time: 2020-08-06 23:44:05
  */
 
 namespace diandi\admin\controllers;
@@ -87,8 +87,7 @@ class GroupController extends BaseController
         
         
         $items = $manager->getAuths($model['name'],$this->type);
-        
-
+  
         return $this->render('view', [
             'model' => $model,
             'module_name' => $this->module_name,

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-01 10:55:29
+ * @Last Modified time: 2020-08-06 23:43:54
  */
 
 namespace diandi\admin\components;
@@ -720,6 +720,7 @@ class DbManager extends \yii\rbac\DbManager
                     'id' => $row['id'],
                     'name' => $row['name'],
                     'type' => $row['type'],
+                    'child_type' => isset($row['child_type'])?$row['child_type']:0,
                     'description' => $row['description'],
                     'ruleName' => $row['rule_name'] ?: null,
                     'data' => $data,
@@ -732,6 +733,8 @@ class DbManager extends \yii\rbac\DbManager
                     'id' => $row['id'],
                     'name' => $row['name'],
                     'type' => $row['type'],
+                    'child_type' => isset($row['child_type'])?$row['child_type']:0,
+
                     'description' => $row['description'],
                     // 'ruleName' => $row['rule_name'] ?: null,
                     'data' => $data,
@@ -744,6 +747,7 @@ class DbManager extends \yii\rbac\DbManager
                     'id' => $row['id'],
                     'name' => $row['name'],
                     'type' => $row['type'],
+                    'child_type' => isset($row['child_type'])?$row['child_type']:0,
                     'description' => $row['description'],
                     'data' => $data,
                     'createdAt' => $row['created_at'],
@@ -757,7 +761,7 @@ class DbManager extends \yii\rbac\DbManager
                     'parent_id' => $row['parent_id'],
                     'module_name' => $row['module_name'],
                     'type' => $row['type'],
-                    'child_type' => $row['child_type'],
+                    'child_type' => isset($row['child_type'])?$row['child_type']:0,
                     'parent_type' => 1,
                     'description' => $row['description'],
                     'ruleName' => $row['rule_name'] ?: null,

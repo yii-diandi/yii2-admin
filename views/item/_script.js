@@ -2,7 +2,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-05 20:52:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-08 23:11:33
+ * @Last Modified time: 2020-08-07 00:57:39
  */
 
 $('i.glyphicon-refresh-animate').hide();
@@ -18,16 +18,18 @@ $('.btn-assign').click(function () {
     var target = $this.data('target');
 
     var items = {
-        group: [],
+        role: [],
         permission: [],
         route: [],
     }
     // 分组返回数据
     var opt = $('select.list[data-target="' + target + '"]').find(':selected');
+    console.log(opt);
+    
     $.each(opt,function(key,name){
         var og = $(this).closest('optgroup').attr('label')
-        if(og=='Groups'){
-            items.group.push($(this).val())
+        if(og=='Roles'){
+            items.role.push($(this).val())
         }
         if(og=='Permission'){
             items.permission.push($(this).val())
@@ -61,10 +63,11 @@ function search(target) {
     var q = $('.search[data-target="' + target + '"]').val();
 
     var groups = {
-        role: [$('<optgroup label="Groups">'), false],
+        role: [$('<optgroup label="Roles">'), false],
         permission: [$('<optgroup label="Permission">'), false],
         route: [$('<optgroup label="Routes">'), false],
     };
+    console.log(_opts.items)
     $.each(_opts.items[target], function (name, group) {
         if (name.indexOf(q) >= 0) {
             $('<option>').text(name).val(name).appendTo(groups[group][0]);

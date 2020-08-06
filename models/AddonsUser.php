@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-09 10:51:10
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-03 08:56:15
+ * @Last Modified time: 2020-08-06 22:18:54
  */
 
 namespace diandi\admin\models;
@@ -89,21 +89,21 @@ class AddonsUser extends \yii\db\ActiveRecord
         $assigned = [];
 
         $addons = DdAddons::find()->asArray()->all();
-
+        
+        
         if ($addons) {
             foreach ($addons as $key => $value) {
                 $available['modules'][] = $value;
             }
         }
         $usersAddons = $this->find()->where(['user_id' => $user_id])->asArray()->all();
-
         if ($usersAddons) {
             foreach ($usersAddons as $key => $value) {
                 if (key_exists('modules', $available)) {
                     foreach ($available['modules'] as $ke => $val) {
+                        $value['identifie'] = $value['module_name'];
+                        $value['title'] = $val['title'];
                         if ($val['identifie'] == $value['module_name']) {
-                            $value['identifie'] = $value['module_name'];
-                            $value['title'] = $val['title'];
                             unset($available['modules'][$ke]);
                         }
                     }

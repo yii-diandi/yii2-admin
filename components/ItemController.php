@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:03:01
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-19 08:08:07
+ * @Last Modified time: 2020-08-07 01:08:54
  */
 
 namespace diandi\admin\components;
@@ -193,9 +193,13 @@ class ItemController extends Controller
         $items = Yii::$app->getRequest()->post('items', []);
         $model = $this->findModel($id);
         $success = $model->addChildren($items);
+        if(!$success){
+           $msg = ErrorsHelper::getModelError($model); 
+        }
+        
         Yii::$app->getResponse()->format = 'json';
 
-        return array_merge($model->getItems(), ['success' => $success]);
+        return array_merge($model->getItems(), ['success' => $success,'error'=>$msg]);
     }
 
     /**
@@ -285,7 +289,7 @@ class ItemController extends Controller
         $item = $auth->getPermission($id);
         
         if ($item) {
-            $item->parent_type = $this->parent_type;  
+            $item->type = $this->parent_type;  
             return new AuthItem($item);
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

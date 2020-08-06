@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:39:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-03 09:01:04
+ * @Last Modified time: 2020-08-06 16:30:33
  */
 
 namespace diandi\admin\controllers;
@@ -185,7 +185,8 @@ class UserController extends BaseController
     public function actionView($id)
     {
         $AddonsUser = new AddonsUser([
-            'user_id' => $id, ]);
+            'user_id' => $id
+        ]);
         $opts = $AddonsUser->getItems();
         $animateIcon = '';
 

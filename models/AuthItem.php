@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-01 10:31:46
+ * @Last Modified time: 2020-08-07 00:41:30
  */
 
 namespace diandi\admin\models;
@@ -247,10 +247,12 @@ class AuthItem extends Model
                         $manager->addChild($this->_item, $child);
                         ++$success;
                     } catch (\Exception $exc) {
+                        p($exc->getMessage());
                         Yii::error($exc->getMessage(), __METHOD__);
                     }
                 }
             }
+            
             // foreach ($items as $name) {
             //     $child = $manager->getPermission($name);
 
@@ -347,6 +349,7 @@ class AuthItem extends Model
             unset($available[$item->name]);
         }
         unset($available[$this->name]);
+        
 
         return [
             'available' => $available,
