@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 21:43:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-06-24 10:49:06
+ * @Last Modified time: 2020-08-12 11:55:11
  */
 
 namespace diandi\admin\controllers;
@@ -89,6 +89,7 @@ class BlocController extends BaseController
                 throw new BadRequestHttpException($msg);
             }
         }
+        $model->status = 2;
 
         return $this->render('create', [
             'model' => $model,

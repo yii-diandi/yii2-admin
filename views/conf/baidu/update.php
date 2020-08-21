@@ -3,10 +3,10 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model diandi\admin\models\BlocConfBaidu */
+/* @var $model common\addons\diandi_operator\modules\OperatorBloc */
 
-$this->title = 'Update Bloc Conf Baidu: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Bloc Conf Baidus', 'url' => ['index']];
+$this->title = 'Update Operator Bloc: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Operator Blocs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = 'Update';
 <div class="firetech-main">
     <div class="panel panel-default">
         <div class="box-body">
-            <div class="bloc-conf-baidu-update">
+            <div class="operator-bloc-update">
 
 
                 <?= $this->render('_form', [

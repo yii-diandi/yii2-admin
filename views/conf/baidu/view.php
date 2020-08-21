@@ -4,10 +4,10 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model diandi\admin\models\BlocConfBaidu */
+/* @var $model common\addons\diandi_operator\modules\OperatorBloc */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Bloc Conf Baidus', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Operator Blocs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <div class=" firetech-main">
-    <div class="bloc-conf-baidu-view">
+    <div class="operator-bloc-view">
 
         <div class="panel panel-default">
             <div class="box-body">
@@ -36,10 +36,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attributes' => [
                             'id',
             'bloc_id',
-            'APP_ID',
-            'API_KEY',
-            'SECRET_KEY',
+            'store_id',
+            'profit1',
+            'profit2',
+            'profit3',
             'name',
+            'account',
+            'money',
+            'earnings',
             'create_time:datetime',
             'update_time:datetime',
                 ],

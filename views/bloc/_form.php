@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 21:44:22
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-06-24 10:13:02
+ * @Last Modified time: 2020-08-12 11:46:44
  */
 use common\helpers\LevelTplHelper;
 use common\models\DdRegion;
@@ -84,10 +84,9 @@ $Helper = new LevelTplHelper([
 
 
         <?= $form->field($model, 'status')->radioList([
-            1 => '审核通过',
-            2 => '审核中',
-            3 => '审核未通过',
-        ]); ?>
+            1 => '集团',
+            2 => '非集团',
+        ])->hint('非集团，只能看到该公司数据。集团：可以看到子公司所有数据，只在一级公司下设置有效'); ?>
         
         <?= $form->field($model, 'license_no')->textInput(['maxlength' => true]); ?>
 

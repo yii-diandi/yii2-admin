@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-06 23:43:54
+ * @Last Modified time: 2020-08-21 23:42:04
  */
 
 namespace diandi\admin\components;
@@ -354,8 +354,15 @@ class DbManager extends \yii\rbac\DbManager
     {
         $permission = new Route();
         $permission->name = $name;
+        if (strpos($name, '_') !== false) {
+            $list = explode('/',$name);
+            $permission->type = 1;
+            $permission->module_name = $list[1];
+        }else{
+            $permission->type = 0;
+        }
+        
         $permission->pid = 0;
-        $permission->type = 1;
 
         return $permission;
     }
@@ -730,7 +737,7 @@ class DbManager extends \yii\rbac\DbManager
                 break;
             case 'routeTable':
                 return new $class([
-                    'id' => $row['id'],
+                    // 'id' => $row['id'],
                     'name' => $row['name'],
                     'type' => $row['type'],
                     'child_type' => isset($row['child_type'])?$row['child_type']:0,

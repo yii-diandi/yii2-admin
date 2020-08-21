@@ -3,27 +3,19 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model diandi\admin\models\BlocConfBaidu */
+/* @var $model common\addons\diandi_operator\modules\OperatorBloc */
 
-$this->title = '添加 Bloc Conf Baidu';
-$this->params['breadcrumbs'][] = ['label' => 'Bloc Conf Baidus', 'url' => ['index']];
+$this->title = '添加 Operator Bloc';
+$this->params['breadcrumbs'][] = ['label' => 'Operator Blocs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<ul id="w1" class="nav nav-tabs"><li><a href="/backend/gii">管理</a></li>
-<li><a href="/backend/gii/default/create">添加</a></li>
-<li class="active"><a href="/backend/gii/default/view">详情</a></li></ul>
-<div class="tab-content"><div id="w1-tab0" class="tab-pane"></div>
-<div id="w1-tab1" class="tab-pane"></div>
-<div id="w1-tab2" class="tab-pane active"></div></div>
-
-
-
+<?= $this->render('_tab') ?>
 
 <div class="firetech-main">
     <div class="panel panel-default">
         <div class="box-body">
-            <div class="bloc-conf-baidu-create">
+            <div class="operator-bloc-create">
 
                 <?= $this->render('_form', [
                 'model' => $model,

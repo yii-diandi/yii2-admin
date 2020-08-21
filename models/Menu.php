@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 12:27:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-10 17:16:20
+ * @Last Modified time: 2020-08-12 02:09:30
  */
 
 
@@ -160,6 +160,7 @@ class Menu extends \yii\db\ActiveRecord
                 }
             }
         }
+        
         return self::$_routes;
     }
 

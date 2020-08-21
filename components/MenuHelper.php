@@ -3,7 +3,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 20:26:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-07 09:38:48
+ * @Last Modified time: 2020-08-22 00:28:49
  */
 
 namespace diandi\admin\components;
@@ -164,7 +164,7 @@ class MenuHelper
         $l = count($assigned);
         for ($i = 0; $i < $l; ++$i) {
             $id = $assigned[$i];
-            $parent_id = $menus[$id]['parent'];
+            $parent_id = isset($menus[$id])?$menus[$id]['parent']:'';
             if ($parent_id !== null && !in_array($parent_id, $assigned)) {
                 $assigned[$l++] = $parent_id;
             }
