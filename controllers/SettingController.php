@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-04-30 16:23:11
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-03 14:55:50
+ * @Last Modified time: 2020-09-06 16:44:53
  */
 
 namespace diandi\admin\controllers;
@@ -14,6 +14,7 @@ use diandi\admin\models\form\Baidu;
 use diandi\admin\models\form\Email;
 use diandi\admin\models\form\Map;
 use diandi\admin\models\form\Sms;
+use diandi\admin\models\form\Wechat;
 use diandi\admin\models\form\Wechatpay;
 use diandi\admin\models\form\Wxapp;
 use Yii;
@@ -148,6 +149,30 @@ class SettingController extends BaseController
         }
 
         return $this->render('wxapp', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionWechat()
+    {
+        $model = new Wechat();
+        $bloc_id = Yii::$app->request->get('bloc_id');
+         
+         
+        if (Yii::$app->request->isPost) {
+            $model->load(Yii::$app->request->post());
+            $Res = $model->saveConf($bloc_id);
+            if ($Res['code']==200) {
+                Yii::$app->session->setFlash('success',$Res['message']);
+            } else {
+                Yii::$app->session->setFlash('error',$Res['message']);
+            }
+            
+        } else {
+            $model->getConf($bloc_id);
+        }
+
+        return $this->render('wechat', [
             'model' => $model,
         ]);
     }
