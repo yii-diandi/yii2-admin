@@ -153,6 +153,7 @@ class SettingController extends BaseController
         ]);
     }
 
+
     public function actionWechat()
     {
         $model = new Wechat();
