@@ -4,6 +4,7 @@ namespace diandi\admin\models;
 
 use Yii;
 
+
 /**
  * This is the model class for table "{{%diandi_bloc_conf_wechat}}".
  *
