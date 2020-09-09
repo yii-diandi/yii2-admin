@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-09-09 16:08:37
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-09-09 16:08:45
+ */
+ 
 
 namespace diandi\admin\models;
 
@@ -36,8 +43,7 @@ class BlocConfWechat extends \yii\db\ActiveRecord
             [['bloc_id', 'update_time', 'create_time'], 'integer'],
             [['app_id'], 'string', 'max' => 50],
             [['secret'], 'string', 'max' => 200],
-            [['token', 'headimg'], 'string', 'max' => 255],
-            [['aes_key'], 'string', 'max' => 15],
+            [['token', 'headimg','aes_key'], 'string', 'max' => 255],
             [['bloc_id'], 'unique'],
         ];
     }
