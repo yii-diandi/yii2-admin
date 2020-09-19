@@ -4,31 +4,30 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 12:27:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-12 02:09:30
+ * @Last Modified time: 2020-09-19 10:45:48
  */
-
 
 namespace diandi\admin\models;
 
-use Yii;
 use diandi\admin\components\Configs;
+use Yii;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "menu".
  *
- * @property integer $id Menu id(autoincrement)
- * @property string $name Menu name
- * @property integer $parent Menu parent
- * @property string $route Route for this menu
- * @property integer $order Menu order
- * @property string $data Extra information for this menu
- *
- * @property Menu $menuParent Menu parent
- * @property Menu[] $menus Menu children
+ * @property int    $id         Menu id(autoincrement)
+ * @property string $name       Menu name
+ * @property int    $parent     Menu parent
+ * @property string $route      Route for this menu
+ * @property int    $order      Menu order
+ * @property string $data       Extra information for this menu
+ * @property Menu   $menuParent Menu parent
+ * @property Menu[] $menus      Menu children
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
+ *
  * @since 1.0
  */
 class Menu extends \yii\db\ActiveRecord
@@ -36,7 +35,7 @@ class Menu extends \yii\db\ActiveRecord
     public $parent_name;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -44,7 +43,7 @@ class Menu extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function getDb()
     {
@@ -58,11 +57,12 @@ class Menu extends \yii\db\ActiveRecord
     public static function getRegion($parentId = 0)
     {
         $result = static::find()->where(['parent' => $parentId])->asArray()->all();
+
         return ArrayHelper::map($result, 'id', 'name');
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -72,7 +72,7 @@ class Menu extends \yii\db\ActiveRecord
             [
                 ['parent_name'], 'in',
                 'range' => static::find()->select(['name'])->column(),
-                'message' => 'Menu "{value}" not found.'
+                'message' => 'Menu "{value}" not found.',
             ],
             [['parent', 'route', 'data', 'order'], 'default'],
             [['parent'], 'filterParent', 'when' => function () {
@@ -83,8 +83,8 @@ class Menu extends \yii\db\ActiveRecord
             [
                 ['route'], 'in',
                 'range' => static::getSavedRoutes(),
-                'message' => 'Route "{value}" not found.'
-            ]
+                'message' => 'Route "{value}" not found.',
+            ],
         ];
     }
 
@@ -95,12 +95,13 @@ class Menu extends \yii\db\ActiveRecord
     {
         $parent = $this->parent;
         $db = static::getDb();
-        $query = (new Query)->select(['parent'])
+        $query = (new Query())->select(['parent'])
             ->from(static::tableName())
             ->where('[[id]]=:id');
         while ($parent) {
             if ($this->id == $parent) {
                 $this->addError('parent_name', 'Loop detected.');
+
                 return;
             }
             $parent = $query->params([':id' => $parent])->scalar($db);
@@ -108,7 +109,7 @@ class Menu extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
@@ -128,7 +129,8 @@ class Menu extends \yii\db\ActiveRecord
     }
 
     /**
-     * Get menu parent
+     * Get menu parent.
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getMenuParent()
@@ -137,36 +139,40 @@ class Menu extends \yii\db\ActiveRecord
     }
 
     /**
-     * Get menu children
+     * Get menu children.
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getMenus()
     {
         return $this->hasMany(Menu::className(), ['parent' => 'id']);
     }
+
     private static $_routes;
 
     /**
      * Get saved routes.
+     *
      * @return array
      */
     public static function getSavedRoutes()
     {
         if (self::$_routes === null) {
             self::$_routes = [];
-            foreach (Configs::authManager()->getRoutePermissions() as $name => $value) {
+            foreach (Configs::authManager()->getRoutePermissions(2) as $name => $value) {
                 if ($name[0] === '/' && substr($name, -1) != '*') {
                     self::$_routes[] = $name;
                 }
             }
         }
-        
+
         return self::$_routes;
     }
 
     public static function getMenuSource()
     {
         $tableName = static::tableName();
+
         return (new \yii\db\Query())
             ->select(['m.id', 'm.name', 'm.route', 'parent_name' => 'p.name'])
             ->from(['m' => $tableName])

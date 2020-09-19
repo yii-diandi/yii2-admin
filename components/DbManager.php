@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-21 23:42:04
+ * @Last Modified time: 2020-09-19 10:44:21
  */
 
 namespace diandi\admin\components;
@@ -170,7 +170,6 @@ class DbManager extends \yii\rbac\DbManager
         $query = (new Query())
             ->from($this->routeTable)
             ->where($where);
-
         $items = [];
         foreach ($query->all($this->db) as $row) {
             $items[$row['name']] = $this->populateRoute($row);
