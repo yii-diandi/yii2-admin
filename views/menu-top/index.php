@@ -6,7 +6,7 @@
  * @Last Modified time: 2020-09-19 10:13:48
  */
 
-use yii\grid\GridView;
+use common\widgets\MyGridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel diandi\admin\models\searchs\MenuTopSearch */
@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php // echo $this->render('_search', ['model' => $searchModel]);?>
                 <div class="panel panel-default">
             <div class="box-body table-responsive">
-                    <?= GridView::widget([
+                    <?= MyGridView::widget([
                         'dataProvider' => $dataProvider,
                         'layout' => "{items}\n{pager}",
                         'filterModel' => $searchModel,

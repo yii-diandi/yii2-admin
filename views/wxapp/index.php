@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use common\widgets\MyGridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel diandi\admin\models\searchs\BlocConfWxappSearch */
@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h3 class="panel-title">列表</h3>
             </div>
             <div class="box-body table-responsive">
-                                    <?= GridView::widget([
+                                    <?= MyGridView::widget([
                     'dataProvider' => $dataProvider,
                     'layout' => "{items}\n{pager}",
                     'filterModel' => $searchModel,

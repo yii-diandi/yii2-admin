@@ -3,15 +3,15 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:12:58
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-19 08:55:51
+ * @Last Modified time: 2020-11-01 01:02:42
  */
  
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use common\widgets\MyGridView;
 use diandi\admin\components\RouteRule;
 use diandi\admin\components\Configs;
-use leandrogehlen\treegrid\TreeGrid;
+use common\widgets\MyTreeGrid;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
@@ -44,7 +44,7 @@ unset($rules[RouteRule::RULE_NAME]);
     
 
 <div class="role-index">
-<?= TreeGrid::widget([
+<?= MyTreeGrid::widget([
                     'dataProvider' => $dataProvider,
                     'keyColumnName' => 'id',
                     'parentColumnName' => 'parent_id',

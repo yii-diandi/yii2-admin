@@ -8,9 +8,9 @@
  
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use common\widgets\MyGridView;
 use yii\widgets\Pjax;
-use leandrogehlen\treegrid\TreeGrid;
+use common\widgets\MyTreeGrid;
 use yii2mod\editable\EditableColumn;
 use yii\helpers\Url;
 
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="panel-body">
          
 
-    <?= TreeGrid::widget([
+    <?= MyTreeGrid::widget([
         'dataProvider' => $dataProvider,
         'keyColumnName' => 'id',
         'parentColumnName' => 'parent',

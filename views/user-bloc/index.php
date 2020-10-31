@@ -5,7 +5,7 @@
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
  * @Last Modified time: 2020-07-07 16:08:30
  */
-use yii\grid\GridView;
+use common\widgets\MyGridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel diandi\admin\models\searchs\UserBlocSearch */
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h3 class="panel-title">列表</h3>
             </div>
             <div class="box-body table-responsive">
-                    <?= GridView::widget([
+                    <?= MyGridView::widget([
                     'dataProvider' => $dataProvider,
                     'layout' => "{items}\n{pager}",
                     'columns' => [

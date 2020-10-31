@@ -8,7 +8,7 @@
  
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use common\widgets\MyGridView;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
@@ -59,7 +59,7 @@ $columns[] = [
                     
                 <?php Pjax::begin(); ?>
                     <?=
-                    GridView::widget([
+                    MyGridView::widget([
                         'layout'=>"{items}\n{pager}",
                         'dataProvider' => $dataProvider,
                         // 'filterModel' => $searchModel,

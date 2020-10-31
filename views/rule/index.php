@@ -8,7 +8,7 @@
  
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use common\widgets\MyGridView;
 use yii\widgets\Pjax;
 
 /* @var $this  yii\web\View */
@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="firetech-main">
 
     <?=
-    GridView::widget([
+    MyGridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'layout' => "{items}\n{pager}",

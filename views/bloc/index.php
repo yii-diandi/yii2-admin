@@ -5,7 +5,7 @@
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
  * @Last Modified time: 2020-07-17 16:24:25
  */
-use leandrogehlen\treegrid\TreeGrid;
+use common\widgets\MyTreeGrid;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h3 class="panel-title">公司列表</h3>
             </div>
             <div class="box-body table-responsive">
-            <?= TreeGrid::widget([
+            <?= MyTreeGrid::widget([
                     'dataProvider' => $dataProvider,
                     'keyColumnName' => 'bloc_id',
                     'parentColumnName' => 'pid',
