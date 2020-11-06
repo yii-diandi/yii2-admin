@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-09-19 10:44:21
+ * @Last Modified time: 2020-11-04 05:06:04
  */
 
 namespace diandi\admin\components;
@@ -947,6 +947,14 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function getDirectPermissionsByUser($userId)
     {
+        $cacheKey =  'getDirectPermissionsByUser_'.$userId;
+        
+        $_permissions = yii::$app->cache->get($cacheKey);
+        
+        if(!empty($_permissions)){
+            return $_permissions;
+        }
+        
         $query = (new Query())->select('b.*')
             ->from(['a' => $this->assignmentTable, 'b' => $this->routeTable])
             ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
@@ -956,7 +964,9 @@ class DbManager extends \yii\rbac\DbManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row,'assignmentTable');
         }
-
+        
+        yii::$app->cache->set($cacheKey,$permissions);
+        
         return $permissions;
     }
 
@@ -1012,6 +1022,16 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function getInheritedPermissionsByUser($userId)
     {
+        
+        // 使用缓存
+        $cacheKey =  'permissions_'.$userId;
+        
+        $_permissions = yii::$app->cache->get($cacheKey);
+
+        if(!empty($_permissions)){
+            return $_permissions;
+        }
+
         $assignment = [];
 
         $query = (new Query())->select('item_name')
@@ -1058,6 +1078,9 @@ class DbManager extends \yii\rbac\DbManager
             $permissions[$row['name']] = $this->populateItem($row,'Role');
         }
 
+        
+        yii::$app->cache->set($cacheKey,$permissions);
+        
         return $permissions;
     }
 

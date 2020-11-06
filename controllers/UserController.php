@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:39:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-06 16:30:33
+ * @Last Modified time: 2020-11-07 00:20:09
  */
 
 namespace diandi\admin\controllers;
@@ -166,13 +166,71 @@ class UserController extends BaseController
             $Bloc = Bloc::find()->where(['bloc_id' => $model->bloc_id])->select(['business_name'])->one();
             // $ResetPassword = new  ResetPassword($model->password_reset_token);
 
+          
+
             return $this->render('update', [
-                // 'ResetPassword' => $ResetPassword,
                 'model' => $model,
                 'assign' => $assign,
                 'business_name' => $Bloc['business_name'] ? $Bloc['business_name'] : '暂未分配',
             ]);
         }
+    }
+
+    // 修改别人的密码
+    public function actionChangePass($id)
+    {
+        global $_GPC;
+        
+        $id = $_GPC['id']; 
+        
+        $user = $this->findModel($id);
+        $title = $user->username;
+        
+        if (!ResetPassword::isPasswordResetTokenValid($user->password_reset_token)) {
+            $user->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+        }
+
+        $token = $user->password_reset_token;
+
+        
+        if(Yii::$app->request->isPost){
+            
+            try {
+                $user = new ResetPassword($token);
+            } catch (InvalidParamException $e) {
+                throw new BadRequestHttpException($e->getMessage());
+            }
+    
+            if ($user->load(Yii::$app->getRequest()->post()) && $user->validate() && $user->resetPassword()) {
+                
+                Yii::$app->session->setFlash('success', '密码修改成功');
+                
+                return $this->redirect(array('update','id'=>$id));
+    
+            }
+        }
+        
+        
+        if (!$user->save()) {
+              // 修改密码
+            Yii::$app->session->setFlash('success','重置验证失败');
+              
+            return $this->redirect(array('index'));
+        }
+
+        try {
+            $ResetPassword = new ResetPassword($token);
+        } catch (InvalidParamException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+          
+        return $this->render('password', [
+            'ResetPassword' => $ResetPassword,
+            'title'=>$title,
+            'id'=>$id,
+        ]);
+        
     }
 
     /**

@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2020-11-06 17:18:40
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2020-11-06 23:27:29
+ */
+ 
 
 namespace diandi\admin\models\form;
 
@@ -88,5 +95,16 @@ class ResetPassword extends Model
         $parts = explode('_', $token);
         $timestamp = (int) end($parts);
         return $timestamp + $expire >= time();
+    }
+
+     /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'password'=>'密码',
+            'retypePassword'=>'确认密码'
+        ];
     }
 }
