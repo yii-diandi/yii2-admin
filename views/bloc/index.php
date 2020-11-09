@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng
  * @Date:   2020-04-29 16:06:59
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-17 16:24:25
+ * @Last Modified time: 2020-11-09 18:43:53
  */
 use common\widgets\MyTreeGrid;
 use yii\helpers\Html;
@@ -15,12 +15,14 @@ use yii\helpers\Url;
 
 $this->title = '公司';
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->registerJs($this->render('_script.js'));
 ?>
 <?= $this->render('_tab'); ?>
 
 <div class="firetech-main">
 
-    <div class="bloc-index ">
+    <div class="bloc-index" id="bloc-index">
         <?php echo $this->render('_search', ['model' => $searchModel]); ?>
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -77,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return  Html::button('商户管理',[
                                         'title' => '商户管理',
                                         'class' => 'btn btn-default',
-                                        'onclick'=>"dialog('商户管理','{$url}')",
+                                        '@click'=>"dialog('商户管理','{$url}')",
                                     ]);
                                 },
                                 'user' => function ($url, $model, $key) {
@@ -86,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return  Html::button('管理员',[
                                         'title' => '管理员',
                                         'class' => 'btn btn-default',
-                                        'onclick'=>"dialog('管理员', '{$url}')",
+                                        '@click'=>"dialog('管理员', '{$url}')",
                                     ]);
                                 },
                                 'management' => function ($url, $model, $key) {
@@ -95,7 +97,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return  Html::button('参数配置',[
                                         'title' => '进入模块',
                                         'class' => 'btn btn-default',
-                                        'onclick'=>"dialog('参数配置', '{$url}')",
+                                        '@click'=>"dialog('参数配置', '{$url}')",
                                     ]);
                                     
                                 },
