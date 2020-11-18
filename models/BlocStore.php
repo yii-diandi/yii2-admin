@@ -55,7 +55,6 @@ class BlocStore extends \yii\db\ActiveRecord
                 $this->latitude = $this->lng_lat['lat'];
                 $this->longitude = $this->lng_lat['lng'];
                 $this->lng_lat = json_encode($this->lng_lat);
-               
             }
 
             return true;
