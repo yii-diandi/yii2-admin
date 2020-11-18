@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 16:05:29
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-07 15:51:30
+ * @Last Modified time: 2020-11-19 00:43:31
  */
 
 namespace diandi\admin\models;
@@ -77,7 +77,7 @@ class BlocStore extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['bloc_id', 'status'], 'integer'],
+            [['bloc_id', 'status','category_id','category_pid'], 'integer'],
             ['bloc_id', 'compare', 'compareValue' => 0, 'operator' => '!='],
             [['name', 'logo', 'address'], 'string', 'max' => 255],
             [['province', 'city', 'county'], 'string', 'max' => 10],
@@ -97,6 +97,8 @@ class BlocStore extends \yii\db\ActiveRecord
             'name' => '商户名称',
             'extra' => '扩展资料',
             'logo' => '商户LOGO',
+            'category_id' => '二级分类',
+            'category_pid' => '一级分类',
             'bloc_id' => '关联公司',
             'province' => '省份',
             'city' => '城市',

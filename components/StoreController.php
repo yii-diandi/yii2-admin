@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:07:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-07 09:03:44
+ * @Last Modified time: 2020-11-19 01:02:13
  */
 
 namespace diandi\admin\components;
@@ -16,7 +16,10 @@ use yii\filters\VerbFilter;
 use backend\controllers\BaseController;
 use common\helpers\ErrorsHelper;
 use common\helpers\ImageHelper;
+use common\helpers\LevelTplHelper;
 use common\models\DdRegion;
+use diandi\admin\models\StoreCategory;
+use yii\web\Response;
 use yii\web\HttpException;
 
 /**
@@ -74,6 +77,21 @@ class StoreController extends BaseController
         ]);
     }
 
+      /**
+     * @return string
+     */
+    public function actionChildcate()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Yii::$app->request->post();
+            $parent_id = $data['parent_id'];
+            $cates = StoreCategory::findAll(['parent_id' => $parent_id]);
+            return $cates;
+        }
+    }
+
+
     /**
      * Displays a single BlocStore model.
      *
@@ -106,6 +124,17 @@ class StoreController extends BaseController
             $model = new BlocStore([
                 'extras' => $this->extras,
                 ]);
+                
+            $modelcate = new StoreCategory();
+
+            $Helper = new LevelTplHelper([
+                'pid' => 'parent_id',
+                'cid' => 'category_id',
+                'title' => 'name',
+                'model' => $modelcate,
+                'id' => 'category_id',
+            ]);
+                
             if (Yii::$app->request->isPost) {
                 $data = Yii::$app->request->post();
                 // $data['BlocStore']['lng_lat'] = implode(',',$data['BlocStore']['lng_lat']);
@@ -119,6 +148,7 @@ class StoreController extends BaseController
 
             return $this->render('create', [
                 'model' => $model,
+                'Helper'=>$Helper,
                 'bloc_id' => $this->bloc_id,
             ]);
         } else {
@@ -150,9 +180,19 @@ class StoreController extends BaseController
                 return  $this->refresh();
             }
         }
+        
+        $modelcate = new StoreCategory();
 
+        $Helper = new LevelTplHelper([
+            'pid' => 'parent_id',
+            'cid' => 'category_id',
+            'title' => 'name',
+            'model' => $modelcate,
+            'id' => 'category_id',
+        ]);
         return $this->render('update', [
                 'bloc_id' => $this->bloc_id,
+                'Helper'=>$Helper,
                 'model' => $model,
         ]);
     }

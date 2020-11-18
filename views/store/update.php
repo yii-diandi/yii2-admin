@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-15 22:02:05
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-07 09:04:49
+ * @Last Modified time: 2020-11-19 00:39:31
  */
 
 /* @var $this yii\web\View */
@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
 
                 <?= $this->render('_form', [
+                'Helper'=>$Helper,
                 'bloc_id' => $bloc_id,
                 'model' => $model,
                 ]); ?>
