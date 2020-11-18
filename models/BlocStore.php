@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 16:05:29
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-11-19 00:43:31
+ * @Last Modified time: 2020-11-19 02:41:58
  */
 
 namespace diandi\admin\models;
@@ -52,7 +52,10 @@ class BlocStore extends \yii\db\ActiveRecord
             $this->extra = serialize($this->extra);
 
             if (is_array($this->lng_lat)) {
+                $this->latitude = $this->lng_lat['lat'];
+                $this->longitude = $this->lng_lat['lng'];
                 $this->lng_lat = json_encode($this->lng_lat);
+               
             }
 
             return true;
@@ -79,7 +82,7 @@ class BlocStore extends \yii\db\ActiveRecord
         return [
             [['bloc_id', 'status','category_id','category_pid'], 'integer'],
             ['bloc_id', 'compare', 'compareValue' => 0, 'operator' => '!='],
-            [['name', 'logo', 'address'], 'string', 'max' => 255],
+            [['name', 'logo', 'address','longitude', 'latitude'], 'string', 'max' => 255],
             [['province', 'city', 'county'], 'string', 'max' => 10],
             [['mobile'], 'string', 'max' => 11],
             [['extra', 'lng_lat'], 'string'],
@@ -109,6 +112,8 @@ class BlocStore extends \yii\db\ActiveRecord
             'update_time' => 'Update Time',
             'status' => '审核状态',
             'lng_lat' => '经纬度',
+            'latitude' => '维度',
+            'longitude' => '经度'
         ];
     }
 }

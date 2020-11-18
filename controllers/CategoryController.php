@@ -17,7 +17,6 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\controllers\BaseController;
 
-
 /**
  * CategoryController implements the CRUD actions for StoreCategory model.
  */
