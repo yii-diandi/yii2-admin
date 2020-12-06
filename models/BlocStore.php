@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 16:05:29
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-11-19 02:41:58
+ * @Last Modified time: 2020-12-06 21:41:51
  */
 
 namespace diandi\admin\models;
@@ -55,6 +55,7 @@ class BlocStore extends \yii\db\ActiveRecord
                 $this->latitude = $this->lng_lat['lat'];
                 $this->longitude = $this->lng_lat['lng'];
                 $this->lng_lat = json_encode($this->lng_lat);
+               
             }
 
             return true;
@@ -84,7 +85,8 @@ class BlocStore extends \yii\db\ActiveRecord
             [['name', 'logo', 'address','longitude', 'latitude'], 'string', 'max' => 255],
             [['province', 'city', 'county'], 'string', 'max' => 10],
             [['mobile'], 'string', 'max' => 11],
-            [['extra', 'lng_lat'], 'string'],
+            [['lng_lat'], 'string'],
+            [['extra'], 'safe'],
             [['create_time', 'update_time'], 'string', 'max' => 30],
         ];
     }
