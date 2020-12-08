@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-11-19 00:24:21
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-11-19 00:24:26
+ * @Last Modified time: 2020-12-08 19:31:25
  */
  
 
@@ -75,19 +75,9 @@ class StoreCategory extends StoreCategoryModel
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'thumb', $this->thumb]);
         
-        $count = $query->count();
-        $pageSize   = $_GPC['pageSize'];
-        $page       = $_GPC['page'];
-        // 使用总数来创建一个分页对象
-        $pagination = new Pagination([
-            'totalCount' => $count,
-            'pageSize' => $pageSize,
-            'page' => $page - 1,
-            // 'pageParam'=>'page'
-        ]);
+    
 
-        $list = $query->offset($pagination->offset)
-            ->limit($pagination->limit)
+        $list = $query
             ->asArray()
             ->all();
         
@@ -110,9 +100,7 @@ class StoreCategory extends StoreCategoryModel
                     //'member_id' => SORT_DESC,
                 ],
             ],
-            'pagination' => [
-                'pageSize' => $pageSize,
-            ]
+            'pagination' => false
         ]);
         
         return $provider;
