@@ -42,6 +42,7 @@ class BlocController extends BaseController
     
     public function actions()
     {
+		
         return [
             'change-username' => [
                 'class' => EditableAction::class,
