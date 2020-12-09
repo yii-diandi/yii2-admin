@@ -3,9 +3,10 @@
  * @Author: Wang chunsheng
  * @Date:   2020-04-29 16:06:59
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-11-09 18:43:53
+ * @Last Modified time: 2020-12-09 15:18:19
  */
 use common\widgets\MyTreeGrid;
+use yii2mod\editable\EditableColumn;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -66,7 +67,23 @@ $this->registerJs($this->render('_script.js'));
                         //'other_files:ntext',
                         //'audit_id',
                         //'on_show',
+                        [
+                            'class' => EditableColumn::class,
+                            'attribute' => 'status',
+                            'value' => function ($model) {
+                                $list = ['非集团','集团'];
 
+                                return $list[$model->status];
+                            },
+                            'url' => ['change-username'],
+                            'type' => 'select',
+                            'editableOptions' => function ($model) {
+                                return [
+                                    'source' => ['非集团','集团'],
+                                    'value' => ['非集团'=>0,'集团'=>1] 
+                                ];
+                            },
+                        ],    
                         ['class' => 'common\components\ActionColumn'],
                         [
                             'class' => 'yii\grid\ActionColumn',

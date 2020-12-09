@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 21:43:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-12 11:55:11
+ * @Last Modified time: 2020-12-09 15:20:01
  */
 
 namespace diandi\admin\controllers;
@@ -14,6 +14,7 @@ use Yii;
 use diandi\admin\models\Bloc;
 use diandi\admin\models\searchs\BlocSearch;
 use common\helpers\ErrorsHelper;
+use yii2mod\editable\EditableAction;
 use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
@@ -35,6 +36,18 @@ class BlocController extends BaseController
                     'delete' => ['POST'],
                 ],
             ],
+        ];
+    }
+
+    
+    public function actions()
+    {
+        return [
+            'change-username' => [
+                'class' => EditableAction::class,
+                'modelClass' => Bloc::class,
+                'pkColumn' => 'bloc_id',
+            ]
         ];
     }
 

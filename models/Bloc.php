@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 22:40:56
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-12 11:50:43
+ * @Last Modified time: 2020-12-09 15:10:54
  */
 
 namespace diandi\admin\models;
@@ -67,6 +67,27 @@ class Bloc extends \yii\db\ActiveRecord
             [['license_no'], 'string', 'max' => 30],
             [['license_name'], 'string', 'max' => 100],
         ];
+    }
+
+    public function beforeValidate()
+    {
+        if (parent::beforeValidate()) {
+            if (!is_numeric($this->status) && isset($this->status)) {
+                //字段
+                $list = ['非集团'=>0,'集团'=>1];
+                $this->updateAll(['status'=>0]);
+                $this->status = $list[$this->status];
+            }
+
+            // if(is_array($this->images)){
+            //     $this->images = serialize($this->images);
+
+            // }
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function getStore()
