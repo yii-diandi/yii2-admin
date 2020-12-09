@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 21:43:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-12-09 15:20:01
+ * @Last Modified time: 2020-12-09 17:53:16
  */
 
 namespace diandi\admin\controllers;
@@ -14,6 +14,7 @@ use Yii;
 use diandi\admin\models\Bloc;
 use diandi\admin\models\searchs\BlocSearch;
 use common\helpers\ErrorsHelper;
+use diandi\admin\models\BlocStore;
 use yii2mod\editable\EditableAction;
 use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
@@ -42,7 +43,6 @@ class BlocController extends BaseController
     
     public function actions()
     {
-		
         return [
             'change-username' => [
                 'class' => EditableAction::class,
@@ -104,9 +104,10 @@ class BlocController extends BaseController
             }
         }
         $model->status = 2;
-
+        $stores = [];
         return $this->render('create', [
             'model' => $model,
+            'stores' => $stores,
             'parents' => $parents,
         ]);
     }
@@ -129,9 +130,10 @@ class BlocController extends BaseController
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->bloc_id]);
         }
-
+        $stores = BlocStore::find()->where(['bloc_id'=>$id])->asArray()->all();
         return $this->render('update', [
             'model' => $model,
+            'stores' => $stores,
             'parents' => $parents,
         ]);
     }

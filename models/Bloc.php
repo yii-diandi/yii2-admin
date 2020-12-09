@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 22:40:56
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-12-09 15:10:54
+ * @Last Modified time: 2020-12-09 18:03:12
  */
 
 namespace diandi\admin\models;
@@ -58,7 +58,7 @@ class Bloc extends \yii\db\ActiveRecord
         return [
             [['business_name', 'province', 'city', 'district', 'address', 'longitude', 'latitude', 'telephone', 'avg_price', 'recommend', 'special', 'introduction', 'open_time', 'status'], 'required'],
             ['status', 'default', 'value' => 2],
-            [['pid', 'avg_price', 'status'], 'integer'],
+            [['pid', 'avg_price', 'status','store_id'], 'integer'],
             [['other_files'], 'string'],
             [['business_name', 'address', 'open_time', 'sosomap_poi_uid'], 'string', 'max' => 50],
             [['category', 'recommend', 'special', 'introduction'], 'string', 'max' => 255],

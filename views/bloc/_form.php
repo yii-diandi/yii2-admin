@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 21:44:22
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-12 11:46:44
+ * @Last Modified time: 2020-12-09 18:02:55
  */
 use common\helpers\LevelTplHelper;
 use common\models\DdRegion;
@@ -13,6 +13,8 @@ use common\widgets\MyActiveForm;
 use richardfan\widget\JSRegister;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+
+use function PHPSTORM_META\map;
 
 $region = new DdRegion();
 $Helper = new LevelTplHelper([
@@ -82,12 +84,10 @@ $Helper = new LevelTplHelper([
 
         <?= $form->field($model, 'telephone')->textInput(['maxlength' => true]); ?>
 
-
-        <?= $form->field($model, 'status')->radioList([
-            1 => '集团',
-            2 => '非集团',
-        ])->hint('非集团，只能看到该公司数据。集团：可以看到子公司所有数据，只在一级公司下设置有效'); ?>
+        <?= $form->field($model, 'status')->textInput()->hiddenInput(['value'=>intval($model->status)])->label(false); ?>
         
+        
+        <?= $form->field($model, 'store_id')->dropDownList(ArrayHelper::map($stores,'store_id','name'))->label('主营商户'); ?>
         <?= $form->field($model, 'license_no')->textInput(['maxlength' => true]); ?>
 
         <?= $form->field($model, 'license_name')->textInput(['maxlength' => true]); ?>

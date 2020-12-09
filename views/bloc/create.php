@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-30 21:44:10
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-10 20:59:36
+ * @Last Modified time: 2020-12-09 17:49:55
  */
 
 
@@ -28,6 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $this->render('_form', [
                     'parents' => $parents,
                     'model' => $model,
+                    'stores' => $stores,
+                    
                 ]) ?>
 
             </div>
