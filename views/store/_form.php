@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-11 15:15:03
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-11-19 01:00:23
+ * @Last Modified time: 2020-12-17 03:32:23
  */
 use common\models\DdRegion;
 use richardfan\widget\JSRegister;
@@ -41,8 +41,8 @@ use yii\widgets\ActiveForm;
                     ])->label('二级分类 '); ?>
                     
     <?= $form->field($model, 'lng_lat')->widget('common\widgets\adminlte\Map', [
-        'type' => 'baidu',
-        'secret_key' => Yii::$app->settings->get('Map', 'baiduApk'),
+        'type' => 'amap',
+        'secret_key' => Yii::$app->settings->get('Map', 'amapApk'),
     ]); ?>
     
     <?= $form->field($model, 'logo')->widget('common\widgets\webuploader\FileInput', [])->hint('尺寸：500px*500px'); ?>

@@ -86,6 +86,7 @@ $Helper = new LevelTplHelper([
 
         <?= $form->field($model, 'status')->textInput()->hiddenInput(['value'=>intval($model->status)])->label(false); ?>
         
+        
         <?= $form->field($model, 'store_id')->dropDownList(ArrayHelper::map($stores,'store_id','name'))->label('主营商户'); ?>
         <?= $form->field($model, 'license_no')->textInput(['maxlength' => true]); ?>
 
