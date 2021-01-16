@@ -9,7 +9,7 @@
 
 namespace diandi\admin\models\searchs;
 
-use diandi\addons\modules\DdAddons;
+use diandi\addons\models\DdAddons;
 use Yii;
 use yii\base\Model;
 use yii\data\ArrayDataProvider;

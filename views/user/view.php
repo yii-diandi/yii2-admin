@@ -6,7 +6,7 @@
  * @Last Modified time: 2020-07-18 00:18:36
  */
 
-use diandi\addons\modules\DdAddons;
+use diandi\addons\models\DdAddons;
 use diandi\admin\AutocompleteAsset;
 use yii\helpers\Html;
 use yii\widgets\DetailView;

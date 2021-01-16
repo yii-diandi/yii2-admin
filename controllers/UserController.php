@@ -4,18 +4,18 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:39:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-11-07 00:20:09
+ * @Last Modified time: 2021-01-17 00:23:02
  */
 
 namespace diandi\admin\controllers;
 
 use backend\controllers\BaseController;
 use common\helpers\ErrorsHelper;
-use diandi\addons\modules\DdAddons;
+use diandi\addons\models\DdAddons;
 use diandi\admin\components\UserStatus;
-use diandi\admin\models\AddonsUser;
+use diandi\addons\models\AddonsUser;
 use diandi\admin\models\Assignment;
-use diandi\admin\models\Bloc;
+use diandi\addons\models\Bloc;
 use diandi\admin\models\form\ChangePassword;
 use diandi\admin\models\form\Login;
 use diandi\admin\models\form\PasswordResetRequest;

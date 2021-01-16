@@ -9,7 +9,7 @@
 namespace diandi\admin\components;
 
 use common\helpers\ErrorsHelper;
-use diandi\addons\modules\DdAddons;
+use diandi\addons\models\DdAddons;
 use Yii;
 use diandi\admin\models\AuthItem;
 use diandi\admin\models\AuthItemModel;

@@ -4,12 +4,13 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:49:05
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 15:41:58
+ * @Last Modified time: 2021-01-17 00:25:01
  */
 
 
 namespace diandi\admin\models;
 
+use diandi\addons\models\AddonsUser;
 use diandi\admin\components\Configs;
 use diandi\admin\components\Helper;
 use diandi\admin\components\UserStatus;
