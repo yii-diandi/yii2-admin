@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 16:36:46
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-08 22:15:45
+ * @Last Modified time: 2021-02-23 19:21:20
  */
  
 
@@ -25,7 +25,7 @@ class PermissionController extends ItemController
     
     public $module_name;
     
-    public $parent_type=1;
+    public $parent_type=0; //0:系统,1模块
 
     
 

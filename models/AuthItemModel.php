@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-08 08:52:46
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 19:55:56
+ * @Last Modified time: 2021-02-23 18:41:59
  */
  
 
@@ -48,7 +48,7 @@ class AuthItemModel extends \yii\db\ActiveRecord
             [['description', 'data'], 'string'],
             [['name', 'rule_name', 'parent_id'], 'string', 'max' => 64],
             [['module_name'], 'string', 'max' => 50],
-            [['name'], 'unique'],
+            // [['name'], 'unique'],
             [['rule_name'], 'exist', 'skipOnError' => true, 'targetClass' => AuthRule::className(), 'targetAttribute' => ['rule_name' => 'name']],
         ];
     }

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-10 17:01:12
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-10 17:04:48
+ * @Last Modified time: 2021-02-23 17:57:19
  */
  
 
@@ -25,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $this->render('_form', [
             'model' => $model,
             'addons' => $addons,
+            'parentMenu' => $parentMenu
         ])
     ?>
 

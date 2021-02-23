@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:12:49
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-08 15:26:52
+ * @Last Modified time: 2021-02-23 18:46:29
  */
  
 
@@ -29,6 +29,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'addons' => $addons,
             'model' => $model,
             'module_name' => $module_name,
+            'parentItem' => $parentItem
+
         ]);
         ?>
 

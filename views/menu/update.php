@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-10 17:01:18
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-10 17:04:41
+ * @Last Modified time: 2021-02-23 18:06:44
  */
  
 
@@ -25,6 +25,7 @@ $this->params['breadcrumbs'][] = Yii::t('rbac-admin', 'Update');
         $this->render('_form', [
             'model' => $model,
             'addons' => $addons,
+            'parentMenu' => $parentMenu,
 
         ])
     ?>

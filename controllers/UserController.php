@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:39:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-01-17 00:23:02
+ * @Last Modified time: 2021-02-23 20:20:53
  */
 
 namespace diandi\admin\controllers;
@@ -439,14 +439,16 @@ class UserController extends BaseController
         if ($user->status == UserStatus::INACTIVE) {
             $user->status = UserStatus::ACTIVE;
             if ($user->save()) {
-                return $this->goHome();
+                
+                Yii::$app->session->setFlash('success', '用户审核成功');
+                
             } else {
                 $errors = $user->firstErrors;
                 throw new UserException(reset($errors));
             }
         }
-
-        return $this->goHome();
+        
+        return $this->actionIndex();
     }
 
     /**

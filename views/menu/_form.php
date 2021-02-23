@@ -3,7 +3,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 11:46:12
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-25 19:04:50
+ * @Last Modified time: 2021-02-23 18:07:43
  */
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -34,8 +34,15 @@ $this->registerJs($this->render('_script.js'));
         <div class="col-sm-6">
             <?= $form->field($model, 'name')->textInput(['maxlength' => 128]); ?>
 
-            <?= $form->field($model, 'parent_name')->textInput(['id' => 'parent_name']); ?>
-
+            <?= $form->field($model, 'parent')
+                ->dropDownList(ArrayHelper::map($parentMenu, 'id', 'name'), [
+                    'prompt' => [
+                        'text' => '顶级导航',
+                        'options' => ['value' => null],
+                    ],
+                ])
+                ->label('父级菜单'); ?>
+                
             <?= $form->field($model, 'route')->textInput(['id' => 'route']); ?>
             <?= $form->field($model, 'type')->dropDownList(ArrayHelper::map($menucate, 'mark', 'name')); ?>
 

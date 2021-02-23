@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:44:25
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-19 07:55:40
+ * @Last Modified time: 2021-02-23 18:49:07
  */
  
 
@@ -39,14 +39,19 @@ AutocompleteAsset::register($this);
         <div class="col-sm-6">
             <?= Html::activeHiddenInput($model,'module_name',array('value'=>$module_name)) ?>
             <?= Html::activeHiddenInput($model,'type',array('value'=>$module_name=='sys'?0:1)) ?>
-            <?= Html::activeHiddenInput($model,'parent_id',array('value'=>$model->parent_id,'id'=>'parent_id')) ?>
-           
+
             <?= $form->field($model, 'name')->textInput(['maxlength' => 64]) ?>
             
-           <?= $form->field($model, 'parent_name')->textInput([
-                'id' => 'parent_name'
-            ]) ?>          
 
+            <?= $form->field($model, 'parent_id')
+                ->dropDownList(ArrayHelper::map($parentItem, 'id', 'name'), [
+                    'prompt' => [
+                        'text' => '顶级导航',
+                        'options' => ['value' => null],
+                    ],
+                ])
+                ->label('父级权限'); ?>
+                
             <?= $form->field($model, 'description')->textarea(['rows' => 2]) ?>
         </div>
         <div class="col-sm-6">

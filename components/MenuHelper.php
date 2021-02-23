@@ -3,7 +3,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 20:26:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-22 00:28:49
+ * @Last Modified time: 2021-02-23 17:47:42
  */
 
 namespace diandi\admin\components;
@@ -130,6 +130,8 @@ class MenuHelper
                     $assigned = array_merge($assigned, $query->params([':filter' => $filter])->column());
                 }
             }
+
+
             $assigned = static::requiredParent($assigned, $menus);
             
             if ($cache !== null) {
@@ -139,8 +141,9 @@ class MenuHelper
             }
         }
         $key = [__METHOD__, $assigned, $root];
+        
         if ($refresh || $callback !== null || $cache === null || (($result = $cache->get($key)) === false)) {
-            $result = static::normalizeMenu($assigned, $menus, $callback, $root);
+            $result =  static::normalizeMenu($assigned, $menus, $callback, $root);
             if ($cache !== null && $callback === null) {
                 $cache->set($key, $result, $config->cacheDuration, new TagDependency([
                     'tags' => Configs::CACHE_TAG,
@@ -165,7 +168,7 @@ class MenuHelper
         for ($i = 0; $i < $l; ++$i) {
             $id = $assigned[$i];
             $parent_id = isset($menus[$id])?$menus[$id]['parent']:'';
-            if ($parent_id !== null && !in_array($parent_id, $assigned)) {
+            if ($parent_id !== 0 && !in_array($parent_id, $assigned)) {
                 $assigned[$l++] = $parent_id;
             }
         }
@@ -208,7 +211,7 @@ class MenuHelper
      *
      * @return array
      */
-    private static function normalizeMenu(&$assigned, &$menus, $callback, $parent = null)
+    private static function normalizeMenu(&$assigned, &$menus, $callback, $parent = 0)
     {
         $result = [];
         $order = [];

@@ -2,7 +2,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-05 20:52:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 15:22:58
+ * @Last Modified time: 2021-02-23 20:30:09
  */
 
 $('i.glyphicon-refresh-animate').hide();
@@ -45,7 +45,7 @@ function search(target) {
     $list.html('');
     var q = $('.search[data-target="' + target + '"]').val();
     var groups = {
-        modules : [$('<optgroup label="Modules">'), false],
+        modules : [$('<optgroup label="应用模块">'), false],
     };
     console.log(_opts,_opts[target])
     $.each(_opts[target], function (name, group) {

@@ -3,11 +3,12 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:03:01
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-07 01:08:54
+ * @Last Modified time: 2021-02-23 19:13:12
  */
 
 namespace diandi\admin\components;
 
+use common\helpers\ArrayHelper;
 use common\helpers\ErrorsHelper;
 use diandi\addons\models\DdAddons;
 use Yii;
@@ -122,12 +123,18 @@ class ItemController extends Controller
                 Yii::$app->session->setFlash('error', $msg);
             }
         } 
+
+
+        $parentMent = AuthItemModel::find()->where(['module_name'=>$module_name])->asArray()->all();
+        $parentItem =  ArrayHelper::itemsMergeDropDown(ArrayHelper::itemsMerge($parentMent,0,"id",'parent_id','-'),"id",'name');
+
         
         $addons = DdAddons::find()->asArray()->all();
         return $this->render('create', [
             'addons' => $addons,
             'model' => $model,
             'module_name' => $module_name,
+            'parentItem' => $parentItem
         ]);
         
     }
@@ -156,11 +163,15 @@ class ItemController extends Controller
         }
 
         $addons = DdAddons::find()->asArray()->all();
+        $parentMent = AuthItemModel::find()->where(['module_name'=>$module_name])->asArray()->all();
+        $parentItem =  ArrayHelper::itemsMergeDropDown(ArrayHelper::itemsMerge($parentMent,0,"id",'parent_id','-'),"id",'name');
 
         return $this->render('update', [
             'addons' => $addons,
             'model' => $model,
             'module_name' => $module_name,
+            'parentItem' => $parentItem
+
             ]);
     }
 
@@ -289,7 +300,7 @@ class ItemController extends Controller
         $item = $auth->getPermission($id);
         
         if ($item) {
-            $item->type = $this->parent_type;  
+            // $item->type = $this->parent_type;  
             return new AuthItem($item);
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 12:27:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-09-19 10:45:48
+ * @Last Modified time: 2021-02-23 18:04:12
  */
 
 namespace diandi\admin\models;
@@ -174,7 +174,7 @@ class Menu extends \yii\db\ActiveRecord
         $tableName = static::tableName();
 
         return (new \yii\db\Query())
-            ->select(['m.id', 'm.name', 'm.route', 'parent_name' => 'p.name'])
+            ->select(['m.id', 'm.name', 'm.route', 'parent_name' => 'p.name','m.parent'])
             ->from(['m' => $tableName])
             ->leftJoin(['p' => $tableName], '[[m.parent]]=[[p.id]]')
             ->all(static::getDb());

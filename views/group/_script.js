@@ -2,7 +2,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-05 20:46:57
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-06 23:16:00
+ * @Last Modified time: 2021-02-23 21:00:26
  */
 $('i.glyphicon-refresh-animate').hide();
 function updateItems(r) {
@@ -27,13 +27,13 @@ $('.btn-assign').click(function () {
     var opt = $('select.list[data-target="' + target + '"]').find(':selected');
     $.each(opt,function(key,name){
         var og = $(this).closest('optgroup').attr('label')
-        if(og=='Groups'){
+        if(og=='用户组'){
             items.group.push($(this).val())
         }
-        if(og=='Permission'){
+        if(og=='权限'){
             items.permission.push($(this).val())
         }
-        if(og=='Routes'){
+        if(og=='路由'){
             items.route.push($(this).val())
         }
     })
@@ -58,9 +58,9 @@ function search(target) {
     var q = $('.search[data-target="' + target + '"]').val();
 
     var groups = {
-        role: [$('<optgroup label="Groups">'), false],
-        permission: [$('<optgroup label="Permission">'), false],
-        route: [$('<optgroup label="Routes">'), false],
+        role: [$('<optgroup label="用户组">'), false],
+        permission: [$('<optgroup label="权限">'), false],
+        route: [$('<optgroup label="路由">'), false],
     };
     console.log('_opts',_opts.items)
     $.each(_opts.items[target], function (name, group) {

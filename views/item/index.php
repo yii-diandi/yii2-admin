@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:12:58
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-11-01 01:02:42
+ * @Last Modified time: 2021-02-23 18:39:03
  */
  
 
@@ -80,14 +80,14 @@ unset($rules[RouteRule::RULE_NAME]);
                                 switch($action)
                                 {
                                     case 'delete':
-                                        return Url::to(['delete','id'=>$model->name,'module_name'=>$model->module_name]);
+                                        return Url::to(['delete','id'=>$model->id,'module_name'=>$model->module_name]);
                                     break;
                                     case 'view':
-                                        return Url::to(['view','id'=>$model->name,'module_name'=>$model->module_name]);
+                                        return Url::to(['view','id'=>$model->id,'module_name'=>$model->module_name]);
                                     
                                     break;
                                     case 'update':
-                                        return Url::to(['update','id'=>$model->name,'module_name'=>$model->module_name]);
+                                        return Url::to(['update','id'=>$model->id,'module_name'=>$model->module_name]);
                                     break;
                                 }
                         

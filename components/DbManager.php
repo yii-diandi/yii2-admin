@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-11-04 05:06:04
+ * @Last Modified time: 2021-02-23 21:54:45
  */
 
 namespace diandi\admin\components;
@@ -162,7 +162,12 @@ class DbManager extends \yii\rbac\DbManager
      */
     public function getRoutes($type)
     {
+        $module_name = Yii::$app->request->get('module_name');
+        
         $where = [];
+        
+        $where['module_name'] = $module_name;
+        
         if (in_array($type, [0, 1])) {
             $where['type'] = $type;
         }
@@ -307,6 +312,38 @@ class DbManager extends \yii\rbac\DbManager
         return $this->getItems($type);
     }
 
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoles($type = 0)
+    {
+        return $this->getItems($type);
+    }
+
+      /**
+     * {@inheritdoc}
+     */
+    protected function getItems($type)
+    {
+        $module_name = Yii::$app->request->get('module_name');
+       
+        
+        $query = (new Query())
+            ->from($this->itemTable)
+            ->where([
+                'type' => $type,
+                'module_name' => $module_name
+            ]);
+
+        $items = [];
+        foreach ($query->all($this->db) as $row) {
+            $items[$row['name']] = $this->populateItem($row);
+        }
+
+        return $items;
+    }
+
     /**
      * Populates an auth item with the data fetched from database.
      *
@@ -426,7 +463,7 @@ class DbManager extends \yii\rbac\DbManager
     {
         $query = (new Query())
         ->from($this->itemTable)
-        ->where(['type' => $type, 'module_name' => $module_name, 'parent_id' => [0, null, '']]);
+        ->where(['type' => $type, 'module_name' => $module_name, 'parent_id' =>0]);
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
@@ -726,6 +763,7 @@ class DbManager extends \yii\rbac\DbManager
                     'id' => $row['id'],
                     'name' => $row['name'],
                     'type' => $row['type'],
+                    'parent_id' => $row['parent_id'],
                     'child_type' => isset($row['child_type'])?$row['child_type']:0,
                     'description' => $row['description'],
                     'ruleName' => $row['rule_name'] ?: null,
@@ -1122,7 +1160,6 @@ class DbManager extends \yii\rbac\DbManager
             ->from($this->itemChildTable)
             ->where(['child' => $itemName])
             ->all($this->db);
-
         foreach ($parents as $parent) {
             if ($this->checkAccessRecursiveAll($user, $parent['parent'], $params, $assignments, $parent['parent_type'])) {
                 return true;

@@ -2,7 +2,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-05 20:52:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-07 00:57:39
+ * @Last Modified time: 2021-02-23 21:00:42
  */
 
 $('i.glyphicon-refresh-animate').hide();
@@ -31,10 +31,10 @@ $('.btn-assign').click(function () {
         if(og=='Roles'){
             items.role.push($(this).val())
         }
-        if(og=='Permission'){
+        if(og=='权限'){
             items.permission.push($(this).val())
         }
-        if(og=='Routes'){
+        if(og=='路由'){
             items.route.push($(this).val())
         }
     })
@@ -64,8 +64,8 @@ function search(target) {
 
     var groups = {
         role: [$('<optgroup label="Roles">'), false],
-        permission: [$('<optgroup label="Permission">'), false],
-        route: [$('<optgroup label="Routes">'), false],
+        permission: [$('<optgroup label="权限">'), false],
+        route: [$('<optgroup label="路由">'), false],
     };
     console.log(_opts.items)
     $.each(_opts.items[target], function (name, group) {

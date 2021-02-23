@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 16:42:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-04 21:47:22
+ * @Last Modified time: 2021-02-23 18:06:37
  */
 
 
@@ -14,11 +14,13 @@ use Yii;
 use diandi\admin\models\Menu;
 use diandi\admin\models\searchs\Menu as MenuSearch;
 use backend\controllers\BaseController;
+use common\helpers\ArrayHelper as HelpersArrayHelper;
 use diandi\addons\models\searchs\DdAddons;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use diandi\admin\components\Helper;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
 
 /**
@@ -88,14 +90,20 @@ class MenuController extends BaseController
     {
         $model = new Menu;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Helper::invalidate();
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
+        if(Yii::$app->request->isPost){
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                Helper::invalidate();
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+        }else {
             $addons = DdAddons::find()->asArray()->all();
+            $parentMent = Menu::find()->where(['is_sys' =>'system'])->asArray()->all();
+            $parentMenu =  HelpersArrayHelper::itemsMergeDropDown(HelpersArrayHelper::itemsMerge($parentMent,0,"id",'parent','-'),"id",'name');
+
             return $this->render('create', [
                 'model' => $model,
                 'addons' => $addons,
+                'parentMenu' => $parentMenu,
 
             ]);
         }
@@ -119,9 +127,14 @@ class MenuController extends BaseController
         } else {
             $addons = DdAddons::find()->asArray()->all();
 
+            $parentMent = Menu::find()->where(['is_sys' =>'system'])->asArray()->all();
+            $parentMenu =  HelpersArrayHelper::itemsMergeDropDown(HelpersArrayHelper::itemsMerge($parentMent,0,"id",'parent','-'),"id",'name');
+
             return $this->render('update', [
                 'model' => $model,
                 'addons' => $addons,
+                'parentMenu' => $parentMenu,
+
             ]);
         }
     }

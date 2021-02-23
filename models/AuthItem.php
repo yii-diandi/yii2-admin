@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-07 00:41:30
+ * @Last Modified time: 2021-02-23 19:46:59
  */
 
 namespace diandi\admin\models;
@@ -67,9 +67,9 @@ class AuthItem extends Model
         return [
             [['ruleName'], 'checkRule'],
             [['name', 'type'], 'required'],
-            [['name'], 'checkUnique', 'when' => function () {
-                return $this->isNewRecord || ($this->_item->name != $this->name);
-            }],
+            // [['name'], 'checkUnique', 'when' => function () {
+            //     return $this->isNewRecord || ($this->_item->name != $this->name);
+            // }],
             [['type', 'child_type'], 'integer'],
             [['parent_id'], 'checkParent'],
             [['description', 'data', 'ruleName'], 'default'],
@@ -326,13 +326,15 @@ class AuthItem extends Model
         $manager = Configs::authManager();
         $available = [];
         if ($this->type == Item::TYPE_PERMISSION) {
-            foreach (array_keys($manager->getRoles()) as $name) {
+            foreach (array_keys($manager->getRoles($this->type)) as $name) {
                 $available[$name] = 'role';
             }
         }
-        foreach (array_keys($manager->getPermissions()) as $name) {
+        foreach (array_keys($manager->getPermissions($this->type)) as $name) {
             $available[$name] = $name[0] == '/' ? 'route' : 'permission';
         }
+        
+
         // 路由授权
         foreach (array_keys($manager->getRoutes($this->type)) as $name) {
             $available[$name] = 'route';
