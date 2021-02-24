@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 18:23:37
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-05 22:16:56
+ * @Last Modified time: 2021-02-24 20:59:37
  */
 
 
@@ -80,7 +80,7 @@ class Configs extends \diandi\admin\BaseObject
     /**
      * @var string Menu table name.
      */
-    public $menuTable = '{{%menu}}';
+    public $menuTable = '{{%auth_menu}}';
 
     /**
      * @var string Menu table name.
