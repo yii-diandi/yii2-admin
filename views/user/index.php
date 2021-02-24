@@ -92,11 +92,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     
                                     $options = [
                                         'title' => '权限分配',
-                                        'class'=>'btn btn-success',
-                                        // 'aria-label' => Yii::t('rbac-admin', 'Activate'),
-                                        // 'data-confirm' => Yii::t('rbac-admin', 'Are you sure you want to activate this user?'),
-                                        // 'data-method' => 'post',
-                                        // 'data-pjax' => '0',
+                                        'class'=>'btn btn-success'
                                     ];
                                     return Html::a('<span class="fa fa-fw fa-user-plus"></span><span class="padding-left-xs">权限分配</span>', $url, $options);
                                 }
