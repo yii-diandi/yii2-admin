@@ -3,7 +3,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 11:39:36
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-29 01:40:59
+ * @Last Modified time: 2021-02-24 23:42:04
  */
  
 
@@ -29,7 +29,7 @@ class MenuTop extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%menu_cate}}';
+        return '{{%auth_menu_cate}}';
     }
 
     /**
