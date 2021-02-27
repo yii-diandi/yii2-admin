@@ -12,7 +12,7 @@ namespace diandi\admin\models;
 use Yii;
 
 /**
- * This is the model class for table "dd_auth_menu_cate".
+ * This is the model class for table "dd_menu_cate".
  *
  * @property int $id
  * @property string|null $name

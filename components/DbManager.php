@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 21:54:45
+ * @Last Modified time: 2021-02-27 18:43:18
  */
 
 namespace diandi\admin\components;
@@ -152,21 +152,22 @@ class DbManager extends \yii\rbac\DbManager
     /**
      * 获取所有路由.
      */
-    public function getRoutePermissions($type = 1)
+    public function getRoutePermissions($type = 1,$module_name='')
     {
-        return $this->getRoutes($type);
+        return $this->getRoutes($type,$module_name);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getRoutes($type)
+    public function getRoutes($type,$module_name='')
     {
-        $module_name = Yii::$app->request->get('module_name');
         
         $where = [];
         
-        $where['module_name'] = $module_name;
+        if(!empty($module_name)){
+            $where['module_name'] = $module_name;            
+        }
         
         if (in_array($type, [0, 1])) {
             $where['type'] = $type;
@@ -326,15 +327,20 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function getItems($type)
     {
-        $module_name = Yii::$app->request->get('module_name');
        
+        $module_name = Yii::$app->request->get('module_name');
+        
+        $where = [];
+        $where['type'] = $type;            
+        
+        if(!empty($module_name)){
+            $where['module_name'] = $module_name;            
+        }
+        
         
         $query = (new Query())
             ->from($this->itemTable)
-            ->where([
-                'type' => $type,
-                'module_name' => $module_name
-            ]);
+            ->where($where);
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
@@ -461,9 +467,19 @@ class DbManager extends \yii\rbac\DbManager
 
     public function getParentItem($type, $module_name)
     {
+
+        $where = [];
+        $where['type'] = $type;            
+        $where['parent_id'] = 0;            
+        
+        if(!empty($module_name)){
+            $where['module_name'] = $module_name;            
+        }
+        
+        
         $query = (new Query())
         ->from($this->itemTable)
-        ->where(['type' => $type, 'module_name' => $module_name, 'parent_id' =>0]);
+        ->where($where);
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
