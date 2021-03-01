@@ -3,7 +3,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 11:46:12
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 18:07:43
+ * @Last Modified time: 2021-03-01 12:07:54
  */
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -29,7 +29,6 @@ $this->registerJs($this->render('_script.js'));
 
 <div class="menu-form">
     <?php $form = ActiveForm::begin(); ?>
-    <?= Html::activeHiddenInput($model, 'parent', ['id' => 'parent_id']); ?>
     <div class="row">
         <div class="col-sm-6">
             <?= $form->field($model, 'name')->textInput(['maxlength' => 128]); ?>
@@ -38,7 +37,7 @@ $this->registerJs($this->render('_script.js'));
                 ->dropDownList(ArrayHelper::map($parentMenu, 'id', 'name'), [
                     'prompt' => [
                         'text' => '顶级导航',
-                        'options' => ['value' => null],
+                        'options' => ['value' => 0],
                     ],
                 ])
                 ->label('父级菜单'); ?>

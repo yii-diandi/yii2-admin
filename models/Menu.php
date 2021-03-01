@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 12:27:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 18:04:12
+ * @Last Modified time: 2021-03-01 12:12:35
  */
 
 namespace diandi\admin\models;
@@ -87,6 +87,21 @@ class Menu extends \yii\db\ActiveRecord
             ],
         ];
     }
+
+    public function beforeValidate()
+    {
+        if (parent::beforeValidate()) {
+            if (!is_numeric($this->order) && isset($this->order)) {
+                //字段
+                $this->order = 0;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+   
 
     /**
      * Use to loop detected.

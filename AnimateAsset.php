@@ -1,8 +1,8 @@
 <?php
 
 namespace diandi\admin;
-use yii\web\AssetBundle;
 
+use yii\web\AssetBundle;
 
 /**
  * Description of AnimateAsset
