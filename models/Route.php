@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 18:10:43
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-27 18:44:23
+ * @Last Modified time: 2021-06-04 18:46:34
  */
 
 namespace diandi\admin\models;
@@ -192,6 +192,7 @@ class Route extends \diandi\admin\BaseObject
         $manager = Configs::authManager();
         // Get advanced configuration
         $advanced = Configs::instance()->advanced;
+        
         if ($advanced) {
             // Use advanced route scheme.
             // Set advanced route prefix.
@@ -233,7 +234,9 @@ class Route extends \diandi\admin\BaseObject
             // Get basic app routes.
             $routes = $this->getAppRoutes();
         }
+                    
         $exists = [];
+        
         // 获取当前类型--系统:0  模块:1 全部:2
         foreach (array_keys($manager->getRoutePermissions(2)) as $name) {
             if ($name[0] !== $this->routePrefix) {
@@ -260,6 +263,7 @@ class Route extends \diandi\admin\BaseObject
         } elseif (is_string($module)) {
             $module = Yii::$app->getModule($module);
         }
+        
         $key = [__METHOD__, Yii::$app->id, $module->getUniqueId()];
         $cache = Configs::instance()->cache;
         
@@ -293,12 +297,12 @@ class Route extends \diandi\admin\BaseObject
                     $this->getRouteRecursive($child, $result);
                 }
             }
-
+            
             foreach ($module->controllerMap as $id => $type) {
                 $this->getControllerActions($type, $id, $module, $result);
             }
             $namespace = trim($module->controllerNamespace, '\\').'\\';
-
+            
             $this->getControllerFiles($module, $namespace, '', $result);
 
             $all = '/'.ltrim($module->uniqueId.'/*', '/');
@@ -322,6 +326,7 @@ class Route extends \diandi\admin\BaseObject
     protected function getControllerFiles($module, $namespace, $prefix, &$result)
     {
         $path = Yii::getAlias('@'.str_replace('\\', '/', $namespace), false);
+        
         $token = "Get controllers from '$path'";
         Yii::beginProfile($token, __METHOD__);
         try {
@@ -411,13 +416,13 @@ class Route extends \diandi\admin\BaseObject
      *
      * @return int
      */
-    public function addChildren($items)
+    public function addChildren($items,$parent_type)
     {
         $manager = Configs::authManager();
         $success = 0;
         if ($this->_item) {
             foreach ($items as $name) {
-                $child = $manager->getRoutePermission($name);
+                $child = $manager->getRoutePermission($name,$parent_type);
                 try {
                     $manager->addChild($this->_item, $child);
                     ++$success;

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:03:01
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 19:13:12
+ * @Last Modified time: 2021-03-31 09:56:07
  */
 
 namespace diandi\admin\components;
@@ -115,7 +115,6 @@ class ItemController extends Controller
         
         if (Yii::$app->request->isPost) {
             $data = Yii::$app->getRequest()->post();
-
             if($model->load($data) && $model->save()){
                 return $this->redirect(['view', 'id' => $model->name,'module_name'=>$module_name]);
             }else{

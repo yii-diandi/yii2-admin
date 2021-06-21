@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-05 08:45:57
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 06:51:57
+ * @Last Modified time: 2021-05-24 15:55:22
  */
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -23,7 +23,6 @@ YiiAsset::register($this);
 $opts = Json::htmlEncode([
     'items' => $items,
 ]);
-
 $this->registerJs("var _opts = {$opts};");
 $this->registerJs($this->render('_script.js'));
 $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i>';

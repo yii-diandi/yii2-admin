@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 19:46:59
+ * @Last Modified time: 2021-05-25 15:15:26
  */
 
 namespace diandi\admin\models;
@@ -15,9 +15,11 @@ use yii\base\Model;
 use yii\helpers\Json;
 use diandi\admin\components\Item;
 use diandi\admin\components\Route;
+use yii\helpers\ArrayHelper;
 
 class AuthItem extends Model
 {
+    public $id;
     public $name;
     public $type;
     public $description;
@@ -29,6 +31,10 @@ class AuthItem extends Model
     // 0:路由1权限2用户组
     public $parent_type;
     public $parent_name;
+    // 0: '目录' 1: '页面' 2: '按钮' 3: '接口' 
+    public $permission_type;
+
+    
 
     /**
      * @var Item
@@ -44,12 +50,14 @@ class AuthItem extends Model
     public function __construct($item = null, $config = [])
     {
         $this->_item = $item;
-
+       
         if ($item !== null) {
+            $this->id = $item->id;
             $this->name = $item->name;
             $this->parent_id = $item->parent_id;
             $this->module_name = $item->module_name;
             $this->type = $item->type;
+            // $this->permission_type = $item->permission_type;
             $this->child_type = $item->child_type;
             $this->parent_type = $item->parent_type;
             $this->description = $item->description;
@@ -66,14 +74,14 @@ class AuthItem extends Model
     {
         return [
             [['ruleName'], 'checkRule'],
-            [['name', 'type'], 'required'],
+            [['name', 'type','permission_type'], 'required'],
             // [['name'], 'checkUnique', 'when' => function () {
             //     return $this->isNewRecord || ($this->_item->name != $this->name);
             // }],
             [['type', 'child_type'], 'integer'],
             [['parent_id'], 'checkParent'],
             [['description', 'data', 'ruleName'], 'default'],
-            [['name', 'parent_id', 'module_name'], 'string', 'max' => 64],
+            [['name',  'module_name'], 'string', 'max' => 64]
         ];
     }
 
@@ -180,6 +188,7 @@ class AuthItem extends Model
     {
         if ($this->validate()) {
             $manager = Configs::authManager();
+            
             if ($this->_item === null) {
                 // if ($this->type == Item::TYPE_PERMISSION) {
                 //     $this->_item = $manager->createRole($this->name);
@@ -193,9 +202,10 @@ class AuthItem extends Model
                 $isNew = false;
                 $oldName = $this->_item->name;
             }
-
+            
             $this->_item->name = $this->name;
             $this->_item->type = $this->type;
+            $this->_item->permission_type = $this->permission_type;            
             $this->_item->module_name = $this->module_name;
             $this->_item->parent_id = $this->parent_id ? $this->parent_id : 0;
             $this->_item->description = $this->description;
@@ -204,8 +214,9 @@ class AuthItem extends Model
             if ($isNew) {
                 $manager->add($this->_item);
             } else {
-                $manager->update($oldName, $this->_item);
+                $Res =  $manager->update($this->id, $this->_item);
             }
+            
             Helper::invalidate();
 
             return true;
@@ -227,8 +238,8 @@ class AuthItem extends Model
         $success = 0;
         if ($this->_item) {
             if ($items['route']) {
-                foreach ($items['route'] as $name) {
-                    $child = $manager->getRoutePermission($name, $this->parent_type);
+                foreach ($items['route'] as $id) {
+                    $child = $manager->getRoutePermission($id, $this->parent_type);
                     try {
                         $manager->addChild($this->_item, $child);
                         ++$success;
@@ -240,8 +251,8 @@ class AuthItem extends Model
             }
 
             if ($items['permission']) {
-                foreach ($items['permission'] as $name) {
-                    $child = $manager->getPermission($name);
+                foreach ($items['permission'] as $id) {
+                    $child = $manager->getPermission($id);
                     $child->parent_type = $parent_type;
                     try {
                         $manager->addChild($this->_item, $child);
@@ -326,32 +337,95 @@ class AuthItem extends Model
         $manager = Configs::authManager();
         $available = [];
         if ($this->type == Item::TYPE_PERMISSION) {
-            foreach (array_keys($manager->getRoles($this->type)) as $name) {
-                $available[$name] = 'role';
+            foreach ($manager->getRoles($this->type) as $name=>$val) {
+                $id = $val->id;
+                $available[$id] = 'role';
             }
         }
-        foreach (array_keys($manager->getPermissions($this->type)) as $name) {
-            $available[$name] = $name[0] == '/' ? 'route' : 'permission';
+        foreach ($manager->getPermissions($this->type) as $key=>$val) {
+            $id = $val->id;
+            $name = $val->name;
+            
+            $available[$id] = $name[0] == '/' ? 'route' : 'permission';
         }
         
 
         // 路由授权
-        foreach (array_keys($manager->getRoutes($this->type)) as $name) {
-            $available[$name] = 'route';
+        foreach ($manager->getRoutes($this->type) as $name=>$val) {
+            $id = $val->id;
+            $available[$id] = 'route';
         }
         $assigned = [];
         foreach ($manager->getChildren($this->_item->name) as $item) {
-            $assigned[$item->name] = $item->type == 1 ? 'role' : ($item->name[0] == '/' ? 'route' : 'permission');
-            unset($available[$item->name]);
+            $assigned[$item->id] = $item->type == 1 ? 'role' : ($item->name[0] == '/' ? 'route' : 'permission');
+            unset($available[$item->id]);
         }
 
         foreach ($manager->getItemChildren($this->_item->name) as $item) {
             $child_type = ['route', 'permission', 'role'];
-            $assigned[$item->name] = $child_type[$item->child_type];
-            unset($available[$item->name]);
+            $assigned[$item->id] = $child_type[$item->child_type];
+            unset($available[$item->id]);
         }
-        unset($available[$this->name]);
+        unset($available[$this->id]);
         
+
+        return [
+            'available' => $available,
+            'assigned' => $assigned,
+        ];
+    }
+
+
+        /**
+     * Get items. vue模式使用
+     *
+     * @return array
+     */
+    public function getAdminItems()
+    {
+        $manager = Configs::authManager();
+        $available = [];
+        
+        if ($this->type == Item::TYPE_PERMISSION) {
+            foreach ($manager->getRoles($this->type) as $name=>$val) {
+                $id = $val->id;
+                $available['role'][$id] = $val;
+            }
+        }
+        
+        foreach ($manager->getPermissions($this->type) as  $name=>$val) {
+            $key = $name[0] == '/' ? 'route' : 'permission';
+            $id = $val->id;
+            $available[$key][$id] = $val;
+        }
+        
+
+        // 路由授权
+        foreach ($manager->getRoutes($this->type) as $name=>$val) {
+            $id = $val->id;
+            $available['route'][$id] = $val;
+        }
+        
+        // 获取已分配
+        $assigned = [];
+        foreach ($manager->getChildren($this->_item->id) as $item=>$val) {
+            $key =  $val->type == 1 ? 'role' : ($val->name[0] == '/' ? 'route' : 'permission');
+            $id = $val->id;
+            $assigned[$key][] = $val;
+
+            unset($available[$key][$id]);
+        }
+        
+        foreach ($manager->getItemChildren($this->_item->id) as $item=>$val) {
+            $child_type = ['route', 'permission', 'role'];
+            $id = $val->id;
+            $item_id = $val->item_id;
+            
+            $key = $child_type[$val->child_type];
+            $assigned[$key][] = $val;
+            // unset($available[$key][$item_id]);
+        }
+        unset($available[$this->id]);
 
         return [
             'available' => $available,

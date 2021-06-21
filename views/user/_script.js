@@ -2,7 +2,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-05 20:52:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 20:30:09
+ * @Last Modified time: 2021-03-26 11:22:24
  */
 
 $('i.glyphicon-refresh-animate').hide();
@@ -47,9 +47,10 @@ function search(target) {
     var groups = {
         modules : [$('<optgroup label="应用模块">'), false],
     };
-    console.log(_opts,_opts[target])
+    console.log(_opts,target,_opts[target])
     $.each(_opts[target], function (name, group) {
         $.each(group,function(index,item){
+            console.log('667',item,item.title,q)
             if(item.title.indexOf(q)>=0){
                 $('<option>').text(item.title).val(item.identifie).appendTo(groups[name][0]);
                 groups[name][1] = true;

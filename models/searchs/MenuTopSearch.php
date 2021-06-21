@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2021-04-27 11:40:52
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2021-05-19 16:56:43
+ */
+ 
 
 namespace diandi\admin\models\searchs;
 

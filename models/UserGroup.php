@@ -3,11 +3,12 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 15:21:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-07-29 01:42:05
+ * @Last Modified time: 2021-05-24 19:13:38
  */
 
 namespace diandi\admin\models;
 
+use diandi\addons\models\DdAddons;
 use diandi\admin\components\Configs;
 use diandi\admin\components\Helper;
 use diandi\admin\components\Item;
@@ -65,6 +66,11 @@ class UserGroup extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getAddons()
+    {
+        return $this->hasOne(DdAddons::className(),['identifie'=>'module_name']);
+    }
+
     /**
      * @var Item
      */
@@ -113,15 +119,19 @@ class UserGroup extends \yii\db\ActiveRecord
     {
         $manager = Configs::authManager();
         $success = 0;
+        
         if ($this->_item) {
             if ($items) {
                 // $group = $items['group'];
-                foreach ($items as $name) {
-                    $child = $manager->getGroupPermission($name);
+                foreach ($items as $name =>$val) {
+                    $id = $val['id'];
+                    $child = $manager->getGroupPermission($id);
+                  
                     try {
                         $res = $manager->addChild($this->_item, $child);
                         ++$success;
                     } catch (\Exception $exc) {
+                        p($exc->getMessage());
                         Yii::error($exc->getMessage(), __METHOD__);
                     }
                 }

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:44:25
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 18:49:07
+ * @Last Modified time: 2021-03-31 09:56:28
  */
  
 
@@ -45,10 +45,7 @@ AutocompleteAsset::register($this);
 
             <?= $form->field($model, 'parent_id')
                 ->dropDownList(ArrayHelper::map($parentItem, 'id', 'name'), [
-                    'prompt' => [
-                        'text' => '顶级导航',
-                        'options' => ['value' => null],
-                    ],
+                    'prompt' => '顶级权限',
                 ])
                 ->label('父级权限'); ?>
                 
