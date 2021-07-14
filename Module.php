@@ -11,7 +11,6 @@ namespace diandi\admin;
 use Yii;
 use yii\helpers\Inflector;
 
-
 /**
  * GUI manager for RBAC.
  *
