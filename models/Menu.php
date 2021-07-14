@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 12:27:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-05-26 18:31:17
+ * @Last Modified time: 2021-07-08 16:06:36
  */
 
 namespace diandi\admin\models;
@@ -101,7 +101,7 @@ class Menu extends \yii\db\ActiveRecord
         }
     }
 
-   
+
 
     /**
      * Use to loop detected.
@@ -180,7 +180,6 @@ class Menu extends \yii\db\ActiveRecord
                 }
             }
         }
-
         return self::$_routes;
     }
 
@@ -189,7 +188,7 @@ class Menu extends \yii\db\ActiveRecord
         $tableName = static::tableName();
 
         return (new \yii\db\Query())
-            ->select(['m.id', 'm.name', 'm.route', 'parent_name' => 'p.name','m.parent'])
+            ->select(['m.id', 'm.name', 'm.route', 'parent_name' => 'p.name', 'm.parent'])
             ->from(['m' => $tableName])
             ->leftJoin(['p' => $tableName], '[[m.parent]]=[[p.id]]')
             ->all(static::getDb());

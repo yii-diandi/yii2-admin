@@ -1,9 +1,10 @@
 <?php
+
 /**
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-05-25 15:15:26
+ * @Last Modified time: 2021-07-14 23:15:45
  */
 
 namespace diandi\admin\models;
@@ -21,7 +22,7 @@ class AuthItem extends Model
 {
     public $id;
     public $name;
-    public $type;
+    public $is_sys;
     public $description;
     public $ruleName;
     public $data;
@@ -34,7 +35,7 @@ class AuthItem extends Model
     // 0: '目录' 1: '页面' 2: '按钮' 3: '接口' 
     public $permission_type;
 
-    
+
 
     /**
      * @var Item
@@ -50,13 +51,13 @@ class AuthItem extends Model
     public function __construct($item = null, $config = [])
     {
         $this->_item = $item;
-       
+
         if ($item !== null) {
             $this->id = $item->id;
             $this->name = $item->name;
             $this->parent_id = $item->parent_id;
             $this->module_name = $item->module_name;
-            $this->type = $item->type;
+            $this->is_sys = $item->type;
             // $this->permission_type = $item->permission_type;
             $this->child_type = $item->child_type;
             $this->parent_type = $item->parent_type;
@@ -74,7 +75,7 @@ class AuthItem extends Model
     {
         return [
             [['ruleName'], 'checkRule'],
-            [['name', 'type','permission_type'], 'required'],
+            [['name', 'type', 'permission_type'], 'required'],
             // [['name'], 'checkUnique', 'when' => function () {
             //     return $this->isNewRecord || ($this->_item->name != $this->name);
             // }],
@@ -149,6 +150,7 @@ class AuthItem extends Model
             'description' => Yii::t('rbac-admin', 'Description'),
             'ruleName' => Yii::t('rbac-admin', 'Rule Name'),
             'data' => Yii::t('rbac-admin', 'Data'),
+            'permission_type' => '权限属性'
         ];
     }
 
@@ -188,7 +190,7 @@ class AuthItem extends Model
     {
         if ($this->validate()) {
             $manager = Configs::authManager();
-            
+
             if ($this->_item === null) {
                 // if ($this->type == Item::TYPE_PERMISSION) {
                 //     $this->_item = $manager->createRole($this->name);
@@ -202,10 +204,10 @@ class AuthItem extends Model
                 $isNew = false;
                 $oldName = $this->_item->name;
             }
-            
+
             $this->_item->name = $this->name;
             $this->_item->type = $this->type;
-            $this->_item->permission_type = $this->permission_type;            
+            $this->_item->permission_type = $this->permission_type;
             $this->_item->module_name = $this->module_name;
             $this->_item->parent_id = $this->parent_id ? $this->parent_id : 0;
             $this->_item->description = $this->description;
@@ -216,7 +218,7 @@ class AuthItem extends Model
             } else {
                 $Res =  $manager->update($this->id, $this->_item);
             }
-            
+
             Helper::invalidate();
 
             return true;
@@ -236,7 +238,9 @@ class AuthItem extends Model
     {
         $manager = Configs::authManager();
         $success = 0;
+
         if ($this->_item) {
+
             if ($items['route']) {
                 foreach ($items['route'] as $id) {
                     $child = $manager->getRoutePermission($id, $this->parent_type);
@@ -244,8 +248,8 @@ class AuthItem extends Model
                         $manager->addChild($this->_item, $child);
                         ++$success;
                     } catch (\Exception $exc) {
-                        p($exc->getMessage());
                         Yii::error($exc->getMessage(), __METHOD__);
+                        return $exc->getMessage();
                     }
                 }
             }
@@ -254,16 +258,17 @@ class AuthItem extends Model
                 foreach ($items['permission'] as $id) {
                     $child = $manager->getPermission($id);
                     $child->parent_type = $parent_type;
+
                     try {
                         $manager->addChild($this->_item, $child);
                         ++$success;
                     } catch (\Exception $exc) {
-                        p($exc->getMessage());
                         Yii::error($exc->getMessage(), __METHOD__);
+                        return $exc->getMessage();
                     }
                 }
             }
-            
+
             // foreach ($items as $name) {
             //     $child = $manager->getPermission($name);
 
@@ -297,8 +302,7 @@ class AuthItem extends Model
         if ($this->_item !== null) {
             if ($items['route']) {
                 foreach ($items['route'] as $name) {
-                    $child = $manager->getRoutePermission($name);
-
+                    $child = $manager->getRoutePermission($name, 3);
                     try {
                         $manager->removeChild($this->_item, $child);
                         ++$success;
@@ -336,38 +340,50 @@ class AuthItem extends Model
     {
         $manager = Configs::authManager();
         $available = [];
-        if ($this->type == Item::TYPE_PERMISSION) {
-            foreach ($manager->getRoles($this->type) as $name=>$val) {
-                $id = $val->id;
-                $available[$id] = 'role';
-            }
-        }
-        foreach ($manager->getPermissions($this->type) as $key=>$val) {
+        // if ($this->is_sys == Item::TYPE_PERMISSION) {
+        //     foreach ($manager->getRoles($this->is_sys) as $key => $val) {
+        //         $id = $val->id;
+        //         $name = $val->name;
+        //         $available[$name] = 'role';
+        //     }
+        // }
+
+        foreach ($manager->getPermissions($this->is_sys) as $key => $val) {
             $id = $val->id;
             $name = $val->name;
-            
-            $available[$id] = $name[0] == '/' ? 'route' : 'permission';
+            $keyType = $name[0] == '/' ? 'route' : 'permission';
+            $available[$keyType][$id] = $val;
         }
-        
 
         // 路由授权
-        foreach ($manager->getRoutes($this->type) as $name=>$val) {
+        foreach ($manager->getRoutes($this->is_sys) as $name => $val) {
             $id = $val->id;
-            $available[$id] = 'route';
-        }
-        $assigned = [];
-        foreach ($manager->getChildren($this->_item->name) as $item) {
-            $assigned[$item->id] = $item->type == 1 ? 'role' : ($item->name[0] == '/' ? 'route' : 'permission');
-            unset($available[$item->id]);
+            $keyType = 'route';
+            $available[$keyType][$id] = $val;
         }
 
-        foreach ($manager->getItemChildren($this->_item->name) as $item) {
-            $child_type = ['route', 'permission', 'role'];
-            $assigned[$item->id] = $child_type[$item->child_type];
-            unset($available[$item->id]);
+        $assigned = [];
+
+
+        foreach ($manager->getChildren($this->_item->id) as $item) {
+            $id = $item->id;
+            $keyType =  $item->parent_type == 2 ? 'role' : ($item->name[0] == '/' ? 'route' : 'permission');
+
+            $assigned[$keyType][$id] = $item;
+            unset($available[$keyType][$id]);
         }
-        unset($available[$this->id]);
-        
+
+        foreach ($manager->getItemChildren($this->_item->id, $this->is_sys, 3) as $item) {
+            $id = $item->id;
+            $child_type = ['route', 'permission', 'role'];
+            $keyType =   $child_type[$item->child_type];
+            $assigned[$keyType][$id] = $item;
+            unset($available[$keyType][$id]);
+        }
+
+
+
+        unset($available[$this->name]);
 
         return [
             'available' => $available,
@@ -376,7 +392,7 @@ class AuthItem extends Model
     }
 
 
-        /**
+    /**
      * Get items. vue模式使用
      *
      * @return array
@@ -385,42 +401,42 @@ class AuthItem extends Model
     {
         $manager = Configs::authManager();
         $available = [];
-        
+
         if ($this->type == Item::TYPE_PERMISSION) {
-            foreach ($manager->getRoles($this->type) as $name=>$val) {
+            foreach ($manager->getRoles($this->is_sys) as $name => $val) {
                 $id = $val->id;
                 $available['role'][$id] = $val;
             }
         }
-        
-        foreach ($manager->getPermissions($this->type) as  $name=>$val) {
+
+        foreach ($manager->getPermissions($this->is_sys) as  $name => $val) {
             $key = $name[0] == '/' ? 'route' : 'permission';
             $id = $val->id;
             $available[$key][$id] = $val;
         }
-        
+
 
         // 路由授权
-        foreach ($manager->getRoutes($this->type) as $name=>$val) {
+        foreach ($manager->getRoutes($this->is_sys) as $name => $val) {
             $id = $val->id;
             $available['route'][$id] = $val;
         }
-        
+
         // 获取已分配
         $assigned = [];
-        foreach ($manager->getChildren($this->_item->id) as $item=>$val) {
+        foreach ($manager->getChildren($this->_item->id) as $item => $val) {
             $key =  $val->type == 1 ? 'role' : ($val->name[0] == '/' ? 'route' : 'permission');
             $id = $val->id;
             $assigned[$key][] = $val;
 
             unset($available[$key][$id]);
         }
-        
-        foreach ($manager->getItemChildren($this->_item->id) as $item=>$val) {
+
+        foreach ($manager->getItemChildren($this->_item->id) as $item => $val) {
             $child_type = ['route', 'permission', 'role'];
             $id = $val->id;
             $item_id = $val->item_id;
-            
+
             $key = $child_type[$val->child_type];
             $assigned[$key][] = $val;
             // unset($available[$key][$item_id]);

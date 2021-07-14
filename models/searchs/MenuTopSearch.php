@@ -1,17 +1,12 @@
 <?php
-/**
- * @Author: Wang chunsheng  email:2192138785@qq.com
- * @Date:   2021-04-27 11:40:52
- * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-05-19 16:56:43
- */
- 
 
 namespace diandi\admin\models\searchs;
 
 use yii\base\Model;
-use yii\data\ActiveDataProvider;
+use common\components\DataProvider\ArrayDataProvider;
 use diandi\admin\models\MenuTop;
+use yii\data\Pagination;
+
 
 /**
  * MenuTopSearch represents the model behind the search form of `diandi\admin\models\MenuTop`.
@@ -44,23 +39,21 @@ class MenuTopSearch extends MenuTop
      * @param array $params
      *
      * @return ActiveDataProvider
+
      */
     public function search($params)
     {
+        global $_GPC;
         $query = MenuTop::find();
 
-        // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
+        
 
         $this->load($params);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
-            return $dataProvider;
+            return false;
         }
 
         // grid filtering conditions
@@ -74,7 +67,47 @@ class MenuTopSearch extends MenuTop
             ->andFilterWhere(['like', 'create_time', $this->create_time])
             ->andFilterWhere(['like', 'update_time', $this->update_time])
             ->andFilterWhere(['like', 'icon', $this->icon]);
+        
+        $count = $query->count();
+        $pageSize   = $_GPC['pageSize'];
+        $page       = $_GPC['page'];
+        // 使用总数来创建一个分页对象
+        $pagination = new Pagination([
+            'totalCount' => $count,
+            'pageSize' => $pageSize,
+            'page' => $page - 1,
+            // 'pageParam'=>'page'
+        ]);
 
-        return $dataProvider;
+        $list = $query->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+        
+        //foreach ($list as $key => &$value) {
+        //    $value['create_time'] = date('Y-m-d H:i:s',$value['create_time']);
+        //    $value['update_time'] = date('Y-m-d H:i:s',$value['update_time']);
+        //} 
+            
+
+        $provider = new ArrayDataProvider([
+            'key'=>'id',
+            'allModels' => $list,
+            'totalCount' => isset($count) ? $count : 0,
+            'total'=> isset($count) ? $count : 0,
+            'sort' => [
+                'attributes' => [
+                    //'member_id',
+                ],
+                'defaultOrder' => [
+                    //'member_id' => SORT_DESC,
+                ],
+            ],
+            'pagination' => [
+                'pageSize' => $pageSize,
+            ]
+        ]);
+        
+        return $provider;
+        
     }
 }

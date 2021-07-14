@@ -1,9 +1,10 @@
 <?php
+
 /**
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:03:01
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-03-31 09:56:07
+ * @Last Modified time: 2021-07-14 19:24:40
  */
 
 namespace diandi\admin\components;
@@ -36,11 +37,11 @@ use yii\web\HttpException;
 class ItemController extends Controller
 {
     public $type;
-    
+
     public $module_name;
-    
+
     public $parent_type;
-    
+
     /**
      * {@inheritdoc}
      */
@@ -66,11 +67,11 @@ class ItemController extends Controller
     public function actionIndex()
     {
         $authManager = Configs::authManager();
-        $searchModel = new SearchsAuthItemSearch(['type' => $this->type,'module_name'=>$this->module_name]);
+        $searchModel = new SearchsAuthItemSearch(['type' => $this->type, 'module_name' => $this->module_name]);
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
-      
+
         // $query = AuthItemModel::find();
-        
+
 
         // $dataProvider = new ActiveDataProvider([
         //     'query' => $query,
@@ -82,7 +83,7 @@ class ItemController extends Controller
         $addons['sys'] = '系统';
         return $this->render('index', [
             'dataProvider' => $dataProvider,
-            'addons'=>$addons,
+            'addons' => $addons,
             'searchModel' => $searchModel,
         ]);
     }
@@ -112,22 +113,22 @@ class ItemController extends Controller
         $model->type = $this->type;
 
         $module_name = $this->module_name;
-        
+
         if (Yii::$app->request->isPost) {
             $data = Yii::$app->getRequest()->post();
-            if($model->load($data) && $model->save()){
-                return $this->redirect(['view', 'id' => $model->name,'module_name'=>$module_name]);
-            }else{
+            if ($model->load($data) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->name, 'module_name' => $module_name]);
+            } else {
                 $msg = ErrorsHelper::getModelError($model);
                 Yii::$app->session->setFlash('error', $msg);
             }
-        } 
+        }
 
 
-        $parentMent = AuthItemModel::find()->where(['module_name'=>$module_name])->asArray()->all();
-        $parentItem =  ArrayHelper::itemsMergeDropDown(ArrayHelper::itemsMerge($parentMent,0,"id",'parent_id','-'),"id",'name');
+        $parentMent = AuthItemModel::find()->where(['module_name' => $module_name])->asArray()->all();
+        $parentItem =  ArrayHelper::itemsMergeDropDown(ArrayHelper::itemsMerge($parentMent, 0, "id", 'parent_id', '-'), "id", 'name');
 
-        
+
         $addons = DdAddons::find()->asArray()->all();
         return $this->render('create', [
             'addons' => $addons,
@@ -135,7 +136,6 @@ class ItemController extends Controller
             'module_name' => $module_name,
             'parentItem' => $parentItem
         ]);
-        
     }
 
     /**
@@ -151,19 +151,18 @@ class ItemController extends Controller
         $model = $this->findModel($id);
         $module_name = $this->module_name;
 
-        if(yii::$app->request->isPost){
-            
-            if ($model->load(Yii::$app->getRequest()->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->name,'module_name'=>$module_name]);
+        if (yii::$app->request->isPost) {
 
-            }else{
-                throw new HttpException('400',ErrorsHelper::getModelError($model));
+            if ($model->load(Yii::$app->getRequest()->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->name, 'module_name' => $module_name]);
+            } else {
+                throw new HttpException('400', ErrorsHelper::getModelError($model));
             }
         }
 
         $addons = DdAddons::find()->asArray()->all();
-        $parentMent = AuthItemModel::find()->where(['module_name'=>$module_name])->asArray()->all();
-        $parentItem =  ArrayHelper::itemsMergeDropDown(ArrayHelper::itemsMerge($parentMent,0,"id",'parent_id','-'),"id",'name');
+        $parentMent = AuthItemModel::find()->where(['module_name' => $module_name])->asArray()->all();
+        $parentItem =  ArrayHelper::itemsMergeDropDown(ArrayHelper::itemsMerge($parentMent, 0, "id", 'parent_id', '-'), "id", 'name');
 
         return $this->render('update', [
             'addons' => $addons,
@@ -171,7 +170,7 @@ class ItemController extends Controller
             'module_name' => $module_name,
             'parentItem' => $parentItem
 
-            ]);
+        ]);
     }
 
     /**
@@ -188,7 +187,7 @@ class ItemController extends Controller
         Configs::authManager()->remove($model->item);
         Helper::invalidate();
         $module_name = $this->module_name;
-        return $this->redirect(['index','module_name'=>$module_name]);
+        return $this->redirect(['index', 'module_name' => $module_name]);
     }
 
     /**
@@ -202,14 +201,14 @@ class ItemController extends Controller
     {
         $items = Yii::$app->getRequest()->post('items', []);
         $model = $this->findModel($id);
-        $success = $model->addChildren($items);
-        if(!$success){
-           $msg = ErrorsHelper::getModelError($model); 
-        }
-        
-        Yii::$app->getResponse()->format = 'json';
 
-        return array_merge($model->getItems(), ['success' => $success,'error'=>$msg]);
+        $success = $model->addChildren($items, 3);
+        if (!$success) {
+            $msg = ErrorsHelper::getModelError($model);
+        }
+        Yii::$app->response->format = 'json';
+
+        return array_merge($model->getItems(), ['success' => $success, 'error' => $msg]);
     }
 
     /**
@@ -224,7 +223,7 @@ class ItemController extends Controller
         $items = Yii::$app->getRequest()->post('items', []);
         $model = $this->findModel($id);
         $success = $model->removeChildren($items);
-        Yii::$app->getResponse()->format = 'json';
+        Yii::$app->response->format = 'json';
 
         return array_merge($model->getItems(), ['success' => $success]);
     }
@@ -234,7 +233,7 @@ class ItemController extends Controller
      */
     public function getViewPath()
     {
-        return $this->module->getViewPath().DIRECTORY_SEPARATOR.'item';
+        return $this->module->getViewPath() . DIRECTORY_SEPARATOR . 'item';
     }
 
     /**
@@ -244,7 +243,7 @@ class ItemController extends Controller
      */
     public function labels()
     {
-        throw new NotSupportedException(get_class($this).' does not support labels().');
+        throw new NotSupportedException(get_class($this) . ' does not support labels().');
     }
 
     /**
@@ -254,34 +253,33 @@ class ItemController extends Controller
      */
     public function getType()
     {
-       return  $this->type;
+        return  $this->type;
     }
 
- 
 
-     /**
+
+    /**
      * Type of Auth Item.
      *
      * @return int
      */
     public function getModule_name()
     {
-       return  $this->module_name;
-
+        return  $this->module_name;
     }
 
- 
 
-     /**
+
+    /**
      * @inheritdoc
      */
     public function getParent_type()
     {
-       return  $this->parent_type;
+        return  $this->parent_type;
     }
 
- 
-    
+
+
     /**
      * Finds the AuthItem model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -294,10 +292,10 @@ class ItemController extends Controller
      */
     protected function findModel($id)
     {
-        $auth = Configs::authManager();  
+        $auth = Configs::authManager();
         // $item = $this->type === Item::TYPE_PERMISSION ? $auth->getRole($id) : $auth->getPermission($id);
         $item = $auth->getPermission($id);
-        
+
         if ($item) {
             // $item->type = $this->parent_type;  
             return new AuthItem($item);
