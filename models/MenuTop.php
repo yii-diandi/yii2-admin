@@ -1,15 +1,17 @@
 <?php
+
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 11:39:36
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-24 23:42:04
+ * @Last Modified time: 2021-07-02 19:03:19
  */
- 
+
 
 namespace diandi\admin\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "dd_menu_cate".
@@ -32,6 +34,7 @@ class MenuTop extends \yii\db\ActiveRecord
         return '{{%auth_menu_cate}}';
     }
 
+
     /**
      * {@inheritdoc}
      */
@@ -40,9 +43,19 @@ class MenuTop extends \yii\db\ActiveRecord
         return [
             [['sort'], 'integer'],
             [['name', 'mark'], 'string', 'max' => 255],
-            [['create_time', 'update_time', 'icon'], 'string', 'max' => 30],
+            // [['create_time', 'update_time', 'icon'], 'string', 'max' => 30],
         ];
     }
+
+    // public function behaviors()
+    // {
+    //     return [
+    //         'class' => TimestampBehavior::className(),
+    //         'createdAtAttribute' => 'create_time',
+    //         'updatedAtAttribute' => 'update_time'
+
+    //     ];
+    // }
 
     /**
      * {@inheritdoc}

@@ -1,9 +1,10 @@
 <?php
+
 /**
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 17:44:12
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-06 23:44:05
+ * @Last Modified time: 2021-09-09 16:25:51
  */
 
 namespace diandi\admin\controllers;
@@ -25,18 +26,10 @@ use diandi\admin\models\Route as ModelsRoute;
  */
 class GroupController extends BaseController
 {
-    public $type;
-    
-    public $module_name;
-    
+    public $is_sys = 0; //是否是系统
 
-    public function actions()
-    {
-        $this->module_name =  Yii::$app->request->get('module_name','sys');   
-        $this->type =  $this->module_name=='sys'?0:1;   
-        
-    }
-    
+    public $module_name = 'sys';
+
     /**
      * {@inheritdoc}
      */
@@ -60,7 +53,7 @@ class GroupController extends BaseController
     public function actionIndex()
     {
         $searchModel = new UserGroupSearch([
-            'module_name'=>$this->module_name
+            'module_name' => $this->module_name
         ]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -84,10 +77,9 @@ class GroupController extends BaseController
         $model = $this->findModel($id);
 
         $manager = Configs::authManager();
-        
-        
-        $items = $manager->getAuths($model['name'],$this->type);
-  
+
+        $items = $manager->getAuths($id, $this->is_sys);
+
         return $this->render('view', [
             'model' => $model,
             'module_name' => $this->module_name,
@@ -108,7 +100,7 @@ class GroupController extends BaseController
 
         $items = Yii::$app->getRequest()->post('items', []);
         $model = $this->findModel($id);
-        
+
         $success = 0;
         // 规则
         if ($items['group']) {
@@ -121,19 +113,20 @@ class GroupController extends BaseController
                 'name' => $model['name'],
                 'module_name' => $model['module_name'],
                 'type' => $model['type'],
-                'parent_id' => null,
+                'id' => $id,
                 'child_type' => 1,
                 'ruleName' => '',
                 'description' => $model['description'],
                 'data' => '',
             ]);
             $permission = new AuthItem($item);
-            $success += $permission->addChildren($items,2);
+            $success += $permission->addChildren($items, 2);
         }
 
         // 路由
         if ($items['route']) {
             $item = new Route([
+                'id' => $model['id'],
                 'name' => $model['name'],
                 'title' => '',
                 'module_name' => $model['module_name'],
@@ -144,13 +137,13 @@ class GroupController extends BaseController
                 'pid' => 0,
             ]);
             $route = new ModelsRoute($item);
-            $success += $route->addChildren($items['route']);
+
+            $success += $route->addChildren($items['route'], 2);
         }
 
         Yii::$app->getResponse()->format = 'json';
 
-        $items = $manager->getAuths($model['name'],$this->type);
-
+        $items = $manager->getAuths($model['id'], $this->is_sys);
         return array_merge($items, ['success' => $success]);
     }
 
@@ -171,13 +164,15 @@ class GroupController extends BaseController
         if ($items['group']) {
             $success += $model->removeChildren($items);
         }
+
         // 权限
         if ($items['permission']) {
             $item = new Item([
                 'name' => $model['name'],
                 'module_name' => $model['module_name'],
                 'type' => $model['type'],
-                'parent_id' => null,
+                'id' =>  $model['id'],
+                'parent_type' => 2,
                 'child_type' => 1,
                 'ruleName' => '',
                 'description' => $model['description'],
@@ -191,10 +186,11 @@ class GroupController extends BaseController
         if ($items['route']) {
             $item = new Route([
                 'name' => $model['name'],
-                'title' => '',
+                'title' => $model['name'],
                 'module_name' => $model['module_name'],
                 'type' => $model['type'],
-                'child_type' => 0,
+                'id' => $model['id'],
+                'parent_type' => 2,
                 'description' => $model['description'],
                 'data' => '',
                 'pid' => 0,
@@ -206,7 +202,7 @@ class GroupController extends BaseController
         Yii::$app->getResponse()->format = 'json';
         $manager = Configs::authManager();
 
-        $items = $manager->getAuths($model['name']);
+        $items = $manager->getAuths($model['id'], $this->is_sys);
         return array_merge($items, ['success' => $success]);
     }
 
@@ -221,7 +217,7 @@ class GroupController extends BaseController
         $model = new UserGroup();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id,'module_name' => $this->module_name]);
+            return $this->redirect(['view', 'id' => $model->id, 'module_name' => $this->module_name]);
         }
 
         return $this->render('create', [
@@ -243,9 +239,9 @@ class GroupController extends BaseController
     public function actionUpdate($id)
     {
         $model = UserGroup::findOne($id);
-        
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id,'module_name' => $this->module_name]);
+            return $this->redirect(['view', 'id' => $model->id, 'module_name' => $this->module_name]);
         }
 
         return $this->render('update', [
@@ -268,7 +264,7 @@ class GroupController extends BaseController
     {
         UserGroup::findOne($id)->delete();
 
-        return $this->redirect(['index','module_name' => $this->module_name]);
+        return $this->redirect(['index', 'module_name' => $this->module_name]);
     }
 
     /**
