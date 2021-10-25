@@ -22,5 +22,4 @@ class AnimateAsset extends AssetBundle
     public $css = [
         'animate.css',
     ];
-
 }
