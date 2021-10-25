@@ -151,6 +151,7 @@ class Menu extends \yii\db\ActiveRecord
             'data' => Yii::t('rbac-admin', 'Data'),
             'type' => '类型',
             'icon' => '图标',
+			'level_type'=> '菜单等级类型',
             'module_name' => '所属模块',
             'is_sys' => '菜单类别',
         ];
