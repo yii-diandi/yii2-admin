@@ -17,7 +17,6 @@ use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "menu".
- *
  * @property int    $id         Menu id(autoincrement)
  * @property string $name       Menu name
  * @property int    $parent     Menu parent
