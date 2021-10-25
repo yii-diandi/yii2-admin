@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:03:01
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-07-14 19:24:40
+ * @Last Modified time: 2021-07-17 20:30:03
  */
 
 namespace diandi\admin\components;
@@ -110,7 +110,7 @@ class ItemController extends Controller
     public function actionCreate()
     {
         $model = new AuthItem(null);
-        $model->type = $this->type;
+        $model->is_sys = $this->type;
 
         $module_name = $this->module_name;
 

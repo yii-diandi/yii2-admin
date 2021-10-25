@@ -1,9 +1,10 @@
 <?php
+
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 20:26:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-05-26 13:44:49
+ * @Last Modified time: 2021-07-17 20:10:47
  */
 
 namespace diandi\admin\components;
@@ -77,15 +78,18 @@ class MenuHelper
         $config = Configs::instance();
         /* @var $manager \yii\rbac\BaseManager */
         $manager = Configs::authManager();
-    
+
         $menus = Menu::find()->where($menuwhere)->asArray()->indexBy('id')->all();
+
         $module_name = !empty($menuwhere['module_name']) ? $menuwhere['module_name'] : '';
         $key = [__METHOD__, $userId, $module_name, $manager->defaultRoles];
         $cache = $config->cache;
-     
+
         if ($refresh || $cache === null || ($assigned = $cache->get($key)) === false) {
             $routes = $filter1 = $filter2 = [];
+
             if ($userId !== null) {
+
                 // 获取所有的权限
                 foreach ($manager->getPermissionsByUser($userId) as $name => $value) {
                     if ($name[0] === '/') {
@@ -106,6 +110,8 @@ class MenuHelper
                     }
                 }
             }
+
+
             $routes = array_unique($routes);
             sort($routes);
             $prefix = '\\';
@@ -113,7 +119,7 @@ class MenuHelper
                 if (strpos($route, $prefix) !== 0) {
                     if (substr($route, -1) === '/') {
                         $prefix = $route;
-                        $filter1[] = $route.'%';
+                        $filter1[] = $route . '%';
                     } else {
                         $filter2[] = $route;
                     }
@@ -125,7 +131,7 @@ class MenuHelper
             if (count($filter2)) {
                 $assigned = $query->where(['route' => $filter2])->andWhere($menuwhere)->column();
             }
-        
+
             if (count($filter1)) {
                 $query->where('route like :filter')->andWhere($menuwhere);
                 foreach ($filter1 as $filter) {
@@ -133,21 +139,22 @@ class MenuHelper
                 }
             }
 
-            
+
 
             $assigned = static::requiredParent($assigned, $menus);
-            
+
             if ($cache !== null) {
                 $cache->set($key, $assigned, $config->cacheDuration, new TagDependency([
                     'tags' => Configs::CACHE_TAG,
                 ]));
             }
         }
-    
+
         $key = [__METHOD__, $assigned, $root];
-        
+
         if ($refresh || $callback !== null || $cache === null || (($result = $cache->get($key)) === false)) {
             $result =  static::normalizeMenu($assigned, $menus, $callback, $root);
+
             if ($cache !== null && $callback === null) {
                 $cache->set($key, $result, $config->cacheDuration, new TagDependency([
                     'tags' => Configs::CACHE_TAG,
@@ -169,10 +176,10 @@ class MenuHelper
     private static function requiredParent($assigned, &$menus)
     {
         $l = count($assigned);
-        
+
         for ($i = 0; $i < $l; ++$i) {
             $id = $assigned[$i];
-            $parent_id = isset($menus[$id])?$menus[$id]['parent']:'';
+            $parent_id = isset($menus[$id]) ? $menus[$id]['parent'] : '';
             if (!empty($parent_id) && !in_array($parent_id, $assigned)) {
                 $assigned[$l++] = $parent_id;
             }
@@ -223,7 +230,7 @@ class MenuHelper
         foreach ($assigned as $id) {
             $menu = $menus[$id];
             if ($menu['parent'] == $parent) {
-                loggingHelper::writeLog('menuhelp','normalizeMenu','哪里的问题',[$parent]);
+                loggingHelper::writeLog('menuhelp', 'normalizeMenu', '哪里的问题', [$parent]);
                 $menu['children'] = static::normalizeMenu($assigned, $menus, $callback, $id);
                 if (!empty($callback)) {
                     $item =   call_user_func($callback, $menu);
@@ -241,7 +248,7 @@ class MenuHelper
                 }
             }
         }
-        
+
         return $result;
     }
 }

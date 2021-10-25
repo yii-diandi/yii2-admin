@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2021-05-21 00:39:56
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-05-21 18:29:14
+ * @Last Modified time: 2021-10-25 20:13:45
  */
  
 
@@ -45,7 +45,7 @@ class AuthRoute extends \yii\db\ActiveRecord
             [['name', 'type'], 'required'],
             [['type', 'route_type', 'pid', 'created_at', 'updated_at'], 'integer'],
             [['description', 'data'], 'string'],
-            [['name', 'title'], 'string', 'max' => 64],
+            [['name', 'title','route_name'], 'string', 'max' => 64],
             [['module_name'], 'string', 'max' => 50],
             [['name'], 'unique'],
         ];

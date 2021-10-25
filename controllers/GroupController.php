@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 17:44:12
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-07-14 16:26:27
+ * @Last Modified time: 2021-09-09 16:25:51
  */
 
 namespace diandi\admin\controllers;
@@ -26,16 +26,9 @@ use diandi\admin\models\Route as ModelsRoute;
  */
 class GroupController extends BaseController
 {
-    public $is_sys; //是否是系统
+    public $is_sys = 0; //是否是系统
 
-    public $module_name;
-
-
-    public function actions()
-    {
-        $this->module_name =  Yii::$app->request->get('module_name', 'sys');
-        $this->is_sys =  $this->module_name == 'sys' ? 0 : 1;
-    }
+    public $module_name = 'sys';
 
     /**
      * {@inheritdoc}

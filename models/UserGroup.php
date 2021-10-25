@@ -1,9 +1,10 @@
 <?php
+
 /**
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 15:21:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-05-24 19:13:38
+ * @Last Modified time: 2021-09-09 16:27:09
  */
 
 namespace diandi\admin\models;
@@ -34,7 +35,7 @@ class UserGroup extends \yii\db\ActiveRecord
         return '{{%auth_user_group}}';
     }
 
-     /**
+    /**
      * 行为.
      */
     public function behaviors()
@@ -43,12 +44,12 @@ class UserGroup extends \yii\db\ActiveRecord
         return [
             [
                 'class' => \common\behaviors\SaveBehavior::className(),
-                'createdAttribute'=>'created_at',
-                'updatedAttribute'=>'updated_at',
+                'createdAttribute' => 'created_at',
+                'updatedAttribute' => 'updated_at',
             ],
         ];
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -56,19 +57,19 @@ class UserGroup extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'type'], 'required'],
-            [['type', 'created_at', 'updated_at'], 'integer'],
-            [['description','module_name'], 'string'],
+            [['type', 'created_at', 'updated_at', 'store_id', 'bloc_id'], 'integer'],
+            [['description'], 'string'],
             [['name'], 'string', 'max' => 64],
             [['name'], 'checkName'],
             [['name'], 'unique'],
-            
-            
+
+
         ];
     }
 
     public function getAddons()
     {
-        return $this->hasOne(DdAddons::className(),['identifie'=>'module_name']);
+        return $this->hasOne(DdAddons::className(), ['identifie' => 'module_name']);
     }
 
     /**
@@ -97,14 +98,13 @@ class UserGroup extends \yii\db\ActiveRecord
 
     public function checkName()
     {
-        $name = $this->name;        
+        $name = $this->name;
         // 不能和权限名称相同
         $manager = Configs::authManager();
         $item = $manager->getPermission($name);
         if ($item) {
-            $this->addError('name', '名称：'.$item->name.'已存在');
+            $this->addError('name', '名称：' . $item->name . '已存在');
             return;
-
         }
     }
 
@@ -119,14 +119,14 @@ class UserGroup extends \yii\db\ActiveRecord
     {
         $manager = Configs::authManager();
         $success = 0;
-        
+
         if ($this->_item) {
             if ($items) {
                 // $group = $items['group'];
-                foreach ($items as $name =>$val) {
+                foreach ($items as $name => $val) {
                     $id = $val['id'];
                     $child = $manager->getGroupPermission($id);
-                  
+
                     try {
                         $res = $manager->addChild($this->_item, $child);
                         ++$success;
@@ -183,6 +183,8 @@ class UserGroup extends \yii\db\ActiveRecord
             'name' => '用户组名称',
             'type' => '用户组类型',
             'description' => '用户组说明',
+            'store_id' => '商户',
+            'bloc_id' => '公司',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 16:49:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-05-26 16:11:37
+ * @Last Modified time: 2021-09-12 21:15:25
  */
 
 
@@ -56,7 +56,7 @@ class Menu extends MenuModel
     public function search($params)
     {
         global $_GPC;
- 
+
         $query = MenuModel::find()
             ->from(MenuModel::tableName() . ' t')
             ->joinWith(['menuParent' => function ($q) {
@@ -81,7 +81,7 @@ class Menu extends MenuModel
         $sort->defaultOrder = ['menuParent.name' => SORT_ASC];
 
         $this->load($params);
-        
+
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -90,15 +90,15 @@ class Menu extends MenuModel
 
         $query->andFilterWhere([
             't.id' => $this->id,
-            't.module_name'=>  $this->module_name,
+            't.module_name' =>  $this->module_name,
             't.parent' => $this->parent,
         ]);
 
         $query->andFilterWhere(['like', 'lower(t.name)', strtolower($this->name)])
             ->andFilterWhere(['like', 't.route', $this->route])
-            ->andFilterWhere(['like', 'lower(parent.name)', strtolower($this->parent_name)]);
-            
-      
+            ->andFilterWhere(['like', 'lower(parent.name)', strtolower($this->parent_name)])->orderBy('order');
+
+
         $count = $query->count();
         $pageSize   = $_GPC['pageSize'];
         $page       = $_GPC['page'];

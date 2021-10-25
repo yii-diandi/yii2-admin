@@ -4,11 +4,12 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 12:27:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-07-08 16:06:36
+ * @Last Modified time: 2021-10-25 20:47:13
  */
 
 namespace diandi\admin\models;
 
+use admin\models\auth\AuthRoute;
 use diandi\admin\components\Configs;
 use Yii;
 use yii\db\Query;
@@ -78,7 +79,7 @@ class Menu extends \yii\db\ActiveRecord
             [['parent'], 'filterParent', 'when' => function () {
                 return !$this->isNewRecord;
             }],
-            [['order'], 'integer'],
+            [['order', 'is_show','route_id'], 'integer'],
             [['is_sys'], 'in', 'range' => ['system', 'addons']],
             [
                 ['route'], 'in',
@@ -95,6 +96,12 @@ class Menu extends \yii\db\ActiveRecord
                 //字段
                 $this->order = 0;
             }
+            
+            if(is_numeric($this->route)){
+                $router_id = $this->route;
+                $this->route = AuthRoute::find()->where(['id'=>$router_id])->select('name')->scalar();
+            }
+
             return true;
         } else {
             return false;

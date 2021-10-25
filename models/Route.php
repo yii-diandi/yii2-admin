@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 18:10:43
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-07-14 11:17:15
+ * @Last Modified time: 2021-09-22 15:34:28
  */
 
 namespace diandi\admin\models;
@@ -234,9 +234,7 @@ class Route extends \diandi\admin\BaseObject
             // Get basic app routes.
             $routes = $this->getAppRoutes();
         }
-
         $exists = [];
-
         // 获取当前类型--系统:0  模块:1 全部:2
         foreach (array_keys($manager->getRoutePermissions(2)) as $name) {
             if ($name[0] !== $this->routePrefix) {
@@ -245,6 +243,7 @@ class Route extends \diandi\admin\BaseObject
             $exists[] = $name;
             unset($routes[$name]);
         }
+
         return [
             'available' => array_keys($routes),
             'assigned' => $exists,
@@ -263,7 +262,8 @@ class Route extends \diandi\admin\BaseObject
         } elseif (is_string($module)) {
             $module = Yii::$app->getModule($module);
         }
-
+        // print_r($module->getModule('diandi_website'));
+        // die;
         $key = [__METHOD__, Yii::$app->id, $module->getUniqueId()];
         $cache = Configs::instance()->cache;
 
@@ -291,6 +291,8 @@ class Route extends \diandi\admin\BaseObject
     {
         $token = "Get Route of '" . get_class($module) . "' with id '" . $module->uniqueId . "'";
         Yii::beginProfile($token, __METHOD__);
+
+
         try {
             foreach ($module->getModules() as $id => $child) {
                 if (($child = $module->getModule($id)) !== null) {
