@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 20:26:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-10-25 22:21:57
+ * @Last Modified time: 2021-10-26 01:37:24
  */
 
 namespace diandi\admin\components;
@@ -80,7 +80,6 @@ class MenuHelper
         $manager = Configs::authManager();
 
         $menus = Menu::find()->where($menuwhere)->with(['ruoter'])->asArray()->indexBy('id')->all();
-
         $module_name = !empty($menuwhere['module_name']) ? $menuwhere['module_name'] : '';
         $key = [__METHOD__, $userId, $module_name, $manager->defaultRoles];
         $cache = $config->cache;
@@ -229,6 +228,7 @@ class MenuHelper
         $order = [];
         foreach ($assigned as $id) {
             $menu = $menus[$id];
+           
             if ($menu['parent'] == $parent) {
                 loggingHelper::writeLog('menuhelp', 'normalizeMenu', '哪里的问题', [$parent]);
                 $menu['children'] = static::normalizeMenu($assigned, $menus, $callback, $id);

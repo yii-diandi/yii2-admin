@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 12:27:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-10-25 22:23:52
+ * @Last Modified time: 2021-10-26 02:15:40
  */
 
 namespace diandi\admin\models;
@@ -84,7 +84,7 @@ class Menu extends \yii\db\ActiveRecord
             [['parent'], 'filterParent', 'when' => function () {
                 return !$this->isNewRecord;
             }],
-            [['order', 'is_show','route_id'], 'integer'],
+            [['order', 'is_show','route_id','level_type'], 'integer'],
             [['is_sys'], 'in', 'range' => ['system', 'addons']],
             [
                 ['route'], 'in',
