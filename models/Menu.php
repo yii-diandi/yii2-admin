@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 12:27:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-10-25 21:52:54
+ * @Last Modified time: 2021-10-25 22:23:52
  */
 
 namespace diandi\admin\models;
@@ -60,7 +60,13 @@ class Menu extends \yii\db\ActiveRecord
 
         return ArrayHelper::map($result, 'id', 'name');
     }
+    
 
+    public function getRuoter()
+    {
+        return $this->hasOne(AuthRoute::className(),['id'=>'route_id']);
+    }
+    
     /**
      * {@inheritdoc}
      */

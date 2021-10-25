@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 20:26:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-07-17 20:10:47
+ * @Last Modified time: 2021-10-25 22:21:57
  */
 
 namespace diandi\admin\components;
@@ -79,7 +79,7 @@ class MenuHelper
         /* @var $manager \yii\rbac\BaseManager */
         $manager = Configs::authManager();
 
-        $menus = Menu::find()->where($menuwhere)->asArray()->indexBy('id')->all();
+        $menus = Menu::find()->where($menuwhere)->with(['ruoter'])->asArray()->indexBy('id')->all();
 
         $module_name = !empty($menuwhere['module_name']) ? $menuwhere['module_name'] : '';
         $key = [__METHOD__, $userId, $module_name, $manager->defaultRoles];
