@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 12:27:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-10-25 20:47:13
+ * @Last Modified time: 2021-10-25 21:52:54
  */
 
 namespace diandi\admin\models;
@@ -98,6 +98,7 @@ class Menu extends \yii\db\ActiveRecord
             
             if(is_numeric($this->route)){
                 $router_id = $this->route;
+                $this->route_id = $router_id; 
                 $this->route = AuthRoute::find()->where(['id'=>$router_id])->select('name')->scalar();
             }
 
