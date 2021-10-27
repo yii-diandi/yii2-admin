@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-07-14 23:15:45
+ * @Last Modified time: 2021-10-27 15:48:46
  */
 
 namespace diandi\admin\models;
@@ -34,6 +34,8 @@ class AuthItem extends Model
     public $parent_name;
     // 0: '目录' 1: '页面' 2: '按钮' 3: '接口' 
     public $permission_type;
+
+    public $type;
 
 
 
