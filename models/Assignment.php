@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-06 15:25:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-06-21 14:39:00
+ * @Last Modified time: 2021-12-29 09:54:33
  */
 
 namespace diandi\admin\models;
@@ -62,7 +62,7 @@ class Assignment extends \diandi\admin\BaseObject
         $manager = Configs::authManager();
         $success = 0;
         
-         if (!empty($items['role'])) {
+        if (!empty($items['role'])) {
             foreach ($items['role'] as $name) {
                 try {
                     $item = $manager->getGroup($name, $this->type);
@@ -125,6 +125,20 @@ class Assignment extends \diandi\admin\BaseObject
         $manager = Configs::authManager();
         $success = 0;
 
+        if (!empty($items['role'])) {
+            foreach ($items['role'] as $name) {
+                try {
+                    $item = $manager->getGroup($name, $this->type);
+                    $item = $item ?: $manager->getGroupPermission($name);
+                    $manager->revokeGroup($item, $this->id);
+                    ++$success;
+                } catch (\Exception $exc) {
+                    p($exc->getMessage());
+                    Yii::error($exc->getMessage(), __METHOD__);
+                }
+            }
+        }
+        
         if (isset($items['group'])) {
             foreach ($items['group'] as $name) {
                 try {

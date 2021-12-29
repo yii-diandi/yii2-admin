@@ -2,10 +2,11 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-06 15:28:38
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-12-29 00:19:04
+ * @Last Modified time: 2021-12-29 10:07:06
  */
 $('i.glyphicon-refresh-animate').hide();
 function updateItems(r) {
+    location.reload();
     _opts.items.available = r.available;
     _opts.items.assigned = r.assigned;
     search('available');
@@ -37,7 +38,6 @@ $('.btn-assign').click(function () {
         $this.children('i.glyphicon-refresh-animate').show();
         $.post($this.attr('href'), {items: items}, function (r) {
             updateItems(r);
-            location.reload()
         }).always(function () {
             $this.children('i.glyphicon-refresh-animate').hide();
         });
