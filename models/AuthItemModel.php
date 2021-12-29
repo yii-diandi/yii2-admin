@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-08 08:52:46
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 18:41:59
+ * @Last Modified time: 2021-05-24 12:08:02
  */
  
 
@@ -43,7 +43,7 @@ class AuthItemModel extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'type'], 'required'],
+            [['name', 'type','permission_type'], 'required'],
             [['type', 'created_at', 'updated_at'], 'integer'],
             [['description', 'data'], 'string'],
             [['name', 'rule_name', 'parent_id'], 'string', 'max' => 64],
@@ -60,7 +60,8 @@ class AuthItemModel extends \yii\db\ActiveRecord
     {
         return [
             'name' => '权限名称',
-            'type' => '权限类型',
+            'type' => '权限种类',
+            'permission_type' => '权限类型',
             'description' => '权限描述',
             'rule_name' => '规则名称',
             'parent_id' => '父级权限',

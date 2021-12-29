@@ -33,7 +33,6 @@ class PermissionController extends ItemController
     {
         $this->module_name =  Yii::$app->request->get('module_name','sys');   
         $this->type =  $this->module_name=='sys'?0:1;   
-        
     }
 
     /**

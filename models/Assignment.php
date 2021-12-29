@@ -1,9 +1,10 @@
 <?php
+
 /**
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-06 15:25:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-19 06:39:50
+ * @Last Modified time: 2021-06-21 14:39:00
  */
 
 namespace diandi\admin\models;
@@ -40,11 +41,11 @@ class Assignment extends \diandi\admin\BaseObject
         if (isset($item['id'])) {
             $this->id = $item['id'];
         }
-        
+
         if (isset($item['type'])) {
             $this->type = $item['type'];
         }
-        
+
         $this->user = $user;
         parent::__construct($config);
     }
@@ -60,13 +61,29 @@ class Assignment extends \diandi\admin\BaseObject
     {
         $manager = Configs::authManager();
         $success = 0;
+        
+         if (!empty($items['role'])) {
+            foreach ($items['role'] as $name) {
+                try {
+                    $item = $manager->getGroup($name, $this->type);
+
+                    $item = $item ?: $manager->getGroupPermission($name);
+                    $manager->assignGroup($item, $this->id);
+                    ++$success;
+                } catch (\Exception $exc) {
+                    Yii::$app->session->setFlash('error', $exc->getMessage());
+                    Yii::error($exc->getMessage(), __METHOD__);
+                }
+            }
+        }
+
+
         if (!empty($items['group'])) {
             foreach ($items['group'] as $name) {
                 try {
                     $item = $manager->getGroup($name, $this->type);
 
                     $item = $item ?: $manager->getGroupPermission($name);
-
                     $manager->assignGroup($item, $this->id);
                     ++$success;
                 } catch (\Exception $exc) {
@@ -77,15 +94,15 @@ class Assignment extends \diandi\admin\BaseObject
         }
 
         if (!empty($items['permission'])) {
+            
             foreach ($items['permission'] as $name) {
                 try {
                     $item = $manager->getRole($name);
                     $item = $item ?: $manager->getPermission($name);
-                
                     $manager->assign($item, $this->id);
                     ++$success;
                 } catch (\Exception $exc) {
-                    p($exc->getMessage());
+                    print_r($exc->getMessage());
                     Yii::error($exc->getMessage(), __METHOD__);
                 }
             }
@@ -151,18 +168,23 @@ class Assignment extends \diandi\admin\BaseObject
         $manager = Configs::authManager();
         $available = [];
         // 用户组授权
-        foreach (array_keys($manager->getGroups($type)) as $name) {
+        $groups = $manager->getGroups($type);
+        foreach ($manager->getGroups($type) as $item) {
+            $name = $item->name;
             $available[$name] = 'role';
         }
 
-        foreach (array_keys($manager->getPermissions($type)) as $name) {
-            if ($name[0] != '/') {
+        foreach ($manager->getPermissions($type) as $item) {
+            $name = $item->name;
+            if ($name != '/') {
+                // 后续根据情况做优化
                 $available[$name] = 'permission';
             }
         }
 
         // 路由授权
-        foreach (array_keys($manager->getRoutes($type)) as $name) {
+        foreach ($manager->getRoutes($type) as $item) {
+            $name = $item->name;
             $available[$name] = 'route';
         }
 

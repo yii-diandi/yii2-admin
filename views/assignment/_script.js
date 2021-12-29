@@ -2,7 +2,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-06 15:28:38
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 20:54:33
+ * @Last Modified time: 2021-12-29 00:19:04
  */
 $('i.glyphicon-refresh-animate').hide();
 function updateItems(r) {
@@ -18,16 +18,15 @@ $('.btn-assign').click(function () {
     // var items = $('select.list[data-target="' + target + '"]').val();
 
     var items = {
-        group: [],
-        permission: [],
-        route: [],
+        role: [],
+        permission: []
     }
     // 分组返回数据
     var opt = $('select.list[data-target="' + target + '"]').find(':selected');
     $.each(opt,function(key,name){
         var og = $(this).closest('optgroup').attr('label')
         if(og=='用户组'){
-            items.group.push($(this).val())
+            items.role.push($(this).val())
         }
         if(og=='权限'){
             items.permission.push($(this).val())
@@ -38,6 +37,7 @@ $('.btn-assign').click(function () {
         $this.children('i.glyphicon-refresh-animate').show();
         $.post($this.attr('href'), {items: items}, function (r) {
             updateItems(r);
+            location.reload()
         }).always(function () {
             $this.children('i.glyphicon-refresh-animate').hide();
         });

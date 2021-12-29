@@ -3,6 +3,7 @@
 namespace diandi\admin;
 use yii\web\AssetBundle;
 
+
 /**
  * Description of AnimateAsset
  *
@@ -21,5 +22,4 @@ class AnimateAsset extends AssetBundle
     public $css = [
         'animate.css',
     ];
-
 }

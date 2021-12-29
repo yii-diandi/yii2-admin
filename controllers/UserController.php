@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:39:04
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 20:20:53
+ * @Last Modified time: 2021-03-26 11:50:24
  */
 
 namespace diandi\admin\controllers;
@@ -247,7 +247,6 @@ class UserController extends BaseController
         ]);
         $opts = $AddonsUser->getItems();
         $animateIcon = '';
-
         return $this->render('view', [
             'animateIcon' => $animateIcon,
             'model' => $this->findModel($id),
