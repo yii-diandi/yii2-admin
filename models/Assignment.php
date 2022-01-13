@@ -1,9 +1,10 @@
 <?php
+
 /**
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-06 15:25:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-19 06:39:50
+ * @Last Modified time: 2022-01-13 12:47:37
  */
 
 namespace diandi\admin\models;
@@ -30,7 +31,7 @@ class Assignment extends \diandi\admin\BaseObject
      */
     public $user;
 
-    public $type;
+    public $is_sys;
 
     /**
      * {@inheritdoc}
@@ -40,11 +41,11 @@ class Assignment extends \diandi\admin\BaseObject
         if (isset($item['id'])) {
             $this->id = $item['id'];
         }
-        
-        if (isset($item['type'])) {
-            $this->type = $item['type'];
+
+        if (isset($item['is_sys'])) {
+            $this->is_sys = $item['is_sys'];
         }
-        
+
         $this->user = $user;
         parent::__construct($config);
     }
@@ -60,13 +61,28 @@ class Assignment extends \diandi\admin\BaseObject
     {
         $manager = Configs::authManager();
         $success = 0;
+        
+        if (!empty($items['role'])) {
+            foreach ($items['role'] as $name) {
+                try {
+                    $item = $manager->getGroup($name, $this->is_sys);
+                    $item = $item ?: $manager->getGroupPermission($name);
+                    $manager->assignGroup($item, $this->id);
+                    ++$success;
+                } catch (\Exception $exc) {
+                    Yii::$app->session->setFlash('error', $exc->getMessage());
+                    Yii::error($exc->getMessage(), __METHOD__);
+                }
+            }
+        }
+
+
         if (!empty($items['group'])) {
             foreach ($items['group'] as $name) {
                 try {
-                    $item = $manager->getGroup($name, $this->type);
+                    $item = $manager->getGroup($name, $this->is_sys);
 
                     $item = $item ?: $manager->getGroupPermission($name);
-
                     $manager->assignGroup($item, $this->id);
                     ++$success;
                 } catch (\Exception $exc) {
@@ -77,15 +93,15 @@ class Assignment extends \diandi\admin\BaseObject
         }
 
         if (!empty($items['permission'])) {
+            
             foreach ($items['permission'] as $name) {
                 try {
                     $item = $manager->getRole($name);
                     $item = $item ?: $manager->getPermission($name);
-                
                     $manager->assign($item, $this->id);
                     ++$success;
                 } catch (\Exception $exc) {
-                    p($exc->getMessage());
+                    print_r($exc->getMessage());
                     Yii::error($exc->getMessage(), __METHOD__);
                 }
             }
@@ -108,10 +124,24 @@ class Assignment extends \diandi\admin\BaseObject
         $manager = Configs::authManager();
         $success = 0;
 
+        if (!empty($items['role'])) {
+            foreach ($items['role'] as $name) {
+                try {
+                    $item = $manager->getGroup($name, $this->is_sys);
+                    $item = $item ?: $manager->getGroupPermission($name);
+                    $manager->revokeGroup($item, $this->id);
+                    ++$success;
+                } catch (\Exception $exc) {
+                    p($exc->getMessage());
+                    Yii::error($exc->getMessage(), __METHOD__);
+                }
+            }
+        }
+        
         if (isset($items['group'])) {
             foreach ($items['group'] as $name) {
                 try {
-                    $item = $manager->getGroup($name, $this->type);
+                    $item = $manager->getGroup($name, $this->is_sys);
                     $item = $item ?: $manager->getGroupPermission($name);
                     $manager->revokeGroup($item, $this->id);
                     ++$success;
@@ -146,46 +176,55 @@ class Assignment extends \diandi\admin\BaseObject
      *
      * @return array
      */
-    public function getItems($type = 0)
+    public function getItems($is_sys = 0)
     {
         $manager = Configs::authManager();
         $available = [];
+        
         // 用户组授权
-        foreach (array_keys($manager->getGroups($type)) as $name) {
-            $available[$name] = 'role';
+        foreach ($manager->getGroups($is_sys) as $item) {
+            $name = $item->name;
+            $available['role'][$item->item_id] = $item;
         }
-
-        foreach (array_keys($manager->getPermissions($type)) as $name) {
-            if ($name[0] != '/') {
-                $available[$name] = 'permission';
+        
+        
+        foreach ($manager->getPermissions($is_sys) as $item) {
+            $name = $item->name;
+            if ($name != '/') {
+                // 后续根据情况做优化
+                $available['permission'][$item->item_id] = $item;
             }
         }
-
+   
         // 路由授权
-        foreach (array_keys($manager->getRoutes($type)) as $name) {
-            $available[$name] = 'route';
+        foreach ($manager->getRoutes($is_sys) as $item) {
+            $name = $item->name;
+            $available['route'][$item->item_id] = $item;
         }
 
-        $group = AuthAssignmentGroup::findAll(['user_id' => $this->id]);
+        // $group = AuthAssignmentGroup::find()->where(['user_id' => $this->id])->select(['*','item_name as name'])->asArray()->all();
+        
+        // $assigned = [];
+        // foreach ($group as $key => $item) {
+        //     $assigned['role'][$item->group_id] = $item;
+        //     unset($available['role'][$item->group_id]);
+        // }
+        
 
-        $assigned = [];
-        foreach ($group as $key => $item) {
-            $assigned[$item->item_name] = 'role';
-            unset($available[$item->item_name]);
-        }
-        $assignmentsType = [
-            0 => 'route',
-            1 => 'permission',
-            2 => 'role',
-        ];
+        $assignmentsType = $manager->auth_type;
+  
         foreach ($manager->getAssignments($this->id) as $item) {
-            $assigned[$item->roleName] = $assignmentsType[$item->parent_type];
-            unset($available[$item->roleName]);
+            // $assigned[$item->roleName] 
+            $key  = $assignmentsType[$item->parent_type];
+            // $id   = $key==='role'?$item->group_id:$item->item_id;
+            $id   = $item->item_id;
+            $assigned[$key][$id] = $item;
+            unset($available[$key][$item->item_id]);
         }
-
+        
         return [
             'available' => $available,
-            'assigned' => $assigned,
+            'assigned' => $assigned
         ];
     }
 

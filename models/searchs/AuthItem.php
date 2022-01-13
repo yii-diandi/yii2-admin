@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:43:16
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-08 18:01:44
+ * @Last Modified time: 2022-01-12 22:45:29
  */
  
 
@@ -30,13 +30,16 @@ class AuthItem extends Model
     
 
     public $name;
-    public $type;
+    public $permission_type;
+    public $permission_level;
     public $description;
     public $ruleName;
     public $data;
     public $parent_id;
     
     public $module_name;
+
+    public $is_sys;
     
 
     /**
@@ -46,7 +49,7 @@ class AuthItem extends Model
     {
         return [
             [['name', 'ruleName', 'description','parent_id','module_name'], 'safe'],
-            [['type'], 'integer'],
+            [['permission_type','permission_level','is_sys'], 'integer'],
         ];
     }
 
@@ -58,7 +61,9 @@ class AuthItem extends Model
         return [
             'name' => Yii::t('rbac-admin', 'Name'),
             'item_name' => Yii::t('rbac-admin', 'Name'),
-            'type' => Yii::t('rbac-admin', 'Type'),
+            'is_sys' => Yii::t('rbac-admin', 'Is_sys'),
+            'permission_type' => Yii::t('rbac-admin', 'permission_type'),
+            'permission_level' => Yii::t('rbac-admin', 'permission_level'),
             'description' => Yii::t('rbac-admin', 'Description'),
             'ruleName' => Yii::t('rbac-admin', 'Rule Name'),
             'data' => Yii::t('rbac-admin', 'Data'),

@@ -4,11 +4,12 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-13 12:27:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-03-01 12:12:35
+ * @Last Modified time: 2021-10-26 02:15:40
  */
 
 namespace diandi\admin\models;
 
+use admin\models\auth\AuthRoute;
 use diandi\admin\components\Configs;
 use Yii;
 use yii\db\Query;
@@ -16,7 +17,6 @@ use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "menu".
- *
  * @property int    $id         Menu id(autoincrement)
  * @property string $name       Menu name
  * @property int    $parent     Menu parent
@@ -60,7 +60,13 @@ class Menu extends \yii\db\ActiveRecord
 
         return ArrayHelper::map($result, 'id', 'name');
     }
+    
 
+    public function getRuoter()
+    {
+        return $this->hasOne(AuthRoute::className(),['id'=>'route_id']);
+    }
+    
     /**
      * {@inheritdoc}
      */
@@ -78,7 +84,7 @@ class Menu extends \yii\db\ActiveRecord
             [['parent'], 'filterParent', 'when' => function () {
                 return !$this->isNewRecord;
             }],
-            [['order'], 'integer'],
+            [['order', 'is_show','route_id','level_type'], 'integer'],
             [['is_sys'], 'in', 'range' => ['system', 'addons']],
             [
                 ['route'], 'in',
@@ -95,13 +101,20 @@ class Menu extends \yii\db\ActiveRecord
                 //字段
                 $this->order = 0;
             }
+            
+            if(is_numeric($this->route)){
+                $router_id = $this->route;
+                $this->route_id = $router_id; 
+                $this->route = AuthRoute::find()->where(['id'=>$router_id])->select('name')->scalar();
+            }
+
             return true;
         } else {
             return false;
         }
     }
 
-   
+
 
     /**
      * Use to loop detected.
@@ -138,6 +151,7 @@ class Menu extends \yii\db\ActiveRecord
             'data' => Yii::t('rbac-admin', 'Data'),
             'type' => '类型',
             'icon' => '图标',
+			'level_type'=> '菜单等级类型',
             'module_name' => '所属模块',
             'is_sys' => '菜单类别',
         ];
@@ -180,7 +194,6 @@ class Menu extends \yii\db\ActiveRecord
                 }
             }
         }
-
         return self::$_routes;
     }
 
@@ -189,7 +202,7 @@ class Menu extends \yii\db\ActiveRecord
         $tableName = static::tableName();
 
         return (new \yii\db\Query())
-            ->select(['m.id', 'm.name', 'm.route', 'parent_name' => 'p.name','m.parent'])
+            ->select(['m.id', 'm.name', 'm.route', 'parent_name' => 'p.name', 'm.parent'])
             ->from(['m' => $tableName])
             ->leftJoin(['p' => $tableName], '[[m.parent]]=[[p.id]]')
             ->all(static::getDb());

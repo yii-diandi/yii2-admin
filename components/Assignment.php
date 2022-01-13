@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-07 09:15:26
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 21:31:09
+ * @Last Modified time: 2022-01-13 10:24:00
  */
  
 /**
@@ -41,6 +41,10 @@ class Assignment extends RbacAssignment
      * @var string the role name
      */
     public $roleName;
+    
+    public $name;
+
+    
     /**
      * @var int UNIX timestamp representing the assignment creation time
      */

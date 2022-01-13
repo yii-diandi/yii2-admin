@@ -1,9 +1,10 @@
 <?php
+
 /**
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 13:12:18
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-06-24 09:59:57
+ * @Last Modified time: 2022-01-13 11:19:46
  */
 
 namespace diandi\admin\controllers;
@@ -11,6 +12,7 @@ namespace diandi\admin\controllers;
 use Yii;
 use diandi\admin\models\Route;
 use  backend\controllers\BaseController;
+use diandi\admin\acmodels\AuthItem;
 use yii\filters\VerbFilter;
 
 /**
@@ -45,7 +47,6 @@ class RouteController extends BaseController
     public function actionIndex()
     {
         $model = new Route();
-
         return $this->render('index', ['routes' => $model->getRoutes()]);
     }
 
@@ -62,6 +63,25 @@ class RouteController extends BaseController
         $routes = preg_split('/\s*,\s*/', trim($routes), -1, PREG_SPLIT_NO_EMPTY);
         $model = new Route();
         $model->addNew($routes);
+
+        // 给item同步添加数据
+        $AcmodelsAuthItem = new AuthItem();
+        $items = [
+            'permission_type' => 0,
+            'name' => $model->name,
+            'is_sys' => $model->is_sys,
+            'parent_id' => 0,
+            'permission_level' => 0,
+            'module_name' => $model->module_name,
+        ];
+
+        if ($AcmodelsAuthItem->load($items, '') && $AcmodelsAuthItem->save()) {
+            $model->updateAll([
+                'item_id' => $AcmodelsAuthItem->id,
+            ], [
+                'id' => $model->id,
+            ]);
+        }
 
         return $model->getRoutes();
     }
@@ -106,7 +126,7 @@ class RouteController extends BaseController
         $model = new Route();
         $model->invalidate();
         Yii::$app->getResponse()->format = 'json';
-        
+
         return $model->getRoutes();
     }
 }
