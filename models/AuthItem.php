@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-14 01:08:36
+ * @Last Modified time: 2022-01-15 01:57:22
  */
 
 namespace diandi\admin\models;
@@ -433,19 +433,19 @@ class AuthItem extends Model
         foreach ($manager->getChildren($this->_item->id) as $item => $val) {
             $auth_type = $manager->auth_type;
             $key = $auth_type[$val->type];
-            $id = $val->id;
-            $assigned[$key][] = $val;
+            $id = $val->item_id;
+            $assigned[$key][$id] = $val;
 
             unset($available[$key][$id]);
         }
 
         foreach ($manager->getItemChildren($this->_item->id) as $item => $val) {
             $child_type = $manager->auth_type;
-            $id = $val->id;
+            $id = $val->item_id;
             $item_id = $val->item_id;
 
             $key = $child_type[$val->child_type];
-            $assigned[$key][] = $val;
+            $assigned[$key][$id] = $val;
             // unset($available[$key][$item_id]);
         }
         unset($available[$this->id]);
