@@ -300,7 +300,8 @@ class DbManager extends \yii\rbac\DbManager
                     'c.item_id' => $id,
                     'parent_type' => $parent_type,
                 ])->andWhere($where)->select(['c.child as name', 'r.is_sys', 'c.id', 'child_type', 'description', 'data', 'created_at', 'updated_at', 'c.item_id'])->asArray()->all();
-                foreach ($list as $row) {
+              
+			  foreach ($list as $row) {
                     $children[$row['id']] = $this->populateItem($row, 'routeTable');
                 }
 
