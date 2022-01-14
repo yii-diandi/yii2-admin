@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-15 01:59:39
+ * @Last Modified time: 2022-01-15 02:13:13
  */
 
 namespace diandi\admin\components;
@@ -301,7 +301,7 @@ class DbManager extends \yii\rbac\DbManager
                 $list = AuthRoute::find()->alias('r')->joinWith('childs as c')->where([
                     'c.item_id' => $id,
                     'parent_type' => $parent_type,
-                ])->andWhere($where)->select(['c.child as name', 'r.is_sys', 'c.id', 'child_type', 'description', 'data', 'created_at', 'updated_at', 'item_id'])->asArray()->all();
+                ])->andWhere($where)->select(['c.child as name', 'r.is_sys', 'c.id', 'child_type', 'description', 'data', 'created_at', 'updated_at', 'c.item_id'])->asArray()->all();
                 p($list);    
                 foreach ($list as $row) {
                     $children[$row['id']] = $this->populateItem($row, 'routeTable');
