@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-15 16:36:56
+ * @Last Modified time: 2022-01-16 00:52:30
  */
 
 namespace diandi\admin\components;
@@ -21,6 +21,7 @@ use yii\base\InvalidConfigException;
 use yii\caching\CacheInterface;
 use yii\db\Query;
 use yii\rbac\Rule;
+
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
@@ -130,7 +131,7 @@ class DbManager extends \yii\rbac\DbManager
     public function getChildren($id)
     {
         // child_type:1 表示权限
-        $list = AuthItem::find()->alias('a')->joinWith(['childs as c'])->where(['c.parent_id' => $id])->select(['name', 'a.id', 'description', 'rule_name', 'data', 'c.child', 'c.parent_id', 'created_at', 'updated_at', 'a.permission_type'])->all();
+        $list = AuthItem::find()->alias('a')->joinWith(['childs as c'])->where(['c.parent_id' => $id])->select(['name', 'a.id', 'a.description', 'rule_name', 'data', 'c.child', 'c.parent_id', 'created_at', 'updated_at', 'a.permission_type', 'a.permission_level','a.is_sys','a.data'])->all();
         $children = [];
         foreach ($list as $row) {
             $children[$row['id']] = $this->populateItem($row, 'itemTable');
