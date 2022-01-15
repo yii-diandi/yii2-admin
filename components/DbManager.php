@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-15 02:16:01
+ * @Last Modified time: 2022-01-15 16:36:56
  */
 
 namespace diandi\admin\components;
@@ -290,7 +290,7 @@ class DbManager extends \yii\rbac\DbManager
         if (in_array($is_sys, [0, 1], true)) {
             $where['c.is_sys'] = $is_sys;
         }
-
+        
         //child_type: 0:route,1:permission,2:role
         switch ($parent_type) {
             case 0:
@@ -300,10 +300,10 @@ class DbManager extends \yii\rbac\DbManager
                     'c.item_id' => $id,
                     'parent_type' => $parent_type,
                 ])->andWhere($where)->select(['c.child as name', 'r.is_sys', 'c.id', 'child_type', 'description', 'data', 'created_at', 'updated_at', 'c.item_id'])->asArray()->all();
-              
-			  foreach ($list as $row) {
-                    $children[$row['id']] = $this->populateItem($row, 'routeTable');
-                }
+
+              foreach ($list as $row) {
+                  $children[$row['id']] = $this->populateItem($row, 'routeTable');
+              }
 
                 break;
             case 1:
@@ -330,9 +330,10 @@ class DbManager extends \yii\rbac\DbManager
                     'c.item_id' => $id,
                     'parent_type' => $parent_type,
                 ])->andWhere($where)->select(['p.permission_type', 'c.id', 'c.parent_id',  'c.child as name', 'item_id', 'child_type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])->indexBy('item_id')->asArray()->all();
-                          foreach ($list as $row) {
-                              $children[$row['item_id']] = $this->populateItem($row, 'itemTable');
-                          }
+                
+                foreach ($list as $row) {
+                    $children[$row['item_id']] = $this->populateItem($row, 'itemTable');
+                }
 
                 break;
 

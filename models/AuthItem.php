@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-15 01:57:22
+ * @Last Modified time: 2022-01-15 16:52:22
  */
 
 namespace diandi\admin\models;
@@ -379,6 +379,7 @@ class AuthItem extends Model
             unset($available[$keyType][$id]);
         }
         
+        
         foreach ($manager->getItemChildren($this->_item->id, $this->is_sys, 3) as $item) {
             $id = $item->item_id;
             // $child_type = ['route', 'permission', 'role'];
@@ -388,6 +389,8 @@ class AuthItem extends Model
             $assigned[$keyType][$id] = $item;
             unset($available[$keyType][$id]);
         }
+     
+        
         unset($available[$this->name]);
         // p([
         //     'available' => $available,
@@ -404,10 +407,11 @@ class AuthItem extends Model
      *
      * @return array
      */
-    public function getAdminItems()
+    public function getAdminItems($permission_type=0)
     {
         $manager = Configs::authManager();
         $available = [];
+        $auth_type = $manager->auth_type;
 
         if ($this->permission_type == Item::TYPE_PERMISSION) {
             foreach ($manager->getRoles($this->is_sys) as $name => $val) {
@@ -431,22 +435,17 @@ class AuthItem extends Model
         // 获取已分配
         $assigned = [];
         foreach ($manager->getChildren($this->_item->id) as $item => $val) {
-            $auth_type = $manager->auth_type;
-            $key = $auth_type[$val->type];
+            $key = $auth_type[$val->permission_type];
             $id = $val->item_id;
             $assigned[$key][$id] = $val;
 
             unset($available[$key][$id]);
         }
-
         foreach ($manager->getItemChildren($this->_item->id) as $item => $val) {
-            $child_type = $manager->auth_type;
             $id = $val->item_id;
-            $item_id = $val->item_id;
-
-            $key = $child_type[$val->child_type];
+            $key = $auth_type[$val->child_type];
             $assigned[$key][$id] = $val;
-            // unset($available[$key][$item_id]);
+            unset($available[$key][$id]);
         }
         unset($available[$this->id]);
 
