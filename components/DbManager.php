@@ -22,7 +22,6 @@ use yii\caching\CacheInterface;
 use yii\db\Query;
 use yii\rbac\Rule;
 
-
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
  *
