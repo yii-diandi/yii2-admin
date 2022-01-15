@@ -62,6 +62,7 @@ class DbManager extends \yii\rbac\DbManager
     private $_checkAccessAssignments = [];
 
     // 权限类型
+	
     public $auth_type = [
         // 路由
         0 => 'route',
