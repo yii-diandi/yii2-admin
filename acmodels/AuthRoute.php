@@ -3,12 +3,14 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2021-05-21 00:39:56
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-13 13:26:18
+ * @Last Modified time: 2022-01-16 02:58:14
  */
  
 
 namespace diandi\admin\acmodels;
 
+use diandi\admin\components\Configs;
+use diandi\admin\components\DbManager;
 use Yii;
 
 /**
@@ -33,7 +35,8 @@ class AuthRoute extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%auth_route}}';
+        $manager = Configs::authManager();
+        return $manager->routeTable;// '{{%auth_route}}';
     }
 
     /**

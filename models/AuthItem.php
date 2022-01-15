@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-15 16:52:22
+ * @Last Modified time: 2022-01-16 02:32:41
  */
 
 namespace diandi\admin\models;
@@ -384,7 +384,7 @@ class AuthItem extends Model
             $id = $item->item_id;
             // $child_type = ['route', 'permission', 'role'];
             // $keyType = $child_type[$item->child_type];
-            $keyType = $auth_type[$val->permission_type];
+            $keyType = $auth_type[$item->child_type];
 
             $assigned[$keyType][$id] = $item;
             unset($available[$keyType][$id]);

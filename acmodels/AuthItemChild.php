@@ -3,12 +3,14 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2021-05-21 00:25:27
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-12 23:22:25
+ * @Last Modified time: 2022-01-16 02:57:37
  */
  
 
 namespace diandi\admin\acmodels;
 
+use diandi\admin\components\Configs;
+use diandi\admin\components\DbManager;
 use Yii;
 
 /**
@@ -30,8 +32,9 @@ class AuthItemChild extends \yii\db\ActiveRecord
      * {@inheritdoc}
      */
     public static function tableName()
-    {
-        return '{{%auth_item_child}}';
+    { 
+        $manager = Configs::authManager();
+        return $manager->itemChildTable;// '{{%auth_item_child}}';
     }
 
     /**

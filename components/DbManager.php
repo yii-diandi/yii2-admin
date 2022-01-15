@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-16 00:52:30
+ * @Last Modified time: 2022-01-16 02:52:46
  */
 
 namespace diandi\admin\components;
@@ -54,7 +54,7 @@ class DbManager extends \yii\rbac\DbManager
 
     public $routes;
 
-    public $routeTable = '{{%auth_route}}';
+    public $routeTable =   '{{%auth_route}}';
 
     public $groupTable = '{{%auth_user_group}}';
 

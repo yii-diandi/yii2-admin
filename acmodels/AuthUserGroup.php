@@ -3,12 +3,14 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2021-05-21 00:35:44
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-13 13:31:37
+ * @Last Modified time: 2022-01-16 02:58:08
  */
  
 
 namespace diandi\admin\acmodels;
 
+use diandi\admin\components\Configs;
+use diandi\admin\components\DbManager;
 use Yii;
 
 /**
@@ -29,7 +31,8 @@ class AuthUserGroup extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%auth_user_group}}';
+        $manager = Configs::authManager();
+        return $manager->groupTable;// '{{%auth_user_group}}';
     }
 
     /**
