@@ -3,17 +3,15 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-08 15:47:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-12 22:30:27
+ * @Last Modified time: 2022-01-16 00:12:34
  */
- 
 
 namespace diandi\admin\models\searchs;
 
 use common\components\DataProvider\ArrayDataProvider;
+use diandi\admin\models\AuthItemModel;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use diandi\admin\models\AuthItemModel;
-use yii\data\Pagination;
 
 /**
  * AuthItemSearch represents the model behind the search form of `diandi\admin\models\AuthItemModel`.
@@ -22,8 +20,7 @@ class AuthItemSearch extends AuthItemModel
 {
     public $type;
     public $module_name;
-    
-    
+
     /**
      * {@inheritdoc}
      */
@@ -31,7 +28,7 @@ class AuthItemSearch extends AuthItemModel
     {
         return [
             [['name', 'description', 'rule_name', 'parent_id', 'data', 'module_name'], 'safe'],
-            [['permission_type', 'permission_level','created_at', 'updated_at'], 'integer'],
+            [['permission_type', 'permission_level', 'created_at', 'updated_at'], 'integer'],
         ];
     }
 
@@ -45,7 +42,7 @@ class AuthItemSearch extends AuthItemModel
     }
 
     /**
-     * Creates data provider instance with search query applied
+     * Creates data provider instance with search query applied.
      *
      * @param array $params
      *
@@ -54,8 +51,8 @@ class AuthItemSearch extends AuthItemModel
     public function search($params)
     {
         global $_GPC;
-        
-        $query = AuthItemModel::find();
+
+        $query = AuthItemModel::find()->where(['permission_type' => 1]);
 
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
@@ -83,34 +80,15 @@ class AuthItemSearch extends AuthItemModel
             ->andFilterWhere(['like', 'rule_name', $this->rule_name])
             ->andFilterWhere(['like', 'parent_id', $this->parent_id])
             ->andFilterWhere(['like', 'data', $this->data]);
-        
-        $count = $query->count();
-        $pageSize   = $_GPC['pageSize'];
-        $page       = $_GPC['page'];
-        // 使用总数来创建一个分页对象
-        $pagination = new Pagination([
-            'totalCount' => $count,
-            'pageSize' => $pageSize,
-            'page' => $page - 1,
-            // 'pageParam'=>'page'
-        ]);
 
-        $list = $query->offset($pagination->offset)
-            // ->limit($pagination->limit)
-            ->asArray()
-            ->all();
-        
-        //foreach ($list as $key => &$value) {
-        //    $value['create_time'] = date('Y-m-d H:i:s',$value['create_time']);
-        //    $value['update_time'] = date('Y-m-d H:i:s',$value['update_time']);
-        //} 
-            
-        
+        $count = $query->count();
+
+        $list = $query->asArray()->all();
         $provider = new ArrayDataProvider([
-            'key'=>'id',
+            'key' => 'id',
             'allModels' => $list,
             'totalCount' => isset($count) ? $count : 0,
-            'total'=> isset($count) ? $count : 0,
+            'total' => isset($count) ? $count : 0,
             'sort' => [
                 'attributes' => [
                     //'member_id',
@@ -119,13 +97,9 @@ class AuthItemSearch extends AuthItemModel
                     //'member_id' => SORT_DESC,
                 ],
             ],
-            'pagination' => [
-                'pageSize' => $pageSize,
-            ]
+            'pagination' => false,
         ]);
-        
+
         return $provider;
-            
-        
     }
 }

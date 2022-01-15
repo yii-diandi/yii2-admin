@@ -22,6 +22,7 @@ use yii\caching\CacheInterface;
 use yii\db\Query;
 use yii\rbac\Rule;
 
+
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
  *
@@ -62,7 +63,6 @@ class DbManager extends \yii\rbac\DbManager
     private $_checkAccessAssignments = [];
 
     // 权限类型
-	
     public $auth_type = [
         // 路由
         0 => 'route',
