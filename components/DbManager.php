@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-16 11:51:53
+ * @Last Modified time: 2022-01-16 18:04:31
  */
 
 namespace diandi\admin\components;
@@ -204,15 +204,12 @@ class DbManager extends \yii\rbac\DbManager
         if (!empty($module_name)) {
             $where['module_name'] = $module_name;
         }
-
         if (in_array($is_sys, [0, 1], true)) {
             $where['is_sys'] = $is_sys;
         }
-
         $query = (new Query())
             ->from($this->routeTable)
             ->where($where);
-
         $items = [];
         foreach ($query->all($this->db) as $row) {
             $items[$row['name']] = $this->populateRoute($row);

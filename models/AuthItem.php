@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-16 02:32:41
+ * @Last Modified time: 2022-01-16 19:14:30
  */
 
 namespace diandi\admin\models;
@@ -421,7 +421,7 @@ class AuthItem extends Model
         }
         
         foreach ($manager->getPermissions($this->is_sys) as  $name => $val) {
-            $key = $name[0] == '/' ? 'route' : 'permission';
+            $key = $auth_type[$val->permission_type];
             $id = $val->id;
             $available[$key][$id] = $val;
         }
