@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-16 02:52:46
+ * @Last Modified time: 2022-01-16 11:51:53
  */
 
 namespace diandi\admin\components;
@@ -21,7 +21,6 @@ use yii\base\InvalidConfigException;
 use yii\caching\CacheInterface;
 use yii\db\Query;
 use yii\rbac\Rule;
-
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
@@ -54,7 +53,7 @@ class DbManager extends \yii\rbac\DbManager
 
     public $routes;
 
-    public $routeTable =   '{{%auth_route}}';
+    public $routeTable = '{{%auth_route}}';
 
     public $groupTable = '{{%auth_user_group}}';
 
@@ -131,7 +130,7 @@ class DbManager extends \yii\rbac\DbManager
     public function getChildren($id)
     {
         // child_type:1 表示权限
-        $list = AuthItem::find()->alias('a')->joinWith(['childs as c'])->where(['c.parent_id' => $id])->select(['name', 'a.id', 'a.description', 'rule_name', 'data', 'c.child', 'c.parent_id', 'created_at', 'updated_at', 'a.permission_type', 'a.permission_level','a.is_sys','a.data'])->all();
+        $list = AuthItem::find()->alias('a')->joinWith(['childs as c'])->where(['c.parent_id' => $id])->select(['name', 'a.id', 'a.description', 'rule_name', 'data', 'c.child', 'c.parent_id', 'created_at', 'updated_at', 'a.permission_type', 'a.permission_level', 'a.is_sys', 'a.data'])->all();
         $children = [];
         foreach ($list as $row) {
             $children[$row['id']] = $this->populateItem($row, 'itemTable');
@@ -291,7 +290,7 @@ class DbManager extends \yii\rbac\DbManager
         if (in_array($is_sys, [0, 1], true)) {
             $where['c.is_sys'] = $is_sys;
         }
-        
+
         //child_type: 0:route,1:permission,2:role
         switch ($parent_type) {
             case 0:
@@ -331,7 +330,7 @@ class DbManager extends \yii\rbac\DbManager
                     'c.item_id' => $id,
                     'parent_type' => $parent_type,
                 ])->andWhere($where)->select(['p.permission_type', 'c.id', 'c.parent_id',  'c.child as name', 'item_id', 'child_type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])->indexBy('item_id')->asArray()->all();
-                
+
                 foreach ($list as $row) {
                     $children[$row['item_id']] = $this->populateItem($row, 'itemTable');
                 }
@@ -417,11 +416,49 @@ class DbManager extends \yii\rbac\DbManager
     }
 
     /**
+     * 获取权限路由子项.
+     */
+    public function getRoutePermission($name, $parent_type = 1)
+    {
+        $item = $this->getRoute($name, $parent_type);
+
+        return $item;
+    }
+
+    protected function getRoute($name, $parent_type = 1)
+    {
+        if (empty($name)) {
+            return null;
+        }
+
+        if (!empty($this->routes[$name])) {
+            return $this->routes[$name];
+        }
+
+        $where = [];
+        if (is_numeric($name)) {
+            $where['item_id'] = $name;
+        } else {
+            $where['name'] = $name;
+        }
+
+        $row = (new Query())->from($this->routeTable)
+            ->where($where)
+            ->one($this->db);
+
+        if ($row === false) {
+            return null;
+        }
+
+        return $this->populateRoute($row, $parent_type);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getPermissions($is_sys = 3)
     {
-        return $this->getItems($is_sys);
+        return $this->getItems($is_sys,1);
     }
 
     /**
@@ -429,7 +466,7 @@ class DbManager extends \yii\rbac\DbManager
      */
     public function getRoles($is_sys = 3)
     {
-        return $this->getItems($is_sys);
+        return $this->getItems($is_sys, 2);
     }
 
     /**
@@ -480,11 +517,15 @@ class DbManager extends \yii\rbac\DbManager
     /**
      * {@inheritdoc}
      */
-    protected function getItems($is_sys = 3)
+    protected function getItems($is_sys = 3, $permission_type = 1)
     {
         $module_name = Yii::$app->request->get('module_name');
 
         $where = [];
+
+        // 默认读取权限数据
+
+        $where['permission_type'] = $permission_type;
 
         if (in_array($is_sys, [0, 1], true)) {
             $where['is_sys'] = $is_sys;
@@ -565,47 +606,6 @@ class DbManager extends \yii\rbac\DbManager
         $permission->pid = 0;
 
         return $permission;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRoutePermission($name, $parent_type = 1)
-    {
-        $item = $this->getRoute($name, $parent_type);
-
-        return $item;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getRoute($name, $parent_type = 1)
-    {
-        if (empty($name)) {
-            return null;
-        }
-
-        if (!empty($this->routes[$name])) {
-            return $this->routes[$name];
-        }
-
-        $where = [];
-        if (is_numeric($name)) {
-            $where['item_id'] = $name;
-        } else {
-            $where['name'] = $name;
-        }
-
-        $row = (new Query())->from($this->routeTable)
-            ->where($where)
-            ->one($this->db);
-
-        if ($row === false) {
-            return null;
-        }
-
-        return $this->populateRoute($row, $parent_type);
     }
 
     /**

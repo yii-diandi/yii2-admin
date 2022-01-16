@@ -29,7 +29,6 @@ use Yii;
  */
 class AuthItem extends \yii\db\ActiveRecord
 {
-	
     /**
      * {@inheritdoc}
      */
