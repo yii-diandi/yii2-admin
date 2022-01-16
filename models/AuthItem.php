@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-16 19:14:30
+ * @Last Modified time: 2022-01-16 23:46:03
  */
 
 namespace diandi\admin\models;
@@ -411,6 +411,9 @@ class AuthItem extends Model
     {
         $manager = Configs::authManager();
         $available = [];
+        $all = [];
+         // 获取已分配
+         $assigned = [];
         $auth_type = $manager->auth_type;
 
         if ($this->permission_type == Item::TYPE_PERMISSION) {
@@ -432,8 +435,8 @@ class AuthItem extends Model
             $available['route'][$id] = $val;
         }
 
-        // 获取已分配
-        $assigned = [];
+        $all = $available;
+       
         foreach ($manager->getChildren($this->_item->id) as $item => $val) {
             $key = $auth_type[$val->permission_type];
             $id = $val->item_id;
@@ -447,9 +450,10 @@ class AuthItem extends Model
             $assigned[$key][$id] = $val;
             unset($available[$key][$id]);
         }
-        unset($available[$this->id]);
+        unset($available[$this->id],$all[$this->id]);
 
         return [
+            'all' => $all,
             'available' => $available,
             'assigned' => $assigned,
         ];
