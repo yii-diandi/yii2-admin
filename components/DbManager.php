@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-18 23:39:35
+ * @Last Modified time: 2022-01-18 23:51:15
  */
 
 namespace diandi\admin\components;
@@ -231,6 +231,8 @@ class DbManager extends \yii\rbac\DbManager
         $assigned = [];
         $auth_type = $this->auth_type;
 
+        $all = [];
+        
         $where = [];
         if(is_numeric($group_name)){
             $where['item_id'] = $group_name;
@@ -263,6 +265,7 @@ class DbManager extends \yii\rbac\DbManager
             $available['route'][$id] = $item;
         }
 
+        $all = $available;
         
         
         foreach ($this->getChildren($groupId) as $item => $val) {
@@ -285,6 +288,7 @@ class DbManager extends \yii\rbac\DbManager
         unset($available['role'][$group_name]);
 
         return [
+            'all' => $all,
             'available' => $available,
             'assigned' => $assigned,
         ];
