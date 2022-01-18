@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-19 00:39:51
+ * @Last Modified time: 2022-01-19 01:02:52
  */
 
 namespace diandi\admin\components;
@@ -1232,7 +1232,7 @@ class DbManager extends \yii\rbac\DbManager
                     'created_at' => $assignment->createdAt,
                 ])->execute();
             unset($this->_checkAccessAssignments[(string) $userId]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new InvalidCallException($e->message);
         }
 
