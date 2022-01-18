@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-16 18:04:31
+ * @Last Modified time: 2022-01-18 23:39:35
  */
 
 namespace diandi\admin\components;
@@ -229,6 +229,16 @@ class DbManager extends \yii\rbac\DbManager
     {
         $available = [];
         $assigned = [];
+        $auth_type = $this->auth_type;
+
+        $where = [];
+        if(is_numeric($group_name)){
+            $where['item_id'] = $group_name;
+        }else{
+            $where['name'] = $group_name;
+        }
+
+        $groupId = AuthUserGroup::find()->where($where)->select('id')->scalar();
 
         // 用户组授权
         foreach ($this->getGroups($is_sys) as $name => $item) {
@@ -253,11 +263,19 @@ class DbManager extends \yii\rbac\DbManager
             $available['route'][$id] = $item;
         }
 
+        
+        
+        foreach ($this->getChildren($groupId) as $item => $val) {
+            $key = $auth_type[$val->permission_type];
+            $id = $val->item_id;
+            $assigned[$key][$id] = $val;
+
+            unset($available[$key][$id]);
+        }
+
         // 子权限授权
         foreach ($this->getItemChildren($group_name, $is_sys, 2) as $id => $item) {
-            $child_type = ['route', 'permission', 'role'];
-
-            $key = $child_type[$item->child_type];
+            $key = $auth_type[$item->child_type];
 
             $assigned[$key][$item->item_id] = $item;
 
