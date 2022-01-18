@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-16 23:46:03
+ * @Last Modified time: 2022-01-19 00:41:50
  */
 
 namespace diandi\admin\models;
@@ -13,6 +13,7 @@ use diandi\admin\components\Configs;
 use diandi\admin\components\Helper;
 use diandi\admin\components\Item;
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\helpers\Json;
 
@@ -314,6 +315,8 @@ class AuthItem extends Model
                         ++$success;
                     } catch (\Exception $exc) {
                         Yii::error($exc->getMessage(), __METHOD__);
+                        throw new InvalidArgumentException($exc->getMessage());
+
                     }
                 }
             }
@@ -326,6 +329,8 @@ class AuthItem extends Model
                         ++$success;
                     } catch (\Exception $exc) {
                         Yii::error($exc->getMessage(), __METHOD__);
+                        throw new InvalidArgumentException($exc->getMessage());
+
                     }
                 }
             }
