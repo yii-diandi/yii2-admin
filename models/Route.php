@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 18:10:43
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-13 23:55:40
+ * @Last Modified time: 2022-01-19 01:13:29
  */
 
 namespace diandi\admin\models;
@@ -132,6 +132,8 @@ class Route extends \diandi\admin\BaseObject
                 }
             } catch (Exception $exc) {
                 Yii::error($exc->getMessage(), __METHOD__);
+                throw new InvalidArgumentException($exc->getMessage());
+
             }
         }
         Helper::invalidate();
@@ -153,6 +155,8 @@ class Route extends \diandi\admin\BaseObject
                 $manager->remove($item);
             } catch (Exception $exc) {
                 Yii::error($exc->getMessage(), __METHOD__);
+                throw new InvalidArgumentException($exc->getMessage());
+
             }
         }
         Helper::invalidate();
@@ -317,6 +321,8 @@ class Route extends \diandi\admin\BaseObject
             $result[$all] = $all;
         } catch (\Exception $exc) {
             Yii::error($exc->getMessage(), __METHOD__);
+            throw new InvalidArgumentException($exc->getMessage());
+
         }
         Yii::endProfile($token, __METHOD__);
     }
@@ -359,6 +365,8 @@ class Route extends \diandi\admin\BaseObject
             }
         } catch (\Exception $exc) {
             Yii::error($exc->getMessage(), __METHOD__);
+            throw new InvalidArgumentException($exc->getMessage());
+
         }
         Yii::endProfile($token, __METHOD__);
     }
@@ -383,6 +391,8 @@ class Route extends \diandi\admin\BaseObject
             $result[$all] = $all;
         } catch (\Exception $exc) {
             Yii::error($exc->getMessage(), __METHOD__);
+            throw new InvalidArgumentException($exc->getMessage());
+
         }
         Yii::endProfile($token, __METHOD__);
     }
@@ -413,6 +423,8 @@ class Route extends \diandi\admin\BaseObject
             }
         } catch (\Exception $exc) {
             Yii::error($exc->getMessage(), __METHOD__);
+            throw new InvalidArgumentException($exc->getMessage());
+
         }
         Yii::endProfile($token, __METHOD__);
     }

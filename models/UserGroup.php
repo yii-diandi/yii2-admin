@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 15:21:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-18 12:19:54
+ * @Last Modified time: 2022-01-19 01:12:46
  */
 
 namespace diandi\admin\models;
@@ -167,6 +167,7 @@ class UserGroup extends \yii\db\ActiveRecord
                         ++$success;
                     } catch (\Exception $exc) {
                         Yii::error($exc->getMessage(), __METHOD__);
+                        throw new InvalidArgumentException($exc->getMessage());
                     }
                 }    
             }
