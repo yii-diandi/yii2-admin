@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 15:21:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-13 20:03:55
+ * @Last Modified time: 2022-01-18 12:11:07
  */
 
 namespace diandi\admin\models;
@@ -58,9 +58,9 @@ class UserGroup extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'type'], 'required'],
-            [['type', 'created_at', 'updated_at', 'store_id', 'bloc_id','item_id'], 'integer'],
+            [['type', 'created_at', 'updated_at', 'store_id', 'bloc_id','item_id','is_sys'], 'integer'],
             [['description'], 'string'],
-            [['name'], 'string', 'max' => 64],
+            [['name','module_name'], 'string', 'max' => 64],
             [['name'], 'checkName'],
             [['name'], 'unique'],
 
