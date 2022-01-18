@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 15:21:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-19 01:12:46
+ * @Last Modified time: 2022-01-19 02:02:34
  */
 
 namespace diandi\admin\models;
@@ -88,7 +88,7 @@ class UserGroup extends \yii\db\ActiveRecord
         $this->_item = $item;
    
         if ($item !== null) {
-            $this->id = $item->id;
+            $this->id = $item->item_id;
             $this->item_id = $item->item_id;
             $this->is_sys = $item->is_sys;
             $this->name = $item->name;
