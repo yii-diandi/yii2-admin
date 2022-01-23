@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-06 15:25:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-13 12:47:37
+ * @Last Modified time: 2022-01-24 00:47:00
  */
 
 namespace diandi\admin\models;
@@ -179,14 +179,13 @@ class Assignment extends \diandi\admin\BaseObject
     public function getItems($is_sys = 0)
     {
         $manager = Configs::authManager();
-        $available = [];
-        
+        $available = [];    
+        $all = [];    
         // 用户组授权
         foreach ($manager->getGroups($is_sys) as $item) {
             $name = $item->name;
             $available['role'][$item->item_id] = $item;
         }
-        
         
         foreach ($manager->getPermissions($is_sys) as $item) {
             $name = $item->name;
@@ -195,7 +194,7 @@ class Assignment extends \diandi\admin\BaseObject
                 $available['permission'][$item->item_id] = $item;
             }
         }
-   
+        
         // 路由授权
         foreach ($manager->getRoutes($is_sys) as $item) {
             $name = $item->name;
@@ -212,7 +211,7 @@ class Assignment extends \diandi\admin\BaseObject
         
 
         $assignmentsType = $manager->auth_type;
-  
+        $all = $available;
         foreach ($manager->getAssignments($this->id) as $item) {
             // $assigned[$item->roleName] 
             $key  = $assignmentsType[$item->parent_type];
@@ -224,7 +223,8 @@ class Assignment extends \diandi\admin\BaseObject
         
         return [
             'available' => $available,
-            'assigned' => $assigned
+            'assigned' => $assigned,
+            'all' => $all
         ];
     }
 
