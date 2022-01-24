@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 20:26:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-10-26 15:06:12
+ * @Last Modified time: 2022-01-24 22:56:37
  */
 
 namespace diandi\admin\components;
@@ -79,7 +79,7 @@ class MenuHelper
         /* @var $manager \yii\rbac\BaseManager */
         $manager = Configs::authManager();
 
-        $menus = Menu::find()->where($menuwhere)->asArray()->indexBy('id')->all();
+        $menus = Menu::find()->where($menuwhere)->orderBy('order')->asArray()->indexBy('id')->all();
         $module_name = !empty($menuwhere['module_name']) ? $menuwhere['module_name'] : '';
         $key = [__METHOD__, $userId, $module_name, $manager->defaultRoles];
         $cache = $config->cache;
@@ -125,7 +125,7 @@ class MenuHelper
                 }
             }
             $assigned = [];
-            $query = Menu::find()->select(['id'])->asArray();
+            $query = Menu::find()->select(['id'])->orderBy('order')->asArray();
 
             if (count($filter2)) {
                 $assigned = $query->where(['route' => $filter2])->andWhere($menuwhere)->column();
