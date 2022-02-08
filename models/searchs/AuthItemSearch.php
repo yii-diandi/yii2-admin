@@ -3,15 +3,15 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-08 15:47:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-19 08:19:19
+ * @Last Modified time: 2022-01-16 00:12:34
  */
- 
 
 namespace diandi\admin\models\searchs;
 
+use common\components\DataProvider\ArrayDataProvider;
+use diandi\admin\models\AuthItemModel;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use diandi\admin\models\AuthItemModel;
 
 /**
  * AuthItemSearch represents the model behind the search form of `diandi\admin\models\AuthItemModel`.
@@ -20,8 +20,7 @@ class AuthItemSearch extends AuthItemModel
 {
     public $type;
     public $module_name;
-    
-    
+
     /**
      * {@inheritdoc}
      */
@@ -29,7 +28,7 @@ class AuthItemSearch extends AuthItemModel
     {
         return [
             [['name', 'description', 'rule_name', 'parent_id', 'data', 'module_name'], 'safe'],
-            [['type', 'created_at', 'updated_at'], 'integer'],
+            [['permission_type', 'permission_level', 'created_at', 'updated_at'], 'integer'],
         ];
     }
 
@@ -43,7 +42,7 @@ class AuthItemSearch extends AuthItemModel
     }
 
     /**
-     * Creates data provider instance with search query applied
+     * Creates data provider instance with search query applied.
      *
      * @param array $params
      *
@@ -51,10 +50,11 @@ class AuthItemSearch extends AuthItemModel
      */
     public function search($params)
     {
-        $query = AuthItemModel::find();
+        global $_GPC;
+
+        $query = AuthItemModel::find()->where(['permission_type' => 1]);
 
         // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -69,7 +69,7 @@ class AuthItemSearch extends AuthItemModel
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'type' => $this->type,
+            'permission_type' => $this->permission_type,
             'module_name' => $this->module_name,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -80,6 +80,26 @@ class AuthItemSearch extends AuthItemModel
             ->andFilterWhere(['like', 'rule_name', $this->rule_name])
             ->andFilterWhere(['like', 'parent_id', $this->parent_id])
             ->andFilterWhere(['like', 'data', $this->data]);
-        return $dataProvider;
+
+        $count = $query->count();
+
+        $list = $query->asArray()->all();
+        $provider = new ArrayDataProvider([
+            'key' => 'id',
+            'allModels' => $list,
+            'totalCount' => isset($count) ? $count : 0,
+            'total' => isset($count) ? $count : 0,
+            'sort' => [
+                'attributes' => [
+                    //'member_id',
+                ],
+                'defaultOrder' => [
+                    //'member_id' => SORT_DESC,
+                ],
+            ],
+            'pagination' => false,
+        ]);
+
+        return $provider;
     }
 }

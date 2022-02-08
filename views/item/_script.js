@@ -2,7 +2,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-05 20:52:48
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 21:00:42
+ * @Last Modified time: 2022-01-14 01:19:40
  */
 
 $('i.glyphicon-refresh-animate').hide();
@@ -18,7 +18,7 @@ $('.btn-assign').click(function () {
     var target = $this.data('target');
 
     var items = {
-        role: [],
+        // role: [],
         permission: [],
         route: [],
     }
@@ -28,9 +28,9 @@ $('.btn-assign').click(function () {
     
     $.each(opt,function(key,name){
         var og = $(this).closest('optgroup').attr('label')
-        if(og=='Roles'){
-            items.role.push($(this).val())
-        }
+        // if(og=='Roles'){
+        //     items.role.push($(this).val())
+        // }
         if(og=='权限'){
             items.permission.push($(this).val())
         }
@@ -58,22 +58,32 @@ $('.search[data-target]').keyup(function () {
 });
 
 function search(target) {
+    
     var $list = $('select.list[data-target="' + target + '"]');
     $list.html('');
     var q = $('.search[data-target="' + target + '"]').val();
 
     var groups = {
-        role: [$('<optgroup label="Roles">'), false],
+        // role: [$('<optgroup label="Roles">'), false],
         permission: [$('<optgroup label="权限">'), false],
         route: [$('<optgroup label="路由">'), false],
     };
-    console.log(_opts.items)
+    
     $.each(_opts.items[target], function (name, group) {
-        if (name.indexOf(q) >= 0) {
-            $('<option>').text(name).val(name).appendTo(groups[group][0]);
-            groups[group][1] = true;
+        console.log('检索开始',target,name,q)
+        if(name !== 'role'){
+            $.each(group,function(index,item){
+                if (item.name.indexOf(q) >= 0) {
+                    console.log(groups[name])
+                    $('<option>').text(item.name).val(index).appendTo(groups[name][0]);                
+                }
+            })
+            groups[name][1] = true; 
         }
+           
+        
     });
+    
     $.each(groups, function () {
         if (this[1]) {
             $list.append(this[0]);

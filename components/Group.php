@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 18:38:59
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 08:29:47
+ * @Last Modified time: 2022-01-13 08:59:46
  */
 
 /**
@@ -32,12 +32,19 @@ class Group extends BaseObject
     const MODULE_NAME = 'sys';
     
     public $id;
+    
+    public $item_id;
+
+    
 
     public $module_name;
     /**
      * @var int the type of the item. This should be either [[TYPE_ROLE]] or [[TYPE_PERMISSION]].
      */
     public $type;
+    
+    public $is_sys;
+    
     public $child_type;
     public $parent_type;
     

@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 07:41:27
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-01 10:18:49
+ * @Last Modified time: 2022-01-12 22:36:36
  */
  
 /**
@@ -26,13 +26,17 @@ class Permission extends Item
     /**
      * {@inheritdoc}
      */
-    public $type = self::TYPE_PERMISSION;
+    public $permission_level;
 
     public $parent_type = 1;
     
-    public $id;
-
+    public $permission_type = self::TYPE_PERMISSION;
     
+    public $item_id;
+    
+    public $is_sys;
+    
+    public $id;
     
     public $module_name = 'sys';
     
