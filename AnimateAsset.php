@@ -3,7 +3,6 @@
 namespace diandi\admin;
 use yii\web\AssetBundle;
 
-
 /**
  * Description of AnimateAsset
  *
