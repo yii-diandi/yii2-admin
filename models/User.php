@@ -4,9 +4,8 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:49:05
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-01-17 00:25:01
+ * @Last Modified time: 2022-02-14 13:31:10
  */
-
 
 namespace diandi\admin\models;
 
@@ -16,48 +15,43 @@ use diandi\admin\components\Helper;
 use diandi\admin\components\UserStatus;
 use Yii;
 use yii\base\NotSupportedException;
-use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
-use yii\db\Expression;
 
 /**
- * User model
+ * User model.
  *
- * @property integer $id
- * @property string $username
- * @property string $password_hash
- * @property string $password_reset_token
- * @property string $email
- * @property string $auth_key
- * @property integer $status
- * @property integer $created_at
- * @property integer $updated_at
- * @property string $password write-only password
- *
+ * @property int         $id
+ * @property string      $username
+ * @property string      $password_hash
+ * @property string      $password_reset_token
+ * @property string      $email
+ * @property string      $auth_key
+ * @property int         $status
+ * @property int         $created_at
+ * @property int         $updated_at
+ * @property string      $password             write-only password
  * @property UserProfile $profile
  */
 class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 10;
-    
+
     public $type;
-    
+
     public $user_id;
-    
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
         return Configs::instance()->userTable;
     }
 
-
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {
@@ -71,7 +65,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -80,22 +74,23 @@ class User extends ActiveRecord implements IdentityInterface
             [
                 [
                     'username', 'email',
-
                     'verification_token',
-                    'avatar'
-                ], 'string'
+                    'avatar',
+                    'mobile',
+                    'company',
+                ], 'string',
             ],
             [[
                 'store_id',
                 'bloc_id',
                 'created_at',
-                'updated_at'
+                'updated_at',
             ], 'number'],
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function findIdentity($id)
     {
@@ -103,7 +98,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
@@ -111,9 +106,10 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by username
+     * Finds user by username.
      *
      * @param string $username
+     *
      * @return static|null
      */
     public static function findByUsername($username)
@@ -122,9 +118,10 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by password reset token
+     * Finds user by password reset token.
      *
      * @param string $token password reset token
+     *
      * @return static|null
      */
     public static function findByPasswordResetToken($token)
@@ -139,7 +136,6 @@ class User extends ActiveRecord implements IdentityInterface
         ]);
     }
 
-        
     public function addChildren($items)
     {
         $AddonsUser = new AddonsUser();
@@ -147,14 +143,14 @@ class User extends ActiveRecord implements IdentityInterface
         $user_id = $this->id;
         $type = $this->type;
         foreach ($items as $key => $value) {
-            $_AddonsUser= clone $AddonsUser;
+            $_AddonsUser = clone $AddonsUser;
             $_AddonsUser->setAttributes([
-                'type'=>$value=='sys'?0:1,    
-                'module_name'=>$value,    
-                'user_id'=>$user_id,    
-                'status'=>1,
+                'type' => $value == 'sys' ? 0 : 1,
+                'module_name' => $value,
+                'user_id' => $user_id,
+                'status' => 1,
             ]);
-           $success +=  $_AddonsUser->save();
+            $success += $_AddonsUser->save();
         }
 
         if ($success > 0) {
@@ -171,7 +167,7 @@ class User extends ActiveRecord implements IdentityInterface
         $user_id = $this->id;
         $type = $this->type;
 
-        $success +=  $AddonsUser->deleteAll(['module_name'=>$items]);
+        $success += $AddonsUser->deleteAll(['module_name' => $items]);
 
         if ($success > 0) {
             Helper::invalidate();
@@ -182,15 +178,15 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getAddonsUser()
     {
-        return $this->hasMany(AddonsUser::className(),['user_id'=>'id']);
+        return $this->hasMany(AddonsUser::className(), ['user_id' => 'id']);
     }
 
-
     /**
-     * Finds out if password reset token is valid
+     * Finds out if password reset token is valid.
      *
      * @param string $token password reset token
-     * @return boolean
+     *
+     * @return bool
      */
     public static function isPasswordResetTokenValid($token)
     {
@@ -200,11 +196,12 @@ class User extends ActiveRecord implements IdentityInterface
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         $parts = explode('_', $token);
         $timestamp = (int) end($parts);
+
         return $timestamp + $expire >= time();
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getId()
     {
@@ -212,7 +209,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getAuthKey()
     {
@@ -220,7 +217,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAuthKey($authKey)
     {
@@ -228,10 +225,11 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Validates password
+     * Validates password.
      *
      * @param string $password password to validate
-     * @return boolean if password provided is valid for current user
+     *
+     * @return bool if password provided is valid for current user
      */
     public function validatePassword($password)
     {
@@ -239,7 +237,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Generates password hash from password and sets it to the model
+     * Generates password hash from password and sets it to the model.
      *
      * @param string $password
      */
@@ -249,7 +247,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Generates "remember me" authentication key
+     * Generates "remember me" authentication key.
      */
     public function generateAuthKey()
     {
@@ -257,15 +255,15 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Generates new password reset token
+     * Generates new password reset token.
      */
     public function generatePasswordResetToken()
     {
-        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+        $this->password_reset_token = Yii::$app->security->generateRandomString().'_'.time();
     }
 
     /**
-     * Removes password reset token
+     * Removes password reset token.
      */
     public function removePasswordResetToken()
     {
@@ -288,7 +286,7 @@ class User extends ActiveRecord implements IdentityInterface
             'email' => '邮箱',
             'status' => '用户状态',
             'id' => '用户ID',
-            'created_at' => '注册时间'
+            'created_at' => '注册时间',
         ];
     }
 }

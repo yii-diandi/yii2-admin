@@ -3,16 +3,16 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-09 15:23:37
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-24 08:09:31
+ * @Last Modified time: 2022-02-14 13:31:39
  */
 
 namespace diandi\admin\models\searchs;
 
 use diandi\admin\models\AddonsUser;
-use yii\base\Model;
-use yii\data\ActiveDataProvider;
 use diandi\admin\models\User as UserModel;
 use Yii;
+use yii\base\Model;
+use yii\data\ActiveDataProvider;
 
 /**
  * User represents the model behind the search form of `diandi/admin\models\User`.
@@ -26,7 +26,7 @@ class User extends UserModel
     /**
      * {@inheritdoc}
      */
-    public function __construct($item, $config = array())
+    public function __construct($item, $config = [])
     {
         $this->module_name = Yii::$app->request->get('module_name', 'sys');
         if (isset($item['user_ids'])) {
@@ -41,7 +41,8 @@ class User extends UserModel
     {
         return [
             [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'verification_token', 'avatar'], 'safe'],
+            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'verification_token', 'avatar', 'mobile',
+            'company', ], 'safe'],
         ];
     }
 
