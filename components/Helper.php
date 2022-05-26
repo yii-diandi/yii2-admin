@@ -111,7 +111,7 @@ class Helper
      */
     public static function checkRoute($route, $params = [], $user = null)
     {
-
+        
         $config = Configs::instance();
         $r = static::normalizeRoute($route, $config->advanced);
         if ($config->onlyRegisteredRoute && !isset(static::getRegisteredRoutes()[$r])) {
