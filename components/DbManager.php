@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-05-26 13:48:49
+ * @Last Modified time: 2022-05-26 14:46:49
  */
 
 namespace diandi\admin\components;
@@ -14,6 +14,7 @@ use diandi\admin\acmodels\AuthItem;
 use diandi\admin\acmodels\AuthItemChild;
 use diandi\admin\acmodels\AuthRoute;
 use diandi\admin\acmodels\AuthUserGroup;
+use diandi\admin\models\AuthAssignmentGroup;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
@@ -1392,14 +1393,30 @@ class DbManager extends \yii\rbac\DbManager
                 return false;
             }
         } else {
-            //  0:路由1：规则2：用户组;3权限
-            if ($parent_type == 1 || $parent_type == 3) {
+            // 0:路由1：规则2：用户组;3权限
+            // echo '权限名称'.$itemName.PHP_EOL;
+            // echo '权限类型'.$parent_type.PHP_EOL;
+            if ($parent_type == 1) {
+                // 规则
                 // 检测权限是否存在
                 if (($item = $this->getItem($itemName)) === null) {
                     return false;
                 }
-            } elseif ($parent_type == 2) {
+            }elseif ($parent_type == 2) {
+                // 用户组
                 if (($item = $this->getGroup($itemName)) === null && ($item = $this->getGroup($itemName, 1)) === null) {
+                    return false;
+                }
+
+                // print_r($user);
+                // 查询用户是否有组的权限
+                $groupsList = AuthAssignmentGroup::find()->where(['user_id'=>$user])->select('item_name')->column();
+             
+                if(!in_array($itemName,$groupsList) && !empty($groupsList)){
+                    return false;
+                }
+            }elseif( $parent_type == 3){
+                if (($item = $this->getItem($itemName)) === null) {
                     return false;
                 }
             }
@@ -1419,9 +1436,9 @@ class DbManager extends \yii\rbac\DbManager
         //  权限： parent_type = 3 
         $parents = $query->select(['parent', 'parent_type'])
             ->from($this->itemChildTable)
-            ->where(['child' => $itemName,'parent_type'=>3])
+            ->where(['child' => $itemName])
             ->all($this->db);
-        
+            
         foreach ($parents as $parent) {
             if ($this->checkAccessRecursiveAll($user, $parent['parent'], $params, $assignments, $parent['parent_type'])) {
                 return true;
