@@ -1416,7 +1416,7 @@ class DbManager extends \yii\rbac\DbManager
         }
 
         $query = new Query();
-        // 权限： parent_type = 3 
+        //  权限： parent_type = 3 
         $parents = $query->select(['parent', 'parent_type'])
             ->from($this->itemChildTable)
             ->where(['child' => $itemName,'parent_type'=>3])
