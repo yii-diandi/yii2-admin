@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 15:12:23
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-09 09:39:48
+ * @Last Modified time: 2021-05-24 15:51:31
  */
 
 use yii\helpers\Html;
@@ -49,9 +49,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                     {
                                             case'delete':
                                             return Url::to(['delete',
-                                                'id'=>$model->id,
-                                                'name'=>$model->name,
-                                                'module_name'=>$model->module_name
+                                                'id'=>$model['id'],
+                                                'name'=>$model['name'],
+                                                'module_name'=>$model['module_name']
                                             ]);
                                             
                                             break;
@@ -59,9 +59,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                             case'view':
                                                 
                                             return Url::to(['view',
-                                                'id'=>$model->id,
-                                                'name'=>$model->name,
-                                                'module_name'=>$model->module_name
+                                                'id'=>$model['id'],
+                                                'name'=>$model['name'],
+                                                'module_name'=>$model['module_name']
                                             ]);
                                            
                                             
@@ -70,9 +70,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                             case'update':
                                                 
                                             return Url::to(['update',
-                                                'id'=>$model->id,
-                                                'name'=>$model->name,
-                                                'module_name'=>$model->module_name
+                                                'id'=>$model['id'],
+                                                'name'=>$model['name'],
+                                                'module_name'=>$model['module_name']
                                             ]);
                                            
                                             

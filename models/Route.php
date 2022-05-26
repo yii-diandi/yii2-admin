@@ -4,15 +4,16 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 18:10:43
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-27 18:44:23
+ * @Last Modified time: 2022-02-08 17:41:42
  */
 
 namespace diandi\admin\models;
 
-use Exception;
 use diandi\admin\components\Configs;
 use diandi\admin\components\Helper;
 use diandi\admin\components\RouteRule;
+use Exception;
+use InvalidArgumentException;
 use Yii;
 use yii\caching\TagDependency;
 use yii\helpers\VarDumper;
@@ -34,13 +35,16 @@ class Route extends \diandi\admin\BaseObject
     private $_routePrefix;
 
     public $id;
+
+    public $item_id;
+
     public $pid;
 
     public $module_name;
     /**
      * @var int the type of the item. This should be either [[TYPE_ROLE]] or [[TYPE_PERMISSION]].
      */
-    public $type;
+    public $is_sys;
     /**
      * @var string the name of the item. This must be globally unique.
      */
@@ -81,11 +85,12 @@ class Route extends \diandi\admin\BaseObject
         if ($item !== null) {
             $this->data = $item->data;
             $this->pid = $item->pid;
+            $this->item_id = $item->item_id;
             $this->title = $item->title;
             $this->id = $item->id;
             $this->name = $item->name;
             $this->module_name = $item->module_name;
-            $this->type = $item->type;
+            $this->is_sys = $item->is_sys;
             $this->description = $item->description;
         }
         parent::__construct($config);
@@ -104,6 +109,7 @@ class Route extends \diandi\admin\BaseObject
         foreach ($routes as $route) {
             try {
                 $r = explode('&', $route);
+
                 $item = $manager->createRoutePermission($this->getPermissionName($route));
 
                 if (count($r) > 1) {
@@ -126,6 +132,7 @@ class Route extends \diandi\admin\BaseObject
                 }
             } catch (Exception $exc) {
                 Yii::error($exc->getMessage(), __METHOD__);
+                throw new InvalidArgumentException($exc->getMessage());
             }
         }
         Helper::invalidate();
@@ -147,6 +154,7 @@ class Route extends \diandi\admin\BaseObject
                 $manager->remove($item);
             } catch (Exception $exc) {
                 Yii::error($exc->getMessage(), __METHOD__);
+                throw new InvalidArgumentException($exc->getMessage());
             }
         }
         Helper::invalidate();
@@ -192,6 +200,7 @@ class Route extends \diandi\admin\BaseObject
         $manager = Configs::authManager();
         // Get advanced configuration
         $advanced = Configs::instance()->advanced;
+
         if ($advanced) {
             // Use advanced route scheme.
             // Set advanced route prefix.
@@ -242,6 +251,7 @@ class Route extends \diandi\admin\BaseObject
             $exists[] = $name;
             unset($routes[$name]);
         }
+
         return [
             'available' => array_keys($routes),
             'assigned' => $exists,
@@ -262,7 +272,7 @@ class Route extends \diandi\admin\BaseObject
         }
         $key = [__METHOD__, Yii::$app->id, $module->getUniqueId()];
         $cache = Configs::instance()->cache;
-        
+
         if ($cache === null || ($result = $cache->get($key)) === false) {
             $result = [];
             $this->getRouteRecursive($module, $result);
@@ -287,14 +297,16 @@ class Route extends \diandi\admin\BaseObject
     {
         $token = "Get Route of '".get_class($module)."' with id '".$module->uniqueId."'";
         Yii::beginProfile($token, __METHOD__);
+
         try {
-            foreach ($module->getModules() as $id => $child) {
+            $modules = $module->getModules();
+            foreach ($modules as $id => $child) {
                 if (($child = $module->getModule($id)) !== null) {
                     $this->getRouteRecursive($child, $result);
                 }
             }
-
-            foreach ($module->controllerMap as $id => $type) {
+            $controllerMap = $module->controllerMap;
+            foreach ($controllerMap as $id => $type) {
                 $this->getControllerActions($type, $id, $module, $result);
             }
             $namespace = trim($module->controllerNamespace, '\\').'\\';
@@ -305,6 +317,7 @@ class Route extends \diandi\admin\BaseObject
             $result[$all] = $all;
         } catch (\Exception $exc) {
             Yii::error($exc->getMessage(), __METHOD__);
+            throw new InvalidArgumentException($exc->getMessage());
         }
         Yii::endProfile($token, __METHOD__);
     }
@@ -322,30 +335,36 @@ class Route extends \diandi\admin\BaseObject
     protected function getControllerFiles($module, $namespace, $prefix, &$result)
     {
         $path = Yii::getAlias('@'.str_replace('\\', '/', $namespace), false);
+
         $token = "Get controllers from '$path'";
         Yii::beginProfile($token, __METHOD__);
         try {
             if (!is_dir($path)) {
                 return;
             }
-            foreach (scandir($path) as $file) {
-                if ($file == '.' || $file == '..') {
-                    continue;
-                }
-                if (is_dir($path.'/'.$file) && preg_match('%^[a-z0-9_/]+$%i', $file.'/')) {
-                    $this->getControllerFiles($module, $namespace.$file.'\\', $prefix.$file.'/', $result);
-                } elseif (strcmp(substr($file, -14), 'Controller.php') === 0) {
-                    $baseName = substr(basename($file), 0, -14);
-                    $name = strtolower(preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $baseName));
-                    $id = ltrim(str_replace(' ', '-', $name), '-');
-                    $className = $namespace.$baseName.'Controller';
-                    if (strpos($className, '-') === false && class_exists($className) && is_subclass_of($className, 'yii\base\Controller')) {
-                        $this->getControllerActions($className, $prefix.$id, $module, $result);
+            $pathArr = scandir($path);
+            if(!empty($pathArr)){
+               foreach ($pathArr as $file) {
+                    if ($file == '.' || $file == '..') {
+                        continue;
+                    }
+                    if (is_dir($path.'/'.$file) && preg_match('%^[a-z0-9_/]+$%i', $file.'/')) {
+                        $this->getControllerFiles($module, $namespace.$file.'\\', $prefix.$file.'/', $result);
+                    } elseif (strcmp(substr($file, -14), 'Controller.php') === 0) {
+                        $baseName = substr(basename($file), 0, -14);
+                        $name = strtolower(preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $baseName));
+                        $id = ltrim(str_replace(' ', '-', $name), '-');
+                        $className = $namespace.$baseName.'Controller';
+                        if (strpos($className, '-') === false && class_exists($className) && is_subclass_of($className, 'yii\base\Controller')) {
+                            $this->getControllerActions($className, $prefix.$id, $module, $result);
+                        }
                     }
                 }
             }
+           
         } catch (\Exception $exc) {
             Yii::error($exc->getMessage(), __METHOD__);
+            throw new InvalidArgumentException($exc->getMessage());
         }
         Yii::endProfile($token, __METHOD__);
     }
@@ -370,6 +389,7 @@ class Route extends \diandi\admin\BaseObject
             $result[$all] = $all;
         } catch (\Exception $exc) {
             Yii::error($exc->getMessage(), __METHOD__);
+            throw new InvalidArgumentException($exc->getMessage());
         }
         Yii::endProfile($token, __METHOD__);
     }
@@ -386,20 +406,33 @@ class Route extends \diandi\admin\BaseObject
         Yii::beginProfile($token, __METHOD__);
         try {
             $prefix = '/'.$controller->uniqueId.'/';
-            foreach ($controller->actions() as $id => $value) {
-                $result[$prefix.$id] = $prefix.$id;
+            $actions = $controller->actions();
+            if(!empty($actions)){
+                foreach ($actions as $id => $value) {
+                    $result[$prefix.$id] = $prefix.$id;
+                }    
+            }else{
+                Yii::error('控制器检索失败'.$prefix, __METHOD__);
             }
+            
             $class = new \ReflectionClass($controller);
-            foreach ($class->getMethods() as $method) {
-                $name = $method->getName();
-                if ($method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0 && $name !== 'actions') {
-                    $name = strtolower(preg_replace('/(?<![A-Z])[A-Z]/', ' \0', substr($name, 6)));
-                    $id = $prefix.ltrim(str_replace(' ', '-', $name), '-');
-                    $result[$id] = $id;
-                }
+            $Methods = $class->getMethods();
+            if(!empty($Methods)){
+                foreach ($Methods as $method) {
+                    $name = $method->getName();
+                    if ($method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0 && $name !== 'actions') {
+                        $name = strtolower(preg_replace('/(?<![A-Z])[A-Z]/', ' \0', substr($name, 6)));
+                        $id = $prefix.ltrim(str_replace(' ', '-', $name), '-');
+                        $result[$id] = $id;
+                    }
+                }    
+            }else{
+                Yii::error('控制器检索失败'.$prefix, __METHOD__);
             }
+            
         } catch (\Exception $exc) {
             Yii::error($exc->getMessage(), __METHOD__);
+            throw new InvalidArgumentException($exc->getMessage());
         }
         Yii::endProfile($token, __METHOD__);
     }
@@ -411,18 +444,21 @@ class Route extends \diandi\admin\BaseObject
      *
      * @return int
      */
-    public function addChildren($items)
+    public function addChildren($items, $parent_type)
     {
         $manager = Configs::authManager();
         $success = 0;
         if ($this->_item) {
-            foreach ($items as $name) {
-                $child = $manager->getRoutePermission($name);
-                try {
-                    $manager->addChild($this->_item, $child);
-                    ++$success;
-                } catch (\Exception $exc) {
-                    Yii::error($exc->getMessage(), __METHOD__);
+            if (!empty($items['route'])) {
+                foreach ($items['route'] as $name) {
+                    $child = $manager->getRoutePermission($name, $parent_type);
+                    try {
+                        $Res = $manager->addChild($this->_item, $child);
+                        ++$success;
+                    } catch (\Exception $exc) {
+                        Yii::error($exc->getMessage(), __METHOD__);
+                        throw new InvalidArgumentException($exc->getMessage());
+                    }
                 }
             }
         }
@@ -445,13 +481,16 @@ class Route extends \diandi\admin\BaseObject
         $manager = Configs::authManager();
         $success = 0;
         if ($this->_item !== null) {
-            foreach ($items as $name) {
-                $child = $manager->getRoutePermission($name);
-                try {
-                    $manager->removeChild($this->_item, $child);
-                    ++$success;
-                } catch (\Exception $exc) {
-                    Yii::error($exc->getMessage(), __METHOD__);
+            if (!empty($items['route'])) {
+                foreach ($items['route'] as $name) {
+                    $child = $manager->getRoutePermission($name, $this->is_sys);
+                    try {
+                        $manager->removeChild($this->_item, $child);
+                        ++$success;
+                    } catch (\Exception $exc) {
+                        Yii::error($exc->getMessage(), __METHOD__);
+                        throw new InvalidArgumentException($exc->getMessage());
+                    }
                 }
             }
         }

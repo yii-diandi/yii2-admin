@@ -5,11 +5,12 @@
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
  * @Last Modified time: 2020-05-04 20:53:42
  */
- 
 
+ 
 namespace diandi\admin;
 use Yii;
 use yii\helpers\Inflector;
+
 
 /**
  * GUI manager for RBAC.

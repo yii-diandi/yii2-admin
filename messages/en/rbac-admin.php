@@ -1,4 +1,11 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2021-12-29 10:09:39
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2022-01-12 22:15:52
+ */
+
 
 /**
  * Message translations for \mdmsoft\yii2-admin.

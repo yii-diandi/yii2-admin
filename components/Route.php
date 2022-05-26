@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 18:38:59
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-07 10:06:18
+ * @Last Modified time: 2022-01-13 11:18:00
  */
 
 /**
@@ -35,13 +35,14 @@ class Route extends BaseObject
     
     public $id;
     
+    public $item_id;
+    
     public $pid;
     
     public $module_name;
-    /**
-     * @var int the type of the item. This should be either [[TYPE_ROLE]] or [[TYPE_PERMISSION]].
-     */
-    public $type;
+   
+    
+    public $is_sys;
     
     public $child_type;
     

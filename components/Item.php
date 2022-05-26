@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 18:38:59
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-07 10:47:51
+ * @Last Modified time: 2022-01-13 22:44:05
  */
 
 /**
@@ -30,13 +30,24 @@ class Item extends BaseObject
     const TYPE_PERMISSION = 0;
 
     const MODULE_NAME = 'sys';
-
+    
+    public $id;
+    
+    public $item_id;
+    
+    public $is_sys;
+    
+    
+    
     public $parent_id;
+    
     public $module_name;
     /**
      * @var int the type of the item. This should be either [[TYPE_ROLE]] or [[TYPE_PERMISSION]].
      */
-    public $type;
+    public $permission_type;
+    
+    public $permission_level;
     
     public $child_type;
 

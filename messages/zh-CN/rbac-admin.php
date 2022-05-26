@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 14:07:51
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-02-23 19:58:37
+ * @Last Modified time: 2022-01-12 22:23:27
  */
 
 
@@ -26,6 +26,8 @@
  */
 return [
     'Assignments' => '分配',
+    'Permission_level'=>'权限等级',
+    'Permission_type'=>'权限属性',
     'Users' => '用户列表',
     'User' => '用户',
     'Available' => '可用',

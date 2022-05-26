@@ -1,42 +1,37 @@
 <?php
+
 /**
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 17:44:12
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-08-06 23:44:05
+ * @Last Modified time: 2022-01-13 23:53:28
  */
 
 namespace diandi\admin\controllers;
 
-use Yii;
-use diandi\admin\models\UserGroup;
-use diandi\admin\models\searchs\UserGroupSearch;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use backend\controllers\BaseController;
+use diandi\admin\acmodels\AuthItem as AcmodelsAuthItem;
 use diandi\admin\components\Configs;
 use diandi\admin\components\Item;
-use diandi\admin\models\AuthItem;
 use diandi\admin\components\Route;
+use diandi\admin\models\AuthItem;
 use diandi\admin\models\Route as ModelsRoute;
+use diandi\admin\models\searchs\UserGroupSearch;
+use diandi\admin\models\UserGroup;
+use Yii;
+use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * GroupController implements the CRUD actions for UserGroup model.
  */
 class GroupController extends BaseController
 {
-    public $type;
-    
-    public $module_name;
-    
+    public $is_sys = 0; //是否是系统
 
-    public function actions()
-    {
-        $this->module_name =  Yii::$app->request->get('module_name','sys');   
-        $this->type =  $this->module_name=='sys'?0:1;   
-        
-    }
-    
+    public $module_name = 'sys';
+
     /**
      * {@inheritdoc}
      */
@@ -47,9 +42,16 @@ class GroupController extends BaseController
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'remove' => ['POST'],
                 ],
             ],
         ];
+    }
+
+    public function actions()
+    {
+        $this->module_name = Yii::$app->request->get('module_name', 'sys');
+        $this->is_sys = $this->module_name === 'sys' ? 1 : 0;
     }
 
     /**
@@ -60,7 +62,7 @@ class GroupController extends BaseController
     public function actionIndex()
     {
         $searchModel = new UserGroupSearch([
-            'module_name'=>$this->module_name
+            'module_name' => $this->module_name,
         ]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -84,10 +86,9 @@ class GroupController extends BaseController
         $model = $this->findModel($id);
 
         $manager = Configs::authManager();
-        
-        
-        $items = $manager->getAuths($model['name'],$this->type);
-  
+
+        $items = $manager->getAuths($model->item_id, $this->is_sys);
+
         return $this->render('view', [
             'model' => $model,
             'module_name' => $this->module_name,
@@ -107,12 +108,16 @@ class GroupController extends BaseController
         $manager = Configs::authManager();
 
         $items = Yii::$app->getRequest()->post('items', []);
-        $model = $this->findModel($id);
         
+        $parentGroup = UserGroup::find()->where(['id'=>$id])->one();
+      
+        $model =  new UserGroup($parentGroup);
+      
         $success = 0;
+
         // 规则
         if ($items['group']) {
-            $success += $model->addChildren($items['group']);
+            $success += $model->addChildren($items);
         }
 
         // 权限
@@ -120,36 +125,43 @@ class GroupController extends BaseController
             $item = new Item([
                 'name' => $model['name'],
                 'module_name' => $model['module_name'],
-                'type' => $model['type'],
-                'parent_id' => null,
+                'is_sys' => $model['is_sys'],
+                'id' => $model['item_id'],
+                'item_id' => $model['item_id'],
                 'child_type' => 1,
                 'ruleName' => '',
                 'description' => $model['description'],
                 'data' => '',
             ]);
+
             $permission = new AuthItem($item);
-            $success += $permission->addChildren($items,2);
+            
+            $success += $permission->addChildren($items, 2);
         }
 
         // 路由
         if ($items['route']) {
             $item = new Route([
+                'id' => $model['id'],
                 'name' => $model['name'],
                 'title' => '',
                 'module_name' => $model['module_name'],
-                'type' => $model['type'],
+                'is_sys' => $model['is_sys'],
+                'id' => $model['item_id'],
+                'item_id' => $model['item_id'],
                 'child_type' => 0,
                 'description' => $model['description'],
                 'data' => '',
                 'pid' => 0,
             ]);
             $route = new ModelsRoute($item);
-            $success += $route->addChildren($items['route']);
+
+            $success += $route->addChildren($items, 2);
         }
 
         Yii::$app->getResponse()->format = 'json';
 
-        $items = $manager->getAuths($model['name'],$this->type);
+        $items = $manager->getAuths($model['item_id'], $this->is_sys);
 
         return array_merge($items, ['success' => $success]);
     }
@@ -157,27 +169,33 @@ class GroupController extends BaseController
     /**
      * Assign or remove items.
      *
-     * @param string $id
-     *
      * @return array
      */
     public function actionRemove($id)
     {
-        $items = Yii::$app->getRequest()->post('items', []);
-        $model = $this->findModel($id);
+        global $_GPC;
+        $items = $_GPC['items'];
+           
+        $parentGroup = UserGroup::find()->where(['id'=>$id])->one();
+        $model =  new UserGroup($parentGroup);
         $success = 0;
-
+     
         // 规则
         if ($items['group']) {
             $success += $model->removeChildren($items);
         }
+   
         // 权限
         if ($items['permission']) {
             $item = new Item([
                 'name' => $model['name'],
                 'module_name' => $model['module_name'],
-                'type' => $model['type'],
-                'parent_id' => null,
+                'is_sys' => $model['is_sys'],
+                'id' => $model['item_id'],
+                'item_id' => $model['item_id'],
+                'permission_type' => 1,
+                'permission_level' => 0,
+                'parent_type' => 2,
                 'child_type' => 1,
                 'ruleName' => '',
                 'description' => $model['description'],
@@ -191,10 +209,12 @@ class GroupController extends BaseController
         if ($items['route']) {
             $item = new Route([
                 'name' => $model['name'],
-                'title' => '',
+                'title' => $model['name'],
                 'module_name' => $model['module_name'],
-                'type' => $model['type'],
-                'child_type' => 0,
+                'is_sys' => $model['is_sys'],
+                'id' => $model['id'],
+                'item_id' => $model['item_id'],
+                'parent_type' => 2,
                 'description' => $model['description'],
                 'data' => '',
                 'pid' => 0,
@@ -203,10 +223,12 @@ class GroupController extends BaseController
             $success += $route->removeChildren($items);
         }
 
-        Yii::$app->getResponse()->format = 'json';
         $manager = Configs::authManager();
 
-        $items = $manager->getAuths($model['name']);
+        $items = $manager->getAuths($model['item_id'], $this->is_sys);
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
         return array_merge($items, ['success' => $success]);
     }
 
@@ -219,9 +241,29 @@ class GroupController extends BaseController
     public function actionCreate()
     {
         $model = new UserGroup();
-
+        $model->is_sys = $this->is_sys;
+        $model->module_name = $this->module_name;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id,'module_name' => $this->module_name]);
+            // 给item同步添加数据
+            $AcmodelsAuthItem = new AcmodelsAuthItem();
+            $items = [
+                'permission_type' => 2,
+                'name' => $model->name,
+                'is_sys' => $model->is_sys,
+                'parent_id' => 0,
+                'permission_level' => 0,
+                'module_name' => $model->module_name,
+            ];
+
+            if ($AcmodelsAuthItem->load($items, '') && $AcmodelsAuthItem->save()) {
+                $model->updateAll([
+                    'item_id' => $AcmodelsAuthItem->id,
+                ], [
+                    'id' => $model->id,
+                ]);
+            }
+
+            return $this->redirect(['view', 'id' => $model->id, 'module_name' => $this->module_name]);
         }
 
         return $this->render('create', [
@@ -243,9 +285,26 @@ class GroupController extends BaseController
     public function actionUpdate($id)
     {
         $model = UserGroup::findOne($id);
-        
+
+        $model->is_sys = $this->is_sys;
+        $model->module_name = $this->module_name;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id,'module_name' => $this->module_name]);
+            // 给item同步添加数据
+            $AcmodelsAuthItem = new AcmodelsAuthItem();
+            $items = [
+                  'permission_type' => 2,
+                  'name' => $model->name,
+                  'is_sys' => $model->is_sys,
+                  'parent_id' => 0,
+                  'permission_level' => 0,
+                  'module_name' => $model->module_name,
+            ];
+
+            $AcmodelsAuthItem->updateAll($items, [
+                'id' => $model->item_id,
+            ]);
+
+            return $this->redirect(['view', 'id' => $model->id, 'module_name' => $this->module_name]);
         }
 
         return $this->render('update', [
@@ -266,9 +325,14 @@ class GroupController extends BaseController
      */
     public function actionDelete($id)
     {
+        $UserGroup = $this->findModel($id);
+        $AcmodelsAuthItem = AcmodelsAuthItem::findOne($UserGroup->item_id);
+        if ($AcmodelsAuthItem) {
+            $AcmodelsAuthItem->delete();
+        }
         UserGroup::findOne($id)->delete();
 
-        return $this->redirect(['index','module_name' => $this->module_name]);
+        return $this->redirect(['index', 'module_name' => $this->module_name]);
     }
 
     /**
@@ -283,10 +347,11 @@ class GroupController extends BaseController
      */
     protected function findModel($id)
     {
-        if (($model = UserGroup::findOne($id)) !== null) {
+        if (($model = UserGroup::find()->where(['id'=>$id])->one()) !== null) {
+            
             return new UserGroup($model);
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('检查数据ID');
     }
 }

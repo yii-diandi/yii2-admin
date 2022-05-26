@@ -3,7 +3,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 03:21:27
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2020-05-10 22:57:57
+ * @Last Modified time: 2022-05-26 13:09:59
  */
  
 
@@ -123,7 +123,6 @@ class Helper
             $user = Yii::$app->getUser();
         }
         $userId = $user instanceof User ? $user->getId() : $user;
-        
         if ($config->strict) {
             if ($user->can($r, $params)) {
                 return true;
