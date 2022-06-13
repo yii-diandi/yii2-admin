@@ -4,35 +4,32 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 16:49:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-09-12 21:15:25
+ * @Last Modified time: 2022-06-13 16:58:46
  */
-
 
 namespace diandi\admin\models\searchs;
 
 use common\components\DataProvider\ArrayDataProvider;
-use Yii;
+use diandi\admin\models\Menu as MenuModel;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use diandi\admin\models\Menu as MenuModel;
 use yii\data\Pagination;
 
 /**
- * Menu represents the model behind the search form about [[\diandi/admin\models\Menu]].
- * 
+ * Menu represents the model behind the search form about [[\diandi/admin\models\Menu]]. *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
+ *
  * @since 1.0
  */
 class Menu extends MenuModel
 {
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'parent', 'order'], 'integer'],
+            [['id', 'parent', 'order', 'level_type'], 'integer'],
             [['name', 'route', 'parent_name'], 'safe'],
             [['type', 'module_name'], 'string'],
             ['is_sys', 'in', 'range' => ['system', 'addons']],
@@ -40,7 +37,7 @@ class Menu extends MenuModel
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function scenarios()
     {
@@ -49,8 +46,10 @@ class Menu extends MenuModel
     }
 
     /**
-     * Searching menu
-     * @param  array $params
+     * Searching menu.
+     *
+     * @param array $params
+     *
      * @return \yii\data\ActiveDataProvider
      */
     public function search($params)
@@ -58,13 +57,13 @@ class Menu extends MenuModel
         global $_GPC;
 
         $query = MenuModel::find()
-            ->from(MenuModel::tableName() . ' t')
+            ->from(MenuModel::tableName().' t')
             ->joinWith(['menuParent' => function ($q) {
-                $q->from(MenuModel::tableName() . ' parent');
+                $q->from(MenuModel::tableName().' parent');
             }]);
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query
+            'query' => $query,
         ]);
 
         $sort = $dataProvider->getSort();
@@ -90,7 +89,7 @@ class Menu extends MenuModel
 
         $query->andFilterWhere([
             't.id' => $this->id,
-            't.module_name' =>  $this->module_name,
+            't.module_name' => $this->module_name,
             't.parent' => $this->parent,
         ]);
 
@@ -98,10 +97,9 @@ class Menu extends MenuModel
             ->andFilterWhere(['like', 't.route', $this->route])
             ->andFilterWhere(['like', 'lower(parent.name)', strtolower($this->parent_name)])->orderBy('order');
 
-
         $count = $query->count();
-        $pageSize   = $_GPC['pageSize'];
-        $page       = $_GPC['page'];
+        $pageSize = $_GPC['pageSize'];
+        $page = $_GPC['page'];
         // 使用总数来创建一个分页对象
         $pagination = new Pagination([
             'totalCount' => $count,
@@ -118,8 +116,7 @@ class Menu extends MenuModel
         //foreach ($list as $key => &$value) {
         //    $value['create_time'] = date('Y-m-d H:i:s',$value['create_time']);
         //    $value['update_time'] = date('Y-m-d H:i:s',$value['update_time']);
-        //} 
-
+        //}
 
         $provider = new ArrayDataProvider([
             'key' => 'id',
@@ -136,7 +133,7 @@ class Menu extends MenuModel
             ],
             'pagination' => [
                 'pageSize' => $pageSize,
-            ]
+            ],
         ]);
 
         return $provider;
