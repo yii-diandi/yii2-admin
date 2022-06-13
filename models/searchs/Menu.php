@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 16:49:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-06-13 16:58:46
+ * @Last Modified time: 2022-06-13 18:17:17
  */
 
 namespace diandi\admin\models\searchs;
@@ -16,7 +16,8 @@ use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 
 /**
- * Menu represents the model behind the search form about [[\diandi/admin\models\Menu]]. *
+ * Menu represents the model behind the search form about [[\diandi/admin\models\Menu]]
+ *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  *
  * @since 1.0
@@ -29,7 +30,7 @@ class Menu extends MenuModel
     public function rules()
     {
         return [
-            [['id', 'parent', 'order', 'level_type'], 'integer'],
+            [['id', 'parent', 'order', 'level_type', 'is_show'], 'integer'],
             [['name', 'route', 'parent_name'], 'safe'],
             [['type', 'module_name'], 'string'],
             ['is_sys', 'in', 'range' => ['system', 'addons']],
