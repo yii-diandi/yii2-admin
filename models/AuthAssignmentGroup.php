@@ -10,10 +10,8 @@ namespace diandi\admin\models;
 
 use diandi\admin\acmodels\AuthUserGroup;
 
-
 /**
  * This is the model class for table "dd_auth_assignment_group".
- *
  * @property string        $item_name
  * @property string        $user_id
  * @property int|null      $created_at
