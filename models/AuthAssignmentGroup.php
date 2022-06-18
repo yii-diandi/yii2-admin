@@ -3,27 +3,26 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-07-29 01:42:25
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-13 10:31:06
+ * @Last Modified time: 2022-06-18 10:17:07
  */
- 
 
 namespace diandi\admin\models;
 
-use Yii;
+use diandi\admin\acmodels\AuthUserGroup;
+
 
 /**
  * This is the model class for table "dd_auth_assignment_group".
  *
- * @property string $item_name
- * @property string $user_id
- * @property int|null $created_at
- *
+ * @property string        $item_name
+ * @property string        $user_id
+ * @property int|null      $created_at
  * @property AuthUserGroup $itemName
  */
 class AuthAssignmentGroup extends \yii\db\ActiveRecord
 {
     public $name;
-    
+
     /**
      * {@inheritdoc}
      */
@@ -39,7 +38,7 @@ class AuthAssignmentGroup extends \yii\db\ActiveRecord
     {
         return [
             [['item_name', 'user_id'], 'required'],
-            [['created_at','item_id'], 'integer'],
+            [['created_at', 'item_id'], 'integer'],
             [['item_name', 'user_id'], 'string', 'max' => 64],
             [['item_name', 'user_id'], 'unique', 'targetAttribute' => ['item_name', 'user_id']],
             [['item_name'], 'exist', 'skipOnError' => true, 'targetClass' => AuthUserGroup::className(), 'targetAttribute' => ['item_name' => 'name']],
