@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2022-06-18 10:25:14
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-10-22 12:04:42
+ * @Last Modified time: 2022-10-22 12:09:21
  */
 
 namespace diandi\admin\components;
@@ -17,6 +17,12 @@ namespace diandi\admin\components;
  */
 class UserStatus
 {
+    // 待审核
     const INACTIVE = 0;
+    // 审核
     const ACTIVE = 1;
+    // 体验期
+    const experience = 2;
+    // 到期
+    const endtime = 3;
 }
