@@ -1,11 +1,16 @@
 <?php
+/**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2022-06-18 10:25:14
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2022-08-01 18:21:17
+ */
 
-use yii\db\Migration;
 use diandi\admin\components\Configs;
+use yii\db\Migration;
 
 class m160312_050000_create_user extends Migration
 {
-
     public function up()
     {
         $tableOptions = null;

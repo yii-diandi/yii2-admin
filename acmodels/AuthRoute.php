@@ -3,7 +3,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2021-05-21 00:39:56
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-06-13 15:07:31
+ * @Last Modified time: 2022-08-01 11:44:32
  */
 
 namespace diandi\admin\acmodels;
@@ -43,7 +43,7 @@ class AuthRoute extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'is_sys'], 'required'],
+            [['route_name', 'item_id', 'name', 'is_sys'], 'required'],
             [['is_sys', 'route_type', 'pid', 'created_at', 'updated_at', 'item_id'], 'integer'],
             [['description', 'data'], 'string'],
             [['name', 'title', 'route_name'], 'string', 'max' => 64],

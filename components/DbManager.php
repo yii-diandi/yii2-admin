@@ -4,12 +4,13 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-05-26 14:53:31
+ * @Last Modified time: 2022-08-03 12:38:37
  */
 
 namespace diandi\admin\components;
 
 use common\helpers\ErrorsHelper;
+use common\helpers\loggingHelper;
 use diandi\admin\acmodels\AuthItem;
 use diandi\admin\acmodels\AuthItemChild;
 use diandi\admin\acmodels\AuthRoute;
@@ -233,11 +234,11 @@ class DbManager extends \yii\rbac\DbManager
         $auth_type = $this->auth_type;
 
         $all = [];
-        
+
         $where = [];
-        if(is_numeric($group_name)){
+        if (is_numeric($group_name)) {
             $where['item_id'] = $group_name;
-        }else{
+        } else {
             $where['name'] = $group_name;
         }
 
@@ -267,8 +268,7 @@ class DbManager extends \yii\rbac\DbManager
         }
 
         $all = $available;
-        
-        
+
         foreach ($this->getChildren($groupId) as $item => $val) {
             $key = $auth_type[$val->permission_type];
             $id = $val->item_id;
@@ -478,7 +478,7 @@ class DbManager extends \yii\rbac\DbManager
      */
     public function getPermissions($is_sys = 3)
     {
-        return $this->getItems($is_sys,1);
+        return $this->getItems($is_sys, 1);
     }
 
     /**
@@ -1264,6 +1264,7 @@ class DbManager extends \yii\rbac\DbManager
             ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
             ->andWhere(['a.user_id' => (string) $userId]);
         // ->andWhere(['b.type' => Item::TYPE_PERMISSION]);
+
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row, 'assignmentTable');
@@ -1293,7 +1294,7 @@ class DbManager extends \yii\rbac\DbManager
         if ($this->items !== null) {
             return $this->checkAccessFromCache($userId, $permissionName, $params, $assignments);
         }
-        
+
         return $this->checkAccessRecursiveAll($userId, $permissionName, $params, $assignments, 2);
     }
 
@@ -1365,6 +1366,7 @@ class DbManager extends \yii\rbac\DbManager
             // 'type' => Item::TYPE_PERMISSION,
             'name' => array_keys($result),
         ]);
+        
         $permissions = [];
         foreach (array_keys($result) as $itemName) {
             if (isset($this->items[$itemName]) && $this->items[$itemName] instanceof Permission) {
@@ -1387,6 +1389,7 @@ class DbManager extends \yii\rbac\DbManager
 
     protected function checkAccessRecursiveAll($user, $itemName, $params, $assignments, $parent_type)
     {
+        loggingHelper::writeLog('yii2-admin', 'DbManager', '权限校验日志', ['user' => $user, 'itemName' => $itemName, 'params' => $params, 'assignments' => $assignments, 'parent_type' => $parent_type]);
         if (strpos($itemName, '/') !== false) {
             // 校验路由权限是否存在，不存在就没有权限
             if (($item = $this->getRoute($itemName)) === null && ($item = $this->getRoute($itemName, 2)) === null) {
@@ -1402,7 +1405,7 @@ class DbManager extends \yii\rbac\DbManager
                 if (($item = $this->getItem($itemName)) === null) {
                     return false;
                 }
-            }elseif ($parent_type == 2) {
+            } elseif ($parent_type == 2) {
                 // 用户组
                 if (($item = $this->getGroup($itemName)) === null && ($item = $this->getGroup($itemName, 1)) === null) {
                     return false;
@@ -1410,12 +1413,12 @@ class DbManager extends \yii\rbac\DbManager
 
                 // print_r($user);
                 // 查询用户是否有组的权限
-                $groupsList = AuthAssignmentGroup::find()->where(['user_id'=>$user])->select('item_name')->column();
-             
-                if(!in_array($itemName,$groupsList) && !empty($groupsList)){
+                $groupsList = AuthAssignmentGroup::find()->where(['user_id' => $user])->select('item_name')->column();
+
+                if (!in_array($itemName, $groupsList) && !empty($groupsList)) {
                     return false;
                 }
-            }elseif( $parent_type == 3){
+            } elseif ($parent_type == 3) {
                 if (($item = $this->getItem($itemName)) === null) {
                     return false;
                 }
@@ -1427,18 +1430,17 @@ class DbManager extends \yii\rbac\DbManager
         if (!$this->executeRule($user, $item, $params)) {
             return false;
         }
-        
+
         if (isset($assignments[$itemName]) || in_array($itemName, $this->defaultRoles)) {
             return true;
         }
 
         $query = new Query();
-        //  权限： parent_type = 3 
+        //  权限： parent_type = 3
         $parents = $query->select(['parent', 'parent_type'])
             ->from($this->itemChildTable)
             ->where(['child' => $itemName])
             ->all($this->db);
-            
         foreach ($parents as $parent) {
             if ($this->checkAccessRecursiveAll($user, $parent['parent'], $params, $assignments, $parent['parent_type'])) {
                 return true;

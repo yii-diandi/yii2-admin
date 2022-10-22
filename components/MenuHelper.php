@@ -4,15 +4,15 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 20:26:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-24 22:56:37
+ * @Last Modified time: 2022-08-03 12:29:06
  */
 
 namespace diandi\admin\components;
 
 use common\helpers\loggingHelper;
+use diandi\admin\models\Menu;
 use Yii;
 use yii\caching\TagDependency;
-use diandi\admin\models\Menu;
 
 /**
  * MenuHelper used to generate menu depend of user role.
@@ -88,7 +88,6 @@ class MenuHelper
             $routes = $filter1 = $filter2 = [];
 
             if ($userId !== null) {
-
                 // 获取所有的权限
                 foreach ($manager->getPermissionsByUser($userId) as $name => $value) {
                     if ($name[0] === '/') {
@@ -110,15 +109,15 @@ class MenuHelper
                 }
             }
 
-
             $routes = array_unique($routes);
             sort($routes);
             $prefix = '\\';
+
             foreach ($routes as $route) {
                 if (strpos($route, $prefix) !== 0) {
                     if (substr($route, -1) === '/') {
                         $prefix = $route;
-                        $filter1[] = $route . '%';
+                        $filter1[] = $route.'%';
                     } else {
                         $filter2[] = $route;
                     }
@@ -138,8 +137,6 @@ class MenuHelper
                 }
             }
 
-
-
             $assigned = static::requiredParent($assigned, $menus);
 
             if ($cache !== null) {
@@ -152,7 +149,7 @@ class MenuHelper
         $key = [__METHOD__, $assigned, $root];
 
         if ($refresh || $callback !== null || $cache === null || (($result = $cache->get($key)) === false)) {
-            $result =  static::normalizeMenu($assigned, $menus, $callback, $root);
+            $result = static::normalizeMenu($assigned, $menus, $callback, $root);
 
             if ($cache !== null && $callback === null) {
                 $cache->set($key, $result, $config->cacheDuration, new TagDependency([
@@ -228,12 +225,12 @@ class MenuHelper
         $order = [];
         foreach ($assigned as $id) {
             $menu = $menus[$id];
-           
+
             if ($menu['parent'] == $parent) {
                 loggingHelper::writeLog('menuhelp', 'normalizeMenu', '哪里的问题', [$parent]);
                 $menu['children'] = static::normalizeMenu($assigned, $menus, $callback, $id);
                 if (!empty($callback)) {
-                    $item =   call_user_func($callback, $menu);
+                    $item = call_user_func($callback, $menu);
                 } else {
                     $item = [
                         'label' => $menu['name'],

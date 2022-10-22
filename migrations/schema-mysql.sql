@@ -1,4 +1,10 @@
 /**
+ * @Author: Wang chunsheng  email:2192138785@qq.com
+ * @Date:   2022-06-18 10:25:14
+ * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
+ * @Last Modified time: 2022-08-01 18:21:05
+ */
+/**
  * Database schema required by yii2-admin.
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
