@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 15:21:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-10-25 20:57:52
+ * @Last Modified time: 2022-10-25 21:02:42
  */
 
 namespace diandi\admin\models;
@@ -15,6 +15,7 @@ use diandi\admin\components\Helper;
 use diandi\admin\components\Item;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "dd_auth_user_group".
