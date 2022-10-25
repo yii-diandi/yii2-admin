@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-08-03 12:38:37
+ * @Last Modified time: 2022-10-25 20:42:14
  */
 
 namespace diandi\admin\components;
@@ -1264,7 +1264,6 @@ class DbManager extends \yii\rbac\DbManager
             ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
             ->andWhere(['a.user_id' => (string) $userId]);
         // ->andWhere(['b.type' => Item::TYPE_PERMISSION]);
-
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row, 'assignmentTable');
@@ -1366,7 +1365,7 @@ class DbManager extends \yii\rbac\DbManager
             // 'type' => Item::TYPE_PERMISSION,
             'name' => array_keys($result),
         ]);
-        
+
         $permissions = [];
         foreach (array_keys($result) as $itemName) {
             if (isset($this->items[$itemName]) && $this->items[$itemName] instanceof Permission) {

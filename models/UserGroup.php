@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 15:21:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-19 02:46:26
+ * @Last Modified time: 2022-10-25 20:57:52
  */
 
 namespace diandi\admin\models;
@@ -44,9 +44,10 @@ class UserGroup extends \yii\db\ActiveRecord
         /*自动添加创建和修改时间*/
         return [
             [
-                'class' => \common\behaviors\SaveBehavior::className(),
-                'createdAttribute' => 'created_at',
-                'updatedAttribute' => 'updated_at',
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'value' => time(),
             ],
         ];
     }
@@ -58,12 +59,11 @@ class UserGroup extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'is_sys'], 'required'],
-            [['created_at', 'updated_at', 'store_id', 'bloc_id','item_id','is_sys'], 'integer'],
+            [['created_at', 'updated_at', 'store_id', 'bloc_id', 'item_id', 'is_sys'], 'integer'],
             [['description'], 'string'],
-            [['name','module_name'], 'string', 'max' => 64],
+            [['name', 'module_name'], 'string', 'max' => 64],
             [['name'], 'checkName'],
             [['name'], 'unique'],
-
         ];
     }
 
@@ -86,7 +86,7 @@ class UserGroup extends \yii\db\ActiveRecord
     public function __construct($item = null, $config = [])
     {
         $this->_item = $item;
-   
+
         if ($item !== null) {
             $this->id = $item->id;
             $this->item_id = $item->item_id;
@@ -105,7 +105,8 @@ class UserGroup extends \yii\db\ActiveRecord
         $manager = Configs::authManager();
         $item = $manager->getPermission($name);
         if ($item) {
-            $this->addError('name', '名称：' . $item->name . '已存在');
+            $this->addError('name', '名称：'.$item->name.'已存在');
+
             return;
         }
     }
@@ -134,7 +135,6 @@ class UserGroup extends \yii\db\ActiveRecord
                     } catch (\Exception $exc) {
                         Yii::error($exc->getMessage(), __METHOD__);
                         throw new InvalidArgumentException($exc->getMessage());
-                        
                     }
                 }
             }
@@ -158,20 +158,18 @@ class UserGroup extends \yii\db\ActiveRecord
         $manager = Configs::authManager();
         $success = 0;
         if ($this->_item !== null) {
-            if(!empty($items['group'])){
+            if (!empty($items['group'])) {
                 foreach ($items['group'] as $name) {
                     $child = $manager->getGroupPermission($name);
                     try {
-                        
                         $manager->removeChild($this->_item, $child);
                         ++$success;
                     } catch (\Exception $exc) {
                         Yii::error($exc->getMessage(), __METHOD__);
                         throw new InvalidArgumentException($exc->getMessage());
                     }
-                }    
+                }
             }
-            
         }
         if ($success > 0) {
             Helper::invalidate();
