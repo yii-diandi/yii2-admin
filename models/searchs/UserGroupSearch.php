@@ -4,16 +4,15 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-09 06:36:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2021-05-23 13:52:12
+ * @Last Modified time: 2022-10-26 14:16:56
  */
-
 
 namespace diandi\admin\models\searchs;
 
 use common\components\DataProvider\ArrayDataProvider;
+use diandi\admin\models\UserGroup;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use diandi\admin\models\UserGroup;
 use yii\data\Pagination;
 
 /**
@@ -21,7 +20,6 @@ use yii\data\Pagination;
  */
 class UserGroupSearch extends UserGroup
 {
-
     public $type;
 
     public $module_name;
@@ -40,7 +38,7 @@ class UserGroupSearch extends UserGroup
     public function rules()
     {
         return [
-            [['id', 'type', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'type', 'created_at', 'updated_at', 'store_id', 'bloc_id'], 'integer'],
             [['name', 'module_name', 'description'], 'safe'],
         ];
     }
@@ -55,7 +53,7 @@ class UserGroupSearch extends UserGroup
     }
 
     /**
-     * Creates data provider instance with search query applied
+     * Creates data provider instance with search query applied.
      *
      * @param array $params
      *
@@ -83,17 +81,19 @@ class UserGroupSearch extends UserGroup
         $query->andFilterWhere([
             'id' => $this->id,
             'type' => $this->type,
+            'store_id' => $this->store_id,
+            'bloc_id' => $this->bloc_id,
             'module_name' => $this->module_name,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
-        
+
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description]);
 
         $count = $query->count();
-        $pageSize   = $_GPC['pageSize'];
-        $page       = $_GPC['page'];
+        $pageSize = $_GPC['pageSize'];
+        $page = $_GPC['page'];
         // 使用总数来创建一个分页对象
         $pagination = new Pagination([
             'totalCount' => $count,
@@ -110,8 +110,7 @@ class UserGroupSearch extends UserGroup
         //foreach ($list as $key => &$value) {
         //    $value['create_time'] = date('Y-m-d H:i:s',$value['create_time']);
         //    $value['update_time'] = date('Y-m-d H:i:s',$value['update_time']);
-        //} 
-
+        //}
 
         $provider = new ArrayDataProvider([
             'key' => 'id',
@@ -128,7 +127,7 @@ class UserGroupSearch extends UserGroup
             ],
             'pagination' => [
                 'pageSize' => $pageSize,
-            ]
+            ],
         ]);
 
         return $provider;
