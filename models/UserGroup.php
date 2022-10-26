@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 15:21:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-10-26 13:22:15
+ * @Last Modified time: 2022-10-26 14:13:00
  */
 
 namespace diandi\admin\models;
@@ -63,10 +63,7 @@ class UserGroup extends \yii\db\ActiveRecord
             [['created_at', 'updated_at', 'store_id', 'bloc_id', 'item_id', 'is_sys', 'is_default'], 'integer'],
             [['description'], 'string'],
             [['name', 'module_name'], 'string', 'max' => 64],
-            [['name'], 'checkName'],
-            [['name'], 'unique', 'when' => function ($model) {
-                return $this->isNewRecord || ($this->name != $model->name);
-            }],
+            [['name'], 'unique'],
         ];
     }
 
