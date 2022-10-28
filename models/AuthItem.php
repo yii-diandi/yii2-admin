@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 15:46:52
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-19 01:14:11
+ * @Last Modified time: 2022-10-28 18:40:03
  */
 
 namespace diandi\admin\models;
@@ -20,9 +20,9 @@ use yii\helpers\Json;
 class AuthItem extends Model
 {
     public $id;
-    
+
     public $item_id;
-    
+
     public $name;
     public $is_sys;
     public $description;
@@ -36,10 +36,8 @@ class AuthItem extends Model
     public $parent_name;
     // 0: '目录' 1: '页面' 2: '按钮' 3: '接口'
     public $permission_level;
-    
+
     public $permission_type;
-    
-    
 
     /**
      * @var Item
@@ -55,7 +53,7 @@ class AuthItem extends Model
     public function __construct($item = null, $config = [])
     {
         $this->_item = $item;
-        
+
         if ($item !== null) {
             $this->id = $item->id;
             $this->name = $item->name;
@@ -85,7 +83,7 @@ class AuthItem extends Model
             // [['name'], 'checkUnique', 'when' => function () {
             //     return $this->isNewRecord || ($this->_item->name != $this->name);
             // }],
-            [['permission_type', 'child_type','is_sys','item_id'], 'integer'],
+            [['permission_type', 'child_type', 'is_sys', 'item_id'], 'integer'],
             [['parent_id'], 'checkParent'],
             [['description', 'data', 'ruleName'], 'default'],
             [['name',  'module_name'], 'string', 'max' => 64],
@@ -156,7 +154,7 @@ class AuthItem extends Model
             'description' => Yii::t('rbac-admin', 'Description'),
             'ruleName' => Yii::t('rbac-admin', 'Rule Name'),
             'data' => Yii::t('rbac-admin', 'Data'),
-            'permission_type' =>Yii::t('rbac-admin', 'Permission_type')
+            'permission_type' => Yii::t('rbac-admin', 'Permission_type'),
         ];
     }
 
@@ -260,7 +258,7 @@ class AuthItem extends Model
                     }
                 }
             }
-     
+
             if ($items['permission']) {
                 foreach ($items['permission'] as $id) {
                     $child = $manager->getPermission($id);
@@ -316,7 +314,6 @@ class AuthItem extends Model
                     } catch (\Exception $exc) {
                         Yii::error($exc->getMessage(), __METHOD__);
                         throw new InvalidArgumentException($exc->getMessage());
-
                     }
                 }
             }
@@ -330,7 +327,6 @@ class AuthItem extends Model
                     } catch (\Exception $exc) {
                         Yii::error($exc->getMessage(), __METHOD__);
                         throw new InvalidArgumentException($exc->getMessage());
-
                     }
                 }
             }
@@ -373,18 +369,17 @@ class AuthItem extends Model
             $available[$keyType][$id] = $val;
         }
         $assigned = [];
-        
+
         foreach ($manager->getChildren($this->_item->id) as $item) {
             $id = $item->item_id;
-            
+
             // $keyType = $item->parent_type == 2 ? 'role' : ($item->name[0] == '/' ? 'route' : 'permission');
             $keyType = $auth_type[$item->permission_type];
 
             $assigned[$keyType][$id] = $item;
             unset($available[$keyType][$id]);
         }
-        
-        
+
         foreach ($manager->getItemChildren($this->_item->id, $this->is_sys, 3) as $item) {
             $id = $item->item_id;
             // $child_type = ['route', 'permission', 'role'];
@@ -394,8 +389,7 @@ class AuthItem extends Model
             $assigned[$keyType][$id] = $item;
             unset($available[$keyType][$id]);
         }
-     
-        
+
         unset($available[$this->name]);
         // p([
         //     'available' => $available,
@@ -412,13 +406,13 @@ class AuthItem extends Model
      *
      * @return array
      */
-    public function getAdminItems($permission_type=0)
+    public function getAdminItems($permission_type = 0)
     {
         $manager = Configs::authManager();
         $available = [];
         $all = [];
-         // 获取已分配
-         $assigned = [];
+        // 获取已分配
+        $assigned = [];
         $auth_type = $manager->auth_type;
 
         if ($this->permission_type == Item::TYPE_PERMISSION) {
@@ -427,7 +421,7 @@ class AuthItem extends Model
                 $available['role'][$id] = $val;
             }
         }
-        
+
         foreach ($manager->getPermissions($this->is_sys) as  $name => $val) {
             $key = $auth_type[$val->permission_type];
             $id = $val->id;
@@ -441,7 +435,7 @@ class AuthItem extends Model
         }
 
         $all = $available;
-       
+
         foreach ($manager->getChildren($this->_item->id) as $item => $val) {
             $key = $auth_type[$val->permission_type];
             $id = $val->item_id;

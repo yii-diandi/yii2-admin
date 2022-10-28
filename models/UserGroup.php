@@ -4,12 +4,11 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-04 15:21:33
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-10-26 14:13:00
+ * @Last Modified time: 2022-10-28 18:44:19
  */
 
 namespace diandi\admin\models;
 
-use diandi\addons\models\DdAddons;
 use diandi\admin\components\Configs;
 use diandi\admin\components\Helper;
 use diandi\admin\components\Item;
@@ -22,7 +21,6 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property int         $id
  * @property string      $name        用户组名称
- * @property int         $type        用户组类型
  * @property string|null $description 用户组名称
  * @property int|null    $created_at
  * @property int|null    $updated_at
@@ -35,6 +33,23 @@ class UserGroup extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%auth_user_group}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['name', 'is_sys'], 'required'],
+            ['is_sys', 'in', 'range' => [0, 1]],
+            [['created_at', 'updated_at', 'store_id', 'bloc_id', 'item_id', 'is_sys', 'is_default'], 'integer'],
+            [['description'], 'string'],
+            [['bloc_id', 'store_id'], 'default', 'value' => 0],
+            ['is_sys', 'default', 'value' => 1],
+            [['name'], 'string', 'max' => 64],
+            [['name'], 'unique'],
+        ];
     }
 
     /**
@@ -51,25 +66,6 @@ class UserGroup extends \yii\db\ActiveRecord
                 'value' => time(),
             ],
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['name', 'is_sys'], 'required'],
-            [['created_at', 'updated_at', 'store_id', 'bloc_id', 'item_id', 'is_sys', 'is_default'], 'integer'],
-            [['description'], 'string'],
-            [['name', 'module_name'], 'string', 'max' => 64],
-            [['name'], 'unique'],
-        ];
-    }
-
-    public function getAddons()
-    {
-        return $this->hasOne(DdAddons::className(), ['identifie' => 'module_name']);
     }
 
     /**
@@ -92,7 +88,6 @@ class UserGroup extends \yii\db\ActiveRecord
             $this->item_id = $item->item_id;
             $this->is_sys = $item->is_sys;
             $this->name = $item->name;
-            $this->module_name = $item->module_name;
             $this->description = $item->description;
         }
         parent::__construct($config);

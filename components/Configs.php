@@ -4,9 +4,8 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 18:23:37
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-01-16 02:50:25
+ * @Last Modified time: 2022-10-28 17:55:04
  */
-
 
 namespace diandi\admin\components;
 
@@ -19,7 +18,7 @@ use yii\rbac\ManagerInterface;
 
 /**
  * Configs
- * Used to configure some values. To set config you can use [[\yii\base\Application::$params]]
+ * Used to configure some values. To set config you can use [[\yii\base\Application::$params]].
  *
  * ```
  * return [
@@ -45,63 +44,62 @@ use yii\rbac\ManagerInterface;
  * ```
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
+ *
  * @since 1.0
  */
-
 class Configs extends \diandi\admin\BaseObject
 {
     const CACHE_TAG = 'diandi.admin';
 
     /**
-     * @var ManagerInterface .
+     * @var managerInterface
      */
     public $authManager = 'authManager';
 
     /**
-     * @var Connection Database connection.
+     * @var Connection database connection
      */
     public $db = 'db';
 
     /**
-     * @var Connection Database connection.
+     * @var Connection database connection
      */
     public $userDb = 'db';
 
     /**
-     * @var Cache Cache component.
+     * @var Cache cache component
      */
     public $cache = 'cache';
 
     /**
-     * @var integer Cache duration. Default to a hour.
+     * @var int Cache duration. Default to a hour.
      */
     public $cacheDuration = 3600;
 
     /**
-     * @var string Menu table name.
+     * @var string menu table name
      */
     public $menuTable = '{{%auth_menu}}';
 
     /**
-     * @var string Menu table name.
+     * @var string menu table name
      */
     public $userTable = '{{%user}}';
-    
-    
+
     public $groupTable = '{{%auth_user_group}}';
 
     /**
-     * @var integer Default status user signup. 10 mean active.
+     * @var int Default status user signup. 10 mean active.
      */
     public $defaultUserStatus = 10;
 
     /**
-     * @var boolean If true then AccessControl only check if route are registered.
+     * @var bool if true then AccessControl only check if route are registered
      */
     public $onlyRegisteredRoute = false;
 
     /**
-     * @var boolean If false then AccessControl will check without Rule.
+     * @var bool if false then AccessControl will check without Rule
      */
     public $strict = true;
 
@@ -112,22 +110,22 @@ class Configs extends \diandi\admin\BaseObject
 
     /**
      * @var array|false Used for multiple application
-     * ```php
-     * [
-     *     'frontend' => [
-     *         '@common/config/main.php',
-     *         '@common/config/main-local.php',
-     *         '@frontend/config/main.php',
-     *         '@frontend/config/main-local.php',
-     *     ],
-     *     'backend' => [
-     *         '@common/config/main.php',
-     *         '@common/config/main-local.php',
-     *         '@backend/config/main.php',
-     *         '@backend/config/main-local.php',
-     *     ],
-     * ]
-     * ```     *
+     *                  ```php
+     *                  [
+     *                  'frontend' => [
+     *                  '@common/config/main.php',
+     *                  '@common/config/main-local.php',
+     *                  '@frontend/config/main.php',
+     *                  '@frontend/config/main-local.php',
+     *                  ],
+     *                  'backend' => [
+     *                  '@common/config/main.php',
+     *                  '@common/config/main-local.php',
+     *                  '@backend/config/main.php',
+     *                  '@backend/config/main-local.php',
+     *                  ],
+     *                  ]
+     *                  ```     *
      */
     public $advanced;
 
@@ -143,7 +141,7 @@ class Configs extends \diandi\admin\BaseObject
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -158,20 +156,22 @@ class Configs extends \diandi\admin\BaseObject
     }
 
     /**
-     * Create instance of self
+     * Create instance of self.
+     *
      * @return static
      */
     public static function instance()
     {
-
         if (self::$_instance === null) {
             $type = ArrayHelper::getValue(Yii::$app->params, 'diandi.admin.configs', []);
 
             if (is_array($type) && !isset($type['class'])) {
                 $type['class'] = static::className();
             }
+
             return self::$_instance = Yii::createObject($type);
         }
+
         return self::$_instance;
     }
 
@@ -214,14 +214,15 @@ class Configs extends \diandi\admin\BaseObject
     }
 
     /**
-     * @return ManagerInterface
+     * @return DbManager
      */
     public static function authManager()
     {
         return static::instance()->authManager;
     }
+
     /**
-     * @return integer
+     * @return int
      */
     public static function cacheDuration()
     {
@@ -253,7 +254,7 @@ class Configs extends \diandi\admin\BaseObject
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public static function onlyRegisteredRoute()
     {
@@ -261,7 +262,7 @@ class Configs extends \diandi\admin\BaseObject
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public static function strict()
     {

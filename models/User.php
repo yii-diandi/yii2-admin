@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:49:05
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-08-29 11:41:40
+ * @Last Modified time: 2022-10-28 19:45:02
  */
 
 namespace diandi\admin\models;
@@ -180,6 +180,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function getAddonsUser()
     {
         return $this->hasMany(AddonsUser::className(), ['user_id' => 'id']);
+    }
+
+    public function getUserGroup()
+    {
+        return $this->hasMany(AuthAssignmentGroup::className(), ['user_id' => 'id']);
     }
 
     /**
