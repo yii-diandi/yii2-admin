@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-10-27 20:55:54
+ * @Last Modified time: 2023-07-18 16:45:18
  */
 
 namespace diandi\admin\components;
@@ -321,9 +321,9 @@ class DbManager extends \yii\rbac\DbManager
                     'parent_type' => $parent_type,
                 ])->andWhere($where)->select(['c.child as name', 'r.is_sys', 'c.id', 'child_type', 'description', 'data', 'created_at', 'updated_at', 'c.item_id'])->asArray()->all();
 
-              foreach ($list as $row) {
-                  $children[$row['id']] = $this->populateItem($row, 'routeTable');
-              }
+                foreach ($list as $row) {
+                    $children[$row['id']] = $this->populateItem($row, 'routeTable');
+                }
 
                 break;
             case 1:
@@ -658,7 +658,7 @@ class DbManager extends \yii\rbac\DbManager
      *
      * @return void
      */
-    public function getParentItem($is_sys = 3, $module_name)
+    public function getParentItem($is_sys = 3, $module_name = '')
     {
         $where = [];
         if (in_array($is_sys, [0, 1], true)) {
@@ -1251,7 +1251,7 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function getDirectPermissionsByUser($userId)
     {
-        $cacheKey = 'getDirectPermissionsByUser_'.$userId;
+        $cacheKey = 'getDirectPermissionsByUser_' . $userId;
 
         $_permissions = yii::$app->cache->get($cacheKey);
 
@@ -1264,6 +1264,7 @@ class DbManager extends \yii\rbac\DbManager
             ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
             ->andWhere(['a.user_id' => (string) $userId]);
         // ->andWhere(['b.type' => Item::TYPE_PERMISSION]);
+
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row, 'assignmentTable');
@@ -1326,7 +1327,7 @@ class DbManager extends \yii\rbac\DbManager
     protected function getInheritedPermissionsByUser($userId)
     {
         // 使用缓存
-        $cacheKey = 'permissions_'.$userId;
+        $cacheKey = 'permissions_' . $userId;
 
         $_permissions = yii::$app->cache->get($cacheKey);
 

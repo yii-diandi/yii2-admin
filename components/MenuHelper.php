@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 20:26:30
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-10-27 20:58:22
+ * @Last Modified time: 2023-07-18 16:46:34
  */
 
 namespace diandi\admin\components;
@@ -77,7 +77,7 @@ class MenuHelper
     {
         $config = Configs::instance();
         /* @var $manager \yii\rbac\BaseManager */
-        $manager = Configs::authManager();
+        $manager = $config::authManager();
 
         $menus = Menu::find()->where($menuwhere)->orderBy('order')->asArray()->indexBy('id')->all();
         $module_name = !empty($menuwhere['module_name']) ? $menuwhere['module_name'] : '';
@@ -117,7 +117,7 @@ class MenuHelper
                 if (strpos($route, $prefix) !== 0) {
                     if (substr($route, -1) === '/') {
                         $prefix = $route;
-                        $filter1[] = $route.'%';
+                        $filter1[] = $route . '%';
                     } else {
                         $filter2[] = $route;
                     }
@@ -223,8 +223,10 @@ class MenuHelper
         $result = [];
         $order = [];
         foreach ($assigned as $id) {
+            if (!isset($menus[$id])) {
+                continue;
+            }
             $menu = $menus[$id];
-
             if ($menu['parent'] == $parent) {
                 loggingHelper::writeLog('menuhelp', 'normalizeMenu', '哪里的问题', [$parent]);
                 $menu['children'] = static::normalizeMenu($assigned, $menus, $callback, $id);
