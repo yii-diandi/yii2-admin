@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-27 16:49:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-06-13 18:17:17
+ * @Last Modified time: 2023-07-18 17:37:12
  */
 
 namespace diandi\admin\models\searchs;
@@ -58,9 +58,9 @@ class Menu extends MenuModel
         global $_GPC;
 
         $query = MenuModel::find()
-            ->from(MenuModel::tableName().' t')
+            ->from(MenuModel::tableName() . ' t')
             ->joinWith(['menuParent' => function ($q) {
-                $q->from(MenuModel::tableName().' parent');
+                $q->from(MenuModel::tableName() . ' parent');
             }]);
 
         $dataProvider = new ActiveDataProvider([
@@ -94,13 +94,16 @@ class Menu extends MenuModel
             't.parent' => $this->parent,
         ]);
 
-        $query->andFilterWhere(['like', 'lower(t.name)', strtolower($this->name)])
+        $name = $this->name ? strtolower($this->name) : '';
+        $parent_name = $this->parent_name ? strtolower($this->parent_name) : '';
+
+        $query->andFilterWhere(['like', 'lower(t.name)', $name])
             ->andFilterWhere(['like', 't.route', $this->route])
-            ->andFilterWhere(['like', 'lower(parent.name)', strtolower($this->parent_name)])->orderBy('order');
+            ->andFilterWhere(['like', 'lower(parent.name)', $parent_name])->orderBy('order');
 
         $count = $query->count();
-        $pageSize = $_GPC['pageSize']??10;
-        $page = $_GPC['page']??1;
+        $pageSize = $_GPC['pageSize'] ?? 10;
+        $page = $_GPC['page'] ?? 1;
         // 使用总数来创建一个分页对象
         $pagination = new Pagination([
             'totalCount' => $count,
