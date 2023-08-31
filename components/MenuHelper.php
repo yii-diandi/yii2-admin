@@ -223,11 +223,11 @@ class MenuHelper
         $result = [];
         $order = [];
         foreach ($assigned as $id) {
-            if (array_key_exists($id,$menus) && !isset($menus[$id])) {
+            if (array_key_exists($id,$menus) && empty($menus[$id])) {
                 continue;
             }
             $menu = $menus[$id];
-            if ($menu['parent'] == $parent) {
+            if (!empty($menu) && $menu['parent'] == $parent) {
                 loggingHelper::writeLog('menuhelp', 'normalizeMenu', '哪里的问题', [$parent]);
                 $menu['children'] = static::normalizeMenu($assigned, $menus, $callback, $id);
                 if (!empty($callback)) {
