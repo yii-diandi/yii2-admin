@@ -223,7 +223,7 @@ class MenuHelper
         $result = [];
         $order = [];
         foreach ($assigned as $id) {
-            if (!isset($menus[$id])) {
+            if (array_key_exists($id,$menus) && !isset($menus[$id])) {
                 continue;
             }
             $menu = $menus[$id];
