@@ -47,7 +47,7 @@ class AuthItem extends Model
     /**
      * Initialize object.
      *
-     * @param Item  $item
+     * @param Item $item
      * @param array $config
      */
     public function __construct($item = null, $config = [])
@@ -86,7 +86,7 @@ class AuthItem extends Model
             [['permission_type', 'child_type', 'is_sys', 'item_id'], 'integer'],
             [['parent_id'], 'checkParent'],
             [['description', 'data', 'ruleName'], 'default'],
-            [['name',  'module_name'], 'string', 'max' => 64],
+            [['name', 'module_name'], 'string', 'max' => 64],
         ];
     }
 
@@ -245,7 +245,8 @@ class AuthItem extends Model
         $success = 0;
 
         if ($this->_item) {
-            if ($items['route']) {
+            if (key_exists('route', $items) && is_array($items['route'])) {
+
                 foreach ($items['route'] as $id) {
                     $child = $manager->getRoutePermission($id, $this->parent_type);
                     try {
@@ -259,7 +260,7 @@ class AuthItem extends Model
                 }
             }
 
-            if ($items['permission']) {
+            if (key_exists('permission', $items) && is_array($items['permission'])) {
                 foreach ($items['permission'] as $id) {
                     $child = $manager->getPermission($id);
                     $child->parent_type = $parent_type;
@@ -422,7 +423,7 @@ class AuthItem extends Model
             }
         }
 
-        foreach ($manager->getPermissions($this->is_sys) as  $name => $val) {
+        foreach ($manager->getPermissions($this->is_sys) as $name => $val) {
             $key = $auth_type[$val->permission_type];
             $id = $val->id;
             $available[$key][$id] = $val;
@@ -449,7 +450,7 @@ class AuthItem extends Model
             $assigned[$key][$id] = $val;
             unset($available[$key][$id]);
         }
-        unset($available[$this->id],$all[$this->id]);
+        unset($available[$this->id], $all[$this->id]);
 
         return [
             'all' => $all,
