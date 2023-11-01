@@ -42,8 +42,7 @@ class MenuTopSearch extends MenuTop
 
      */
     public function search($params)
-    {
-        global $_GPC;
+   {
         $query = MenuTop::find();
 
         
@@ -69,8 +68,8 @@ class MenuTopSearch extends MenuTop
             ->andFilterWhere(['like', 'icon', $this->icon]);
         
         $count = $query->count();
-        $pageSize   = $_GPC['pageSize']??10;
-        $page       = $_GPC['page']??1;
+        $pageSize   =\Yii::$app->request->input('pageSize',10);
+        $page       = \Yii::$app->request->input('page',1);
         // 使用总数来创建一个分页对象
         $pagination = new Pagination([
             'totalCount' => $count,

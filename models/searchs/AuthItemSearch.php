@@ -49,8 +49,7 @@ class AuthItemSearch extends AuthItemModel
      * @return ActiveDataProvider
      */
     public function search($params)
-    {
-        global $_GPC;
+   {
 
         $query = AuthItemModel::find()->where(['permission_type' => 1]);
 

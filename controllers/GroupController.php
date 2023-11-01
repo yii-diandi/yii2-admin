@@ -172,9 +172,8 @@ class GroupController extends BaseController
      * @return array
      */
     public function actionRemove($id)
-    {
-        global $_GPC;
-        $items = $_GPC['items'];
+   {
+        $items =\Yii::$app->request->input('items');
            
         $parentGroup = UserGroup::find()->where(['id'=>$id])->one();
         $model =  new UserGroup($parentGroup);

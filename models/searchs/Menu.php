@@ -54,8 +54,7 @@ class Menu extends MenuModel
      * @return \yii\data\ActiveDataProvider
      */
     public function search($params)
-    {
-        global $_GPC;
+   {
 
         $query = MenuModel::find()
             ->from(MenuModel::tableName() . ' t')
@@ -102,8 +101,8 @@ class Menu extends MenuModel
             ->andFilterWhere(['like', 'lower(parent.name)', $parent_name])->orderBy('order');
 
         $count = $query->count();
-        $pageSize = $_GPC['pageSize'] ?? 10;
-        $page = $_GPC['page'] ?? 1;
+        $pageSize =\Yii::$app->request->input('pageSize') ?? 10;
+        $page =\Yii::$app->request->input('page') ?? 1;
         // 使用总数来创建一个分页对象
         $pagination = new Pagination([
             'totalCount' => $count,

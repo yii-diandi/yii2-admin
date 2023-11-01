@@ -178,10 +178,9 @@ class UserController extends BaseController
 
     // 修改别人的密码
     public function actionChangePass($id)
-    {
-        global $_GPC;
+   {
         
-        $id = $_GPC['id']; 
+        $id =\Yii::$app->request->input('id'); 
         
         $user = $this->findModel($id);
         $title = $user->username;

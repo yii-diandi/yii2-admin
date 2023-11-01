@@ -116,8 +116,7 @@ class MenuController extends BaseController
      * @return mixed
      */
     public function actionUpdate($id)
-    {
-        global $_GPC;
+   {
 
         $model = $this->findModel($id);
         if ($model->menuParent) {
