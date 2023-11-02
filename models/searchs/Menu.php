@@ -33,7 +33,7 @@ class Menu extends MenuModel
             [['id', 'parent', 'order', 'level_type', 'is_show'], 'integer'],
             [['name', 'route', 'parent_name'], 'safe'],
             [['type', 'module_name'], 'string'],
-            ['is_sys', 'in', 'range' => ['system', 'addons']],
+            ['is_sys', 'in', 'range' => [1,0]],
         ];
     }
 

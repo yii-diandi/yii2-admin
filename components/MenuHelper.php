@@ -73,7 +73,7 @@ class MenuHelper
      *
      * @return array
      */
-    public static function getAssignedMenu($userId, $root = null, $callback = null, $menuwhere = ['is_sys' => 'system'], $refresh = false)
+    public static function getAssignedMenu($userId, $root = null, $callback = null, $menuwhere = ['is_sys' => 1], $refresh = false)
     {
         $config = Configs::instance();
         /* @var $manager \yii\rbac\BaseManager */

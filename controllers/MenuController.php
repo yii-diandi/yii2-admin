@@ -58,7 +58,7 @@ class MenuController extends BaseController
         $searchModel = new MenuSearch;
         // $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
-        $query = Menu::find()->where(['is_sys' => 'system'])->orderBy('order');
+        $query = Menu::find()->where(['is_sys' => 1])->orderBy('order');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => false
@@ -97,7 +97,7 @@ class MenuController extends BaseController
             }
         } else {
             $addons = DdAddons::find()->asArray()->all();
-            $parentMent = Menu::find()->where(['is_sys' => 'system'])->asArray()->all();
+            $parentMent = Menu::find()->where(['is_sys' => 1])->asArray()->all();
             $parentMenu =  HelpersArrayHelper::itemsMergeDropDown(HelpersArrayHelper::itemsMerge($parentMent, 0, "id", 'parent', '-'), "id", 'name');
 
             return $this->render('create', [
@@ -128,7 +128,7 @@ class MenuController extends BaseController
         } else {
             $addons = DdAddons::find()->asArray()->all();
 
-            $parentMent = Menu::find()->where(['is_sys' => 'system'])->asArray()->all();
+            $parentMent = Menu::find()->where(['is_sys' => 1])->asArray()->all();
             $parentMenu =  HelpersArrayHelper::itemsMergeDropDown(HelpersArrayHelper::itemsMerge($parentMent, 0, "id", 'parent', '-'), "id", 'name');
 
             return $this->render('update', [

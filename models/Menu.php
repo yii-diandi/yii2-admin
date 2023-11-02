@@ -84,8 +84,8 @@ class Menu extends \yii\db\ActiveRecord
             [['parent'], 'filterParent', 'when' => function () {
                 return !$this->isNewRecord;
             }],
-            [['order', 'is_show','route_id','level_type'], 'integer'],
-            [['is_sys'], 'in', 'range' => ['system', 'addons']],
+            [['order', 'is_show','route_id','level_type','is_sys'], 'integer'],
+            [['is_sys'], 'in', 'range' => [1, 0]],
             [
                 ['route'], 'in',
                 'range' => static::getSavedRoutes(),
