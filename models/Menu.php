@@ -62,7 +62,7 @@ class Menu extends \yii\db\ActiveRecord
     }
     
 
-    public function getRuoter()
+    public function getRouter()
     {
         return $this->hasOne(AuthRoute::className(),['id'=>'route_id']);
     }
