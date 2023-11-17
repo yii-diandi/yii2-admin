@@ -38,6 +38,6 @@ class Permission extends Item
     
     public $id;
     
-    public $module_name = 'sys';
+    public $module_name = 'system';
     
 }

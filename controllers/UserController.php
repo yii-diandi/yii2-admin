@@ -45,8 +45,8 @@ class UserController extends BaseController
 
     public function actions()
     {
-        $this->module_name = Yii::$app->request->get('module_name', 'sys');
-        $this->type = $this->module_name == 'sys' ? 0 : 1;
+        $this->module_name = Yii::$app->request->get('module_name', 'system');
+        $this->type = $this->module_name == 'system' ? 0 : 1;
     }
 
     /**
@@ -106,7 +106,7 @@ class UserController extends BaseController
         $module_name = $this->module_name;
         $AddonsUser = new AddonsUser();
         $user_ids = [];
-        if ($module_name != 'sys') {
+        if ($module_name != 'system') {
             $list = DdAddons::findOne(['identifie' => $module_name]);
             if (!$list) {
                 throw new HttpException('400', '扩展功能不存在！');
