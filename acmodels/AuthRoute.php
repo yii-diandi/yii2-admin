@@ -19,7 +19,6 @@ use diandi\admin\components\Configs;
  * @property int           $route_type
  * @property string|null   $description
  * @property string|null   $title
- * @property int|null      $pid
  * @property resource|null $data
  * @property string|null   $module_name
  * @property int|null      $created_at
@@ -44,7 +43,7 @@ class AuthRoute extends \yii\db\ActiveRecord
     {
         return [
             [['route_name', 'item_id', 'name', 'is_sys'], 'required'],
-            [['is_sys', 'route_type', 'pid', 'created_at', 'updated_at', 'item_id'], 'integer'],
+            [['is_sys', 'route_type',  'created_at', 'updated_at', 'item_id'], 'integer'],
             [['description', 'data'], 'string'],
             [['name', 'title', 'route_name'], 'string', 'max' => 64],
             [['module_name'], 'string', 'max' => 50],
@@ -85,7 +84,6 @@ class AuthRoute extends \yii\db\ActiveRecord
             'route_type' => 'Route Type',
             'description' => 'Description',
             'title' => 'Title',
-            'pid' => 'Pid',
             'data' => 'Data',
             'module_name' => 'Module Name',
             'created_at' => 'Created At',

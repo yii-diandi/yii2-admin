@@ -38,7 +38,6 @@ class Route extends \diandi\admin\BaseObject
 
     public $item_id;
 
-    public $pid;
 
     public $module_name;
     /**
@@ -84,7 +83,6 @@ class Route extends \diandi\admin\BaseObject
         $this->_item = $item;
         if ($item !== null) {
             $this->data = $item->data;
-            $this->pid = $item->pid;
             $this->item_id = $item->item_id;
             $this->title = $item->title;
             $this->id = $item->id;
