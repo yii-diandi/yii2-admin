@@ -203,7 +203,7 @@ class Assignment extends \diandi\admin\BaseObject
 
         // $group = AuthAssignmentGroup::find()->where(['user_id' => $this->id])->select(['*','item_name as name'])->asArray()->all();
         
-        // $assigned = [];
+         $assigned = [];
         // foreach ($group as $key => $item) {
         //     $assigned['role'][$item->group_id] = $item;
         //     unset($available['role'][$item->group_id]);
