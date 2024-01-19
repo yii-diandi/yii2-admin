@@ -1235,7 +1235,7 @@ class DbManager extends \yii\rbac\DbManager
                 ])->execute();
             unset($this->_checkAccessAssignments[(string) $userId]);
         } catch (\Exception $e) {
-            throw new InvalidCallException($e->message);
+            throw new InvalidCallException($e->getMessage());
         }
 
         return $assignment;
