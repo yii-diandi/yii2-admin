@@ -38,9 +38,6 @@ use yii\rbac\Rule;
  * You may change the names of the three tables used to store the authorization data by setting [[\yii\rbac\DbManager::$itemTable]],
  * [[\yii\rbac\DbManager::$itemChildTable]] and [[\yii\rbac\DbManager::$assignmentTable]].
  *
- * @author Misbahul D Munir <misbahuldmunir@gmail.com>
- *
- * @since 1.0
  */
 class DbManager extends \yii\rbac\DbManager
 {
@@ -465,7 +462,11 @@ class DbManager extends \yii\rbac\DbManager
         $row = (new Query())->from($this->routeTable)
             ->where($where)
             ->one($this->db);
-
+        Yii::info([
+            'sql'=>(new Query())->from($this->routeTable)
+                ->where($where)->createCommand()->getRawSql(),
+            'row'=>$row
+        ],'getRoute');
         if ($row === false) {
             return null;
         }
@@ -1280,20 +1281,32 @@ class DbManager extends \yii\rbac\DbManager
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
+        Yii::info('准备校验权限','checkAccess');
         if (isset($this->_checkAccessAssignments[(string) $userId])) {
+            Yii::info('准备校验权限-0','checkAccess');
+
             $assignments = $this->_checkAccessAssignments[(string) $userId];
         } else {
+            Yii::info('准备校验权限-1','checkAccess');
+
             $assignments = $this->getAssignments($userId);
             $this->_checkAccessAssignments[(string) $userId] = $assignments;
         }
+        Yii::info('准备校验权限-2','checkAccess');
+
         if ($this->hasNoAssignments($assignments)) {
+            Yii::info('准备校验权限-3','checkAccess');
+
             return false;
         }
 
         $this->loadFromCache();
         if ($this->items !== null) {
+            Yii::info('准备校验权限-4','checkAccess');
+
             return $this->checkAccessFromCache($userId, $permissionName, $params, $assignments);
         }
+        Yii::info('准备校验权限-5','checkAccess');
 
         return $this->checkAccessRecursiveAll($userId, $permissionName, $params, $assignments, 2);
     }
@@ -1389,10 +1402,12 @@ class DbManager extends \yii\rbac\DbManager
 
     protected function checkAccessRecursiveAll($user, $itemName, $params, $assignments, $parent_type)
     {
-        loggingHelper::writeLog('yii2-admin', 'DbManager', '权限校验日志', ['user' => $user, 'itemName' => $itemName, 'params' => $params, 'assignments' => $assignments, 'parent_type' => $parent_type]);
+        Yii::info(['user' => $user, 'itemName' => $itemName, 'params' => $params, 'assignments' => $assignments, 'parent_type' => $parent_type],'checkAccessRecursiveAll');
         if (strpos($itemName, '/') !== false) {
             // 校验路由权限是否存在，不存在就没有权限
             if (($item = $this->getRoute($itemName)) === null && ($item = $this->getRoute($itemName, 2)) === null) {
+                Yii::info('checkAccessRecursiveAll-0','checkAccessRecursiveAll');
+
                 return false;
             }
         } else {
@@ -1403,11 +1418,15 @@ class DbManager extends \yii\rbac\DbManager
                 // 规则
                 // 检测权限是否存在
                 if (($item = $this->getItem($itemName)) === null) {
+                    Yii::info('checkAccessRecursiveAll-1','checkAccessRecursiveAll');
+
                     return false;
                 }
             } elseif ($parent_type == 2) {
                 // 用户组
                 if (($item = $this->getGroup($itemName)) === null && ($item = $this->getGroup($itemName, 1)) === null) {
+                    Yii::info('checkAccessRecursiveAll-2','checkAccessRecursiveAll');
+
                     return false;
                 }
 
@@ -1416,22 +1435,29 @@ class DbManager extends \yii\rbac\DbManager
                 $groupsList = AuthAssignmentGroup::find()->where(['user_id' => $user])->select('item_name')->column();
 
                 if (!in_array($itemName, $groupsList) && !empty($groupsList)) {
+                    Yii::info('checkAccessRecursiveAll-3','checkAccessRecursiveAll');
+
                     return false;
                 }
             } elseif ($parent_type == 3) {
                 if (($item = $this->getItem($itemName)) === null) {
+                    Yii::info('checkAccessRecursiveAll-4','checkAccessRecursiveAll');
+
                     return false;
                 }
             }
         }
-
         Yii::debug($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
 
         if (!$this->executeRule($user, $item, $params)) {
+            Yii::info('checkAccessRecursiveAll-5','checkAccessRecursiveAll');
+
             return false;
         }
 
         if (isset($assignments[$itemName]) || in_array($itemName, $this->defaultRoles)) {
+            Yii::info('checkAccessRecursiveAll-6','checkAccessRecursiveAll');
+
             return true;
         }
 
@@ -1441,11 +1467,14 @@ class DbManager extends \yii\rbac\DbManager
             ->from($this->itemChildTable)
             ->where(['child' => $itemName])
             ->all($this->db);
+        Yii::info('checkAccessRecursiveAll-7','checkAccessRecursiveAll');
+
         foreach ($parents as $parent) {
             if ($this->checkAccessRecursiveAll($user, $parent['parent'], $params, $assignments, $parent['parent_type'])) {
                 return true;
             }
         }
+        Yii::info('checkAccessRecursiveAll-8','checkAccessRecursiveAll');
 
         return false;
     }

@@ -33,8 +33,8 @@ class PermissionController extends ItemController
 
     public function actions()
     {
-        $this->module_name =  Yii::$app->request->get('module_name','system');
-        $this->is_sys =  $this->module_name === 'system'?1:0;
+        $this->module_name =  Yii::$app->request->get('module_name','sys');
+        $this->is_sys =  $this->module_name === 'sys'?1:0;
     }
 
     /**

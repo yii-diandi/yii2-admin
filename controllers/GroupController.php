@@ -30,7 +30,7 @@ class GroupController extends BaseController
 {
     public $is_sys = 0; //是否是系统
 
-    public $module_name = 'system';
+    public $module_name = 'sys';
 
     /**
      * {@inheritdoc}
@@ -50,8 +50,8 @@ class GroupController extends BaseController
 
     public function actions()
     {
-        $this->module_name = Yii::$app->request->get('module_name', 'system');
-        $this->is_sys = $this->module_name === 'system' ? 1 : 0;
+        $this->module_name = Yii::$app->request->get('module_name', 'sys');
+        $this->is_sys = $this->module_name === 'sys' ? 1 : 0;
     }
 
     /**

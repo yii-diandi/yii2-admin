@@ -20,9 +20,6 @@
     "require-dev": {
         "yiisoft/yii2-codeception": "~2.0"
     },
-    "suggest": {
-        "yiisoft/yii2-bootstrap": "Used when using layout 'left-menu', 'right-menu' or 'top-menu'"
-    },
     "autoload": {
         "psr-4": {
             "diandi\\admin\\": ""
@@ -31,10 +28,6 @@
     "extra": {
         "branch-alias": {
             "dev-master": "2.0.0.x-dev"
-        },
-        "asset-installer-paths": {
-            "npm-asset-library": "vendor/npm",
-            "bower-asset-library": "vendor/bower"
         }
     }
 }

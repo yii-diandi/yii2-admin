@@ -111,22 +111,28 @@ class Helper
      */
     public static function checkRoute($route, $params = [], $user = null)
     {
-        
+        Yii::debug('checkRoute start','checkRoute');
         $config = Configs::instance();
         $r = static::normalizeRoute($route, $config->advanced);
         if ($config->onlyRegisteredRoute && !isset(static::getRegisteredRoutes()[$r])) {
             return true;
         }
 
-       
         if ($user === null) {
             $user = Yii::$app->getUser();
         }
         $userId = $user instanceof User ? $user->getId() : $user;
         if ($config->strict) {
+            Yii::debug('strict is true','checkRoute');
+
+            Yii::info([
+                'r'=> $r,
+                'params'=> $params
+            ],'checkRoute');
             if ($user->can($r, $params)) {
                 return true;
             }
+            Yii::debug('can is false','checkRoute');
 
             while (($pos = strrpos($r, '/')) > 0) {
                 $r = substr($r, 0, $pos);
@@ -134,8 +140,12 @@ class Helper
                     return true;
                 }
             }
+            Yii::debug('checkRoute-log');
+
             return $user->can('/*', $params);
         } else {
+            Yii::debug('strict is false','checkRoute');
+
             $routes = static::getRoutesByUser($userId);
            
             if (isset($routes[$r])) {

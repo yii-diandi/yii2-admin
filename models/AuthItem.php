@@ -243,7 +243,6 @@ class AuthItem extends Model
     {
         $manager = Configs::authManager();
         $success = 0;
-
         if ($this->_item) {
             if (key_exists('route', $items) && is_array($items['route'])) {
 
@@ -435,15 +434,16 @@ class AuthItem extends Model
             $available['route'][$id] = $val;
         }
 
+
         $all = $available;
 
         foreach ($manager->getChildren($this->_item->id) as $item => $val) {
             $key = $auth_type[$val->permission_type];
             $id = $val->item_id;
             $assigned[$key][$id] = $val;
-
             unset($available[$key][$id]);
         }
+        
         foreach ($manager->getItemChildren($this->_item->id) as $item => $val) {
             $id = $val->item_id;
             $key = $auth_type[$val->child_type];
