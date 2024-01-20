@@ -45,7 +45,6 @@ use yii\helpers\Inflector;
  */
 class Module extends \yii\base\Module
 {
-
     /**
      * @inheritdoc
      */
