@@ -213,7 +213,6 @@ class DbManager extends \yii\rbac\DbManager
         foreach ($query->all($this->db) as $row) {
             $items[$row['name']] = $this->populateRoute($row);
         }
-
         return $items;
     }
 
@@ -561,7 +560,6 @@ class DbManager extends \yii\rbac\DbManager
             ->where($where);
 
         $items = [];
-
         foreach ($query->all($this->db) as $row) {
             $items[$row['id']] = $this->populateItem($row);
         }
@@ -585,6 +583,7 @@ class DbManager extends \yii\rbac\DbManager
         return new Route([
             'id' => $row['id'],
             'item_id' => $row['item_id'],
+            'route_type'=> $row['route_type'],
             'name' => $row['name'],
             'pid' => $row['pid'],
             'module_name' => $row['module_name'],
@@ -827,7 +826,6 @@ class DbManager extends \yii\rbac\DbManager
     public function removeChild($parent, $child)
     {
         $parent_id = $parent->item_id;
-
         $child_type = $child->child_type;
         if ($child instanceof Item) {
             $item_id = $child->id;
@@ -1007,6 +1005,7 @@ class DbManager extends \yii\rbac\DbManager
                     'id' => $row['id'],
                     'name' => $row['name'],
                     'is_sys' => $row['is_sys'],
+                    'module_name' => $row['module_name'],
                     'parent_type' => 3,
                     'permission_type' => $row['permission_type'],
                     'permission_level' => $row['permission_level'],
@@ -1025,6 +1024,7 @@ class DbManager extends \yii\rbac\DbManager
                     'id' => $row['id'],
                     'name' => $row['name'],
                     'item_id' => $row['item_id'],
+                    'module_name' => $row['module_name'],
                     'is_sys' => $row['is_sys'],
                     'child_type' => isset($row['child_type']) ? $row['child_type'] : 0,
                     'description' => $row['description'],
@@ -1038,6 +1038,7 @@ class DbManager extends \yii\rbac\DbManager
                     'id' => $row['id'],
                     'item_id' => $row['item_id'],
                     'name' => $row['name'],
+                    'module_name' => $row['module_name'],
                     // 'type' => $row['type'],
                     'is_sys' => $row['is_sys'],
                     'child_type' => isset($row['child_type']) ? $row['child_type'] : 0,
@@ -1235,7 +1236,7 @@ class DbManager extends \yii\rbac\DbManager
                 ])->execute();
             unset($this->_checkAccessAssignments[(string) $userId]);
         } catch (\Exception $e) {
-            throw new InvalidCallException($e->getMessage());
+            throw new InvalidCallException($e->message);
         }
 
         return $assignment;

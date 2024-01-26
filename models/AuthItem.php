@@ -305,28 +305,32 @@ class AuthItem extends Model
         $manager = Configs::authManager();
         $success = 0;
         if ($this->_item !== null) {
-            if ($items['route']) {
+            if (array_key_exists('route',$items)) {
                 foreach ($items['route'] as $name) {
                     $child = $manager->getRoutePermission($name, 3);
-                    try {
-                        $manager->removeChild($this->_item, $child);
-                        ++$success;
-                    } catch (\Exception $exc) {
-                        Yii::error($exc->getMessage(), __METHOD__);
-                        throw new InvalidArgumentException($exc->getMessage());
+                    if ($child){
+                        try {
+                            $manager->removeChild($this->_item, $child);
+                            ++$success;
+                        } catch (\Exception $exc) {
+                            Yii::error($exc->getMessage(), __METHOD__);
+                            throw new InvalidArgumentException($exc->getMessage());
+                        }
                     }
                 }
             }
 
-            if ($items['permission']) {
+            if (array_key_exists('permission',$items)) {
                 foreach ($items['permission'] as $name) {
                     $child = $manager->getPermission($name);
-                    try {
-                        $manager->removeChild($this->_item, $child);
-                        ++$success;
-                    } catch (\Exception $exc) {
-                        Yii::error($exc->getMessage(), __METHOD__);
-                        throw new InvalidArgumentException($exc->getMessage());
+                    if ($child){
+                        try {
+                            $manager->removeChild($this->_item, $child);
+                            ++$success;
+                        } catch (\Exception $exc) {
+                            Yii::error($exc->getMessage(), __METHOD__);
+                            throw new InvalidArgumentException($exc->getMessage());
+                        }
                     }
                 }
             }
@@ -414,26 +418,22 @@ class AuthItem extends Model
         // 获取已分配
         $assigned = [];
         $auth_type = $manager->auth_type;
-
         if ($this->permission_type == Item::TYPE_PERMISSION) {
             foreach ($manager->getRoles($this->is_sys) as $name => $val) {
                 $id = $val->id;
                 $available['role'][$id] = $val;
             }
         }
-
         foreach ($manager->getPermissions($this->is_sys) as $name => $val) {
             $key = $auth_type[$val->permission_type];
             $id = $val->id;
             $available[$key][$id] = $val;
         }
-
         // 路由授权
         foreach ($manager->getRoutes($this->is_sys) as $name => $val) {
             $id = $val->id;
             $available['route'][$id] = $val;
         }
-
 
         $all = $available;
 
@@ -451,7 +451,6 @@ class AuthItem extends Model
             unset($available[$key][$id]);
         }
         unset($available[$this->id], $all[$this->id]);
-
         return [
             'all' => $all,
             'available' => $available,

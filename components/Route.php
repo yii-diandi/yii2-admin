@@ -45,6 +45,9 @@ class Route extends BaseObject
     public $is_sys;
     
     public $child_type;
+
+    public $route_type;
+
     
     public $parent_type;
     /**

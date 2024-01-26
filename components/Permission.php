@@ -33,11 +33,13 @@ class Permission extends Item
     public $permission_type = self::TYPE_PERMISSION;
     
     public $item_id;
-    
+
+    public $child_type;
+
     public $is_sys;
     
     public $id;
     
-    public $module_name = 'sys';
+    public $module_name = 'system';
     
 }
