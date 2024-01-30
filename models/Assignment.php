@@ -12,6 +12,7 @@ namespace diandi\admin\models;
 use diandi\admin\components\Configs;
 use diandi\admin\components\Helper;
 use Yii;
+use yii\base\ErrorException;
 
 /**
  * Description of Assignment.
@@ -132,7 +133,7 @@ class Assignment extends \diandi\admin\BaseObject
                     $manager->revokeGroup($item, $this->id);
                     ++$success;
                 } catch (\Exception $exc) {
-                    p($exc->getMessage());
+                    throw new ErrorException($exc->getMessage(),400,1,$exc->getFile(),$exc->getLine());
                     Yii::error($exc->getMessage(), __METHOD__);
                 }
             }
@@ -146,7 +147,7 @@ class Assignment extends \diandi\admin\BaseObject
                     $manager->revokeGroup($item, $this->id);
                     ++$success;
                 } catch (\Exception $exc) {
-                    p($exc->getMessage());
+                    throw new ErrorException($exc->getMessage(),400,1,$exc->getFile(),$exc->getLine());
                     Yii::error($exc->getMessage(), __METHOD__);
                 }
             }
@@ -160,7 +161,8 @@ class Assignment extends \diandi\admin\BaseObject
                     $manager->revoke($item, $this->id);
                     ++$success;
                 } catch (\Exception $exc) {
-                    p($exc->getMessage());
+
+                    throw new ErrorException($exc->getMessage(),400,1,$exc->getFile(),$exc->getLine());
                     Yii::error($exc->getMessage(), __METHOD__);
                 }
             }

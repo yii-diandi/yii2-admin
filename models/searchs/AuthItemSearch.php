@@ -79,7 +79,6 @@ class AuthItemSearch extends AuthItemModel
             ->andFilterWhere(['like', 'rule_name', $this->rule_name])
             ->andFilterWhere(['like', 'parent_id', $this->parent_id])
             ->andFilterWhere(['like', 'data', $this->data]);
-
         $count = $query->count();
 
         $list = $query->asArray()->all();

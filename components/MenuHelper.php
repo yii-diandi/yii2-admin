@@ -10,6 +10,7 @@
 namespace diandi\admin\components;
 
 use common\helpers\loggingHelper;
+use diandi\admin\acmodels\AuthUserGroup;
 use diandi\admin\models\Menu;
 use Yii;
 use yii\caching\TagDependency;
@@ -89,7 +90,8 @@ class MenuHelper
 
             if ($userId !== null) {
                 // 获取所有的权限
-                foreach ($manager->getPermissionsByUser($userId) as $name => $value) {
+                foreach ($manager->getPermissionsByUser($userId) as $item_id => $value) {
+                    $name = $value->name;
                     if ($name[0] === '/') {
                         if (substr($name, -2) === '/*') {
                             $name = substr($name, 0, -1);
@@ -98,8 +100,11 @@ class MenuHelper
                     }
                 }
             }
+
+            $authGroups = AuthUserGroup::find()->indexBy('name')->select('item_id')->column();
+
             foreach ($manager->defaultRoles as $role) {
-                foreach ($manager->getPermissionsByRole($role) as $name => $value) {
+                foreach ($manager->getPermissionsByRoleId($authGroups[$role]) as $name => $value) {
                     if ($name[0] === '/') {
                         if (substr($name, -2) === '/*') {
                             $name = substr($name, 0, -1);
@@ -109,10 +114,8 @@ class MenuHelper
                 }
             }
             $routes = array_unique($routes);
-
             sort($routes);
             $prefix = '\\';
-
             foreach ($routes as $route) {
                 if (strpos($route, $prefix) !== 0) {
                     if (substr($route, -1) === '/') {
@@ -135,7 +138,6 @@ class MenuHelper
                     $assigned = array_merge($assigned, $query->params([':filter' => $filter])->column());
                 }
             }
-
             $assigned = static::requiredParent($assigned, $menus);
 
             if ($cache !== null) {
