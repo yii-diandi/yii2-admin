@@ -14,6 +14,7 @@ use diandi\admin\acmodels\AuthItem;
 use diandi\admin\acmodels\AuthItemChild;
 use diandi\admin\acmodels\AuthRoute;
 use diandi\admin\acmodels\AuthUserGroup;
+use diandi\admin\models\AuthAssignment;
 use diandi\admin\models\AuthAssignmentGroup;
 use Yii;
 use yii\base\InvalidArgumentException;
@@ -829,18 +830,14 @@ class DbManager extends \yii\rbac\DbManager
     public function removeRoute($item)
     {
         if (!$this->supportsCascadeUpdate()) {
-            $this->db->createCommand()
-                ->delete($this->itemChildTable, ['or', '[[parent]]=:name', '[[child]]=:name'], [':name' => $item->name])
-                ->execute();
-
-            $this->db->createCommand()
-                ->delete($this->assignmentTable, ['item_name' => $item->name])
-                ->execute();
+            $itemChild = AuthItemChild::findOne(['or', '[[parent]]=:name', '[[item]]=:name'], [':name' => $item->name]);
+            $itemChild->delete();
+            $assignment  = AuthAssignment::findOne(['item_name' => $item->name]);
+            $assignment->delete();
         }
 
-        $this->db->createCommand()
-            ->delete($this->routeTable, ['name' => $item->name])
-            ->execute();
+        $route = AuthRoute::find()->where(['name' => $item->name])->one();
+        $route->delete();
 
         $this->invalidateCache();
 
@@ -939,17 +936,47 @@ class DbManager extends \yii\rbac\DbManager
             $item->updatedAt = $time;
         }
 
-        $Re = $this->db->createCommand()
-            ->insert($this->routeTable, [
-                'name' => $item->name,
-                'pid' => $item->pid,
-                'module_name' => $item->module_name,
-                'is_sys' => $item->is_sys,
-                'description' => $item->description,
-                'data' => $item->data === null ? null : serialize($item->data),
-                'created_at' => $item->createdAt,
-                'updated_at' => $item->updatedAt,
-            ])->execute();
+        $AuthRoute  = new AuthRoute();
+        $route_name = str_replace('/','-',ltrim($item->name,'/'));
+        $exists = $AuthRoute->find()->where(['route_name'=>$route_name])->exists();
+        if ($exists){
+            $route_name .= '-'.'route';
+        }
+
+        $route_type = 1;
+        //        路由级别:0: 目录1: 页面 2: 按钮 3: 接口
+        if (strpos($item->name, "vue") !== false) {
+            $route_type = 1;
+        } else if (strpos($item->name, "create") !== false || strpos($item->name, "update") !== false) {
+            $route_type = 2;
+        }else if (strpos($item->name, "*")) {
+            $route_type = 0;
+        }else{
+            $route_type = 3;
+        }
+
+        [$module_name,] = explode('/',ltrim($item->name,'/'));
+        $modules = Yii::$app->modules;
+
+        if (!in_array($module_name,$modules)){
+            $module_name = 'system';
+        }
+        if(!($AuthRoute->load([
+                 'name' => $item->name,
+                 'route_name'=>$route_name,
+                 'pid' => $item->pid,
+                 'route_type'=>$route_type,//1页面2按钮3接口
+                 'item_id'=>0,
+                 'module_name' => $module_name,
+                 'is_sys' => $module_name === 'sysytem'?1:0,
+                 'description' => $item->description,
+                 'data' => $item->data === null ? null : serialize($item->data),
+                 'created_at' => $item->createdAt,
+                 'updated_at' => $item->updatedAt,
+             ],'') && $AuthRoute->save())){
+             $msg = ErrorsHelper::getModelError($AuthRoute);
+             throw new InvalidArgumentException($msg);
+         }
 
         $this->invalidateCache();
 
@@ -1430,15 +1457,18 @@ class DbManager extends \yii\rbac\DbManager
         $assignment = array_merge($assignment1, $assignment2);
 
         $childrenList = $this->getChildrenListIndexId();
+
         $result = [];
         foreach ($assignment as $item_id) {
-//            echo $roleName.PHP_EOL;
+//            echo $item_id.PHP_EOL;
             $this->getChildrenRecursiveByItemId($item_id, $childrenList, $result);
+//            print_r($result);
         }
 
         if (empty($result)) {
             return [];
         }
+
         $query = (new Query())->from($this->routeTable)->where([
             // 'type' => Item::TYPE_PERMISSION,
             'item_id' => array_keys($result),
@@ -1459,7 +1489,6 @@ class DbManager extends \yii\rbac\DbManager
 //            $permissions[$row['item_id']] = $this->populateItem($row, 'Role');
             $permissions[$row['item_id']] = $this->populateItem($row, 'routeTable');
         }
-
         yii::$app->cache->set($cacheKey, $permissions);
         return $permissions;
     }

@@ -113,7 +113,9 @@ class MenuHelper
                     }
                 }
             }
+
             $routes = array_unique($routes);
+
             sort($routes);
             $prefix = '\\';
             foreach ($routes as $route) {
@@ -126,12 +128,14 @@ class MenuHelper
                     }
                 }
             }
+
             $assigned = [];
             $query = Menu::find()->select(['id'])->orderBy('order')->asArray();
 
             if (count($filter2)) {
                 $assigned = $query->where(['route' => $filter2])->andWhere($menuwhere)->column();
             }
+
             if (count($filter1)) {
                 $query->where('route like :filter')->andWhere($menuwhere);
                 foreach ($filter1 as $filter) {
@@ -150,7 +154,9 @@ class MenuHelper
         $key = [__METHOD__, $assigned, $root];
 
         if ($refresh || $callback !== null || $cache === null || (($result = $cache->get($key)) === false)) {
+
             $result = static::normalizeMenu($assigned, $menus, $callback, $root);
+
             if ($cache !== null && $callback === null) {
                 $cache->set($key, $result, $config->cacheDuration, new TagDependency([
                     'tags' => Configs::CACHE_TAG,

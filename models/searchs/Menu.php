@@ -60,7 +60,8 @@ class Menu extends MenuModel
             ->from(MenuModel::tableName() . ' t')
             ->joinWith(['menuParent' => function ($q) {
                 $q->from(MenuModel::tableName() . ' parent');
-            }]);
+            }])
+            ->joinWith(['routeItem']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

@@ -9,7 +9,13 @@
 
 namespace diandi\admin\models;
 
+use admin\models\DdApiAccessToken;
+use common\models\ActionLog;
+use common\models\UserStore;
 use diandi\addons\models\AddonsUser;
+use diandi\addons\models\BlocStore;
+use diandi\addons\models\StoreLabelLink;
+use diandi\addons\models\UserBloc;
 use diandi\admin\components\Configs;
 use diandi\admin\components\Helper;
 use diandi\admin\components\UserStatus;
@@ -88,6 +94,25 @@ class User extends ActiveRecord implements IdentityInterface
                 'updated_at',
             ], 'number'],
         ];
+    }
+
+    /**
+     * 用户删除处理关联数据
+     * @return void
+     */
+    public function beforeDelete()
+    {
+        $where['user_id'] = $user_id;
+        AuthAssignmentGroup::deleteAll($where);
+        AddonsUser::deleteAll($where);
+        DdApiAccessToken::deleteAll($where);
+        UserBloc::deleteAll($where);
+        UserStore::deleteAll($where);
+        ActionLog::deleteAll($where);
+        //多个用户会共同管理一个商户所以不需要操作删除
+//        BlocStore::deleteAll(['store_id' => $this->store_id]);
+//        StoreLabelLink::deleteAll(['store_id' => $this->store_id]);
+        parent::beforeDelete();
     }
 
     /**
