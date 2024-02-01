@@ -260,7 +260,12 @@ class Menu extends \yii\db\ActiveRecord
      */
     public function getMenuParent()
     {
-        return $this->hasOne(Menu::className(), ['id' => 'parent']);
+        return $this->hasOne(Menu::class, ['id' => 'parent']);
+    }
+
+    public function getRouteItem()
+    {
+        return $this->hasOne(AuthRoute::class, ['name' => 'route']);
     }
 
     /**
@@ -270,7 +275,7 @@ class Menu extends \yii\db\ActiveRecord
      */
     public function getMenus()
     {
-        return $this->hasMany(Menu::className(), ['parent' => 'id']);
+        return $this->hasMany(Menu::class, ['parent' => 'id']);
     }
 
     private static $_routes;
