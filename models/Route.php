@@ -373,7 +373,7 @@ class Route extends \diandi\admin\BaseObject
      * @param mixed            $type
      * @param string           $id
      * @param \yii\base\Module $module
-     * @param string           $result
+     * @param string|array           $result
      */
     protected function getControllerActions($type, $id, $module, &$result)
     {
