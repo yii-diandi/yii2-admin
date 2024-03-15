@@ -59,7 +59,8 @@ class BizRule extends Model
         $included = !($this->load($params) && $this->validate() && trim($this->name) !== '');
         foreach ($authManager->getRules() as $name => $item) {
             if ($name != RouteRule::RULE_NAME && ($included || stripos($item->name, $this->name) !== false)) {
-                $models[$name] = new MBizRule($item);
+//                $models[$name] = new MBizRule($item);
+                $models[] = new MBizRule($item);
             }
         }
 

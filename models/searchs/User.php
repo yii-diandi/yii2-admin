@@ -73,6 +73,8 @@ class User extends UserModel
             'UserGroup.group_id' => $this->group_id,
         ]);
 
+
+
         $query->andFilterWhere(['like', 'username', $this->username]);
 
         return $dataProvider;

@@ -45,7 +45,7 @@ class AuthItem extends \yii\db\ActiveRecord
             [['name', 'is_sys'], 'required'],
             [['is_sys', 'rule_name', 'parent_id', 'created_at', 'updated_at', 'permission_type', 'permission_level'], 'integer'],
             [['description', 'data'], 'string'],
-            [['name'], 'string', 'max' => 64],
+            [['name'], 'string', 'max' => 100],
             [['module_name'], 'string', 'max' => 50],
         ];
     }

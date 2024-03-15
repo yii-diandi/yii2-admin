@@ -274,7 +274,6 @@ class Route extends \diandi\admin\BaseObject
         if ($cache === null || ($result = $cache->get($key)) === false) {
             $result = [];
             $this->getRouteRecursive($module, $result);
-
             if ($cache !== null) {
                 $cache->set($key, $result, Configs::instance()->cacheDuration, new TagDependency([
                     'tags' => self::CACHE_TAG,
@@ -314,7 +313,7 @@ class Route extends \diandi\admin\BaseObject
             $all = '/'.ltrim($module->uniqueId.'/*', '/');
             $result[$all] = $all;
         } catch (\Exception $exc) {
-            Yii::error($exc->getMessage(), __METHOD__);
+            Yii::error(['line'=>$exc->getLine(),'file'=>$exc->getFile(),'message'=>$exc->getMessage()], __METHOD__);
             throw new InvalidArgumentException($exc->getMessage());
         }
         Yii::endProfile($token, __METHOD__);
@@ -373,7 +372,7 @@ class Route extends \diandi\admin\BaseObject
      * @param mixed            $type
      * @param string           $id
      * @param \yii\base\Module $module
-     * @param string|array           $result
+     * @param string           $result
      */
     protected function getControllerActions($type, $id, $module, &$result)
     {
