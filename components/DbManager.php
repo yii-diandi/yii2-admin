@@ -945,18 +945,22 @@ class DbManager extends \yii\rbac\DbManager
 
         $route_type = 1;
         //        路由级别:0: 目录1: 页面 2: 按钮 3: 接口
-        if (strpos($item->name, "vue") !== false) {
-            $route_type = 1;
-        } else if (strpos($item->name, "create") !== false || strpos($item->name, "update") !== false) {
-            $route_type = 2;
-        }else if (strpos($item->name, "*")) {
-            $route_type = 0;
+        if (str_contains($route, "vue")) {
+            if (str_contains($route, "create") || str_contains($route, "update")) {
+                $route_type = 2; //按钮
+            }else{
+                $route_type = 1; //页面
+            }
         }else{
-            $route_type = 3;
+            if (strpos($route, "*")) {
+                $route_type = 0;//目录
+            }else{
+                $route_type = 3;//接口
+            }
         }
 
         [$module_name,] = explode('/',ltrim($item->name,'/'));
-        $modules = Yii::$app->modules;
+        $modules = array_keys(Yii::$app->modules);
 
         if (!in_array($module_name,$modules)){
             $module_name = 'system';
