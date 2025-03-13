@@ -26,7 +26,7 @@ class UserGroupSearch extends UserGroup
     public function rules()
     {
         return [
-            [['id', 'created_at', 'updated_at', 'store_id', 'bloc_id'], 'integer'],
+            [['id', 'created_at', 'updated_at', 'store_id', 'bloc_id','type'], 'integer'],
             [['name', 'description'], 'safe'],
         ];
     }
@@ -63,7 +63,9 @@ class UserGroupSearch extends UserGroup
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description]);
-
+        if ($this->type){
+            $query->andFilterWhere(['type' => $this->type]);
+        }
         $count = $query->count();
         $pageSize =\Yii::$app->request->input('pageSize',10);
         $page = \Yii::$app->request->input('page',1);
