@@ -25,7 +25,7 @@ class User extends UserModel
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'status', 'created_at', 'updated_at','department_id'], 'integer'],
             [['username', 'email', 'mobile'], 'safe'],
         ];
     }
@@ -67,6 +67,7 @@ class User extends UserModel
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
+            'department_id'=>$this->department_id,
             'id' => $this->user_ids,
             'mobile' => $this->mobile,
             'email' => $this->email,
