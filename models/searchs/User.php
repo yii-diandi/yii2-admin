@@ -25,7 +25,7 @@ class User extends UserModel
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at','department_id'], 'integer'],
+            [['id', 'status', 'created_at', 'updated_at','department_id','is_super_admin'], 'integer'],
             [['username', 'email', 'mobile'], 'safe'],
         ];
     }
@@ -74,7 +74,9 @@ class User extends UserModel
             'UserGroup.group_id' => $this->group_id,
         ]);
 
-
+        if (isset($this->is_super_admin)){
+            $query->andFilterWhere(['is_super_admin' => $this->is_super_admin]);
+        }
 
         $query->andFilterWhere(['like', 'username', $this->username]);
 
