@@ -63,7 +63,7 @@ class UserGroupSearch extends UserGroup
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description]);
-        if ($this->type){
+        if (isset($this->type)){
             $query->andFilterWhere(['type' => $this->type]);
         }
         $count = $query->count();
