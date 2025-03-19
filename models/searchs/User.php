@@ -77,7 +77,6 @@ class User extends UserModel
         if (isset($this->is_super_admin)){
             $query->andFilterWhere(['is_super_admin' => $this->is_super_admin]);
         }
-
         $query->andFilterWhere(['like', 'username', $this->username]);
 
         return $dataProvider;
