@@ -89,6 +89,7 @@ class User extends ActiveRecord implements IdentityInterface
             [[
                 'store_id',
                 'bloc_id',
+                'is_super_admin',
                 'parent_bloc_id',
                 'created_at',
                 'updated_at',
