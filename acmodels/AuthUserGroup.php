@@ -42,7 +42,7 @@ class AuthUserGroup extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'type'], 'required'],
-            [['type', 'created_at', 'updated_at','item_id'], 'integer'],
+            [['type', 'created_at', 'updated_at','item_id','pid'], 'integer'],
             [['description'], 'string'],
             [['name'], 'string', 'max' => 64],
             [['module_name'], 'string', 'max' => 50],
