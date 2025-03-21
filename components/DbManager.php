@@ -846,7 +846,7 @@ class DbManager extends \yii\rbac\DbManager
 
     public function removeChild($parent, $child)
     {
-        $parent_id = $parent->item_id;
+        $parent_id = $parent->parent_id;
         $child_type = $child->child_type;
         if ($child instanceof Item) {
             $item_id = $child->id;
@@ -945,14 +945,14 @@ class DbManager extends \yii\rbac\DbManager
 
         $route_type = 1;
         //        路由级别:0: 目录1: 页面 2: 按钮 3: 接口
-        if (str_contains($route, "vue")) {
-            if (str_contains($route, "create") || str_contains($route, "update")) {
+        if (str_contains($route_name, "vue")) {
+            if (str_contains($route_name, "create") || str_contains($route_name, "update")) {
                 $route_type = 2; //按钮
             }else{
                 $route_type = 1; //页面
             }
         }else{
-            if (strpos($route, "*")) {
+            if (strpos($route_name, "*")) {
                 $route_type = 0;//目录
             }else{
                 $route_type = 3;//接口
@@ -1146,7 +1146,8 @@ class DbManager extends \yii\rbac\DbManager
         $AuthItemChild->load([
             'parent' => $parent->name,
             'item_id' => $child->item_id,
-            'parent_id' => $parent->item_id,
+            'parent_id' => $parent->id,
+            'parent_item_id' => $parent->item_id,
             'child' => $child->name,
             'is_sys' => $child->is_sys,
             'module_name' => $child->module_name,
@@ -1543,13 +1544,14 @@ class DbManager extends \yii\rbac\DbManager
                     return false;
                 }
 
-                // print_r($user);
                 // 查询用户是否有组的权限
-                $groupsList = AuthAssignmentGroup::find()->where(['user_id' => $user])->select('item_name')->column();
+                $groupsArr = AuthAssignmentGroup::find()->where(['user_id' => $user])->select(['item_name','group_id'])->asArray()->one();
+                $group_id = $groupsArr['group_id'];
+                $group_child = AuthItemChild::find()->where(['parent_id' => $group_id])->select(['child'])->column();
+                array_push($group_child, $groupsArr['item_name']);
 
-                if (!in_array($itemName, $groupsList) && !empty($groupsList)) {
+                if (!in_array($itemName, $group_child) && !empty($group_child)) {
                     Yii::info('checkAccessRecursiveAll-3', 'checkAccessRecursiveAll');
-
                     return false;
                 }
             } elseif ($parent_type == 3) {

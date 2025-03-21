@@ -49,7 +49,7 @@ class AuthRoute extends \yii\db\ActiveRecord
             [['route_name', 'item_id', 'name', 'is_sys','module_name'], 'required'],
             [['is_sys', 'route_type',  'created_at', 'updated_at', 'item_id'], 'integer'],
             [['description', 'data'], 'string'],
-            [['name', 'title', 'route_name'], 'string', 'max' => 64],
+            [['name', 'title', 'route_name'], 'string', 'max' => 255],
             [['module_name'], 'string', 'max' => 50],
             [['name'], 'unique'],
         ];
