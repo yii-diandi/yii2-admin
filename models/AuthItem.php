@@ -245,7 +245,6 @@ class AuthItem extends Model
         $success = 0;
         if ($this->_item) {
             if (key_exists('route', $items) && is_array($items['route'])) {
-
                 foreach ($items['route'] as $id) {
                     $child = $manager->getRoutePermission($id, $this->parent_type);
                     try {
