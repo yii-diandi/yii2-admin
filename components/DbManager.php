@@ -1416,7 +1416,7 @@ class DbManager extends \yii\rbac\DbManager
         $query = (new Query())->from($this->itemChildTable);
         $parents = [];
         foreach ($query->all($this->db) as $row) {
-            $parents[$row['parent_id']][] = [
+            $parents[$row['parent_item_id']][] = [
                 'item_id' => $row['item_id'],
                 'child' => $row['child']
             ];
