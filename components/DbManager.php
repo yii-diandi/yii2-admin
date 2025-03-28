@@ -1546,14 +1546,17 @@ class DbManager extends \yii\rbac\DbManager
 
                 // 查询用户是否有组的权限
                 $groupsArr = AuthAssignmentGroup::find()->where(['user_id' => $user])->select(['item_name','group_id'])->asArray()->one();
-                $group_id = $groupsArr['group_id'];
-                $group_child = AuthItemChild::find()->where(['parent_id' => $group_id])->select(['child'])->column();
-                array_push($group_child, $groupsArr['item_name']);
+                if (!empty($groupsArr)) {
+                    $group_id = $groupsArr['group_id'];
+                    $group_child = AuthItemChild::find()->where(['parent_id' => $group_id])->select(['child'])->column();
+                    array_push($group_child, $groupsArr['item_name']);
 
-                if (!in_array($itemName, $group_child) && !empty($group_child)) {
-                    Yii::info('checkAccessRecursiveAll-3', 'checkAccessRecursiveAll');
-                    return false;
+                    if (!in_array($itemName, $group_child) && !empty($group_child)) {
+                        Yii::info('checkAccessRecursiveAll-3', 'checkAccessRecursiveAll');
+                        return false;
+                    }
                 }
+
             } elseif ($parent_type == 3) {
                 if (($item = $this->getItem($itemName)) === null) {
                     Yii::info('checkAccessRecursiveAll-4', 'checkAccessRecursiveAll');
