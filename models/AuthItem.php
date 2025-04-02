@@ -442,7 +442,7 @@ class AuthItem extends Model
             $assigned[$key][$id] = $val;
             unset($available[$key][$id]);
         }
-        
+
         foreach ($manager->getItemChildren($this->_item->id) as $item => $val) {
             $id = $val->item_id;
             $key = $auth_type[$val->child_type];

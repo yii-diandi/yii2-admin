@@ -43,7 +43,7 @@ class UserGroup extends \yii\db\ActiveRecord
         return [
             [['name', 'is_sys'], 'required'],
             ['is_sys', 'in', 'range' => [0, 1]],
-            [['created_at', 'updated_at', 'store_id','type', 'bloc_id', 'item_id', 'is_sys', 'is_default','pid'], 'integer'],
+            [['created_at', 'updated_at', 'store_id', 'bloc_id', 'item_id', 'is_sys', 'is_default'], 'integer'],
             [['description'], 'string'],
             [['bloc_id', 'store_id'], 'default', 'value' => 0],
             ['is_sys', 'default', 'value' => 1],
@@ -160,6 +160,12 @@ class UserGroup extends \yii\db\ActiveRecord
                         $manager->removeChild($this->_item, $child);
                         ++$success;
                     } catch (\Exception $exc) {
+                        print_r([
+                            'line' => $exc->getLine(),
+                            'message' => $exc->getMessage(),
+                            'file' => $exc->getFile(),
+                            'trace' => $exc->getTraceAsString(),
+                        ]);die;
                         Yii::error($exc->getMessage(), __METHOD__);
                         throw new InvalidArgumentException($exc->getMessage());
                     }

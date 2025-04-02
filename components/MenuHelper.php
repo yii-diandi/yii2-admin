@@ -100,7 +100,6 @@ class MenuHelper
                     }
                 }
             }
-
             $authGroups = AuthUserGroup::find()->indexBy('name')->select('item_id')->column();
 
             foreach ($manager->defaultRoles as $role) {
@@ -135,7 +134,6 @@ class MenuHelper
             if (count($filter2)) {
                 $assigned = $query->where(['route' => $filter2])->andWhere($menuwhere)->column();
             }
-
             if (count($filter1)) {
                 $query->where('route like :filter')->andWhere($menuwhere);
                 foreach ($filter1 as $filter) {
@@ -163,7 +161,6 @@ class MenuHelper
                 ]));
             }
         }
-
         return $result;
     }
 

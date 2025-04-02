@@ -11,7 +11,6 @@ namespace diandi\admin\models\searchs;
 
 use common\components\DataProvider\ArrayDataProvider;
 use diandi\admin\models\UserGroup;
-use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 
@@ -20,13 +19,16 @@ use yii\data\Pagination;
  */
 class UserGroupSearch extends UserGroup
 {
+
+    public $is_sys;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'created_at', 'updated_at', 'store_id', 'bloc_id','type'], 'integer'],
+            [['id', 'created_at', 'updated_at', 'store_id', 'bloc_id','is_sys'], 'integer'],
             [['name', 'description'], 'safe'],
         ];
     }
@@ -39,7 +41,7 @@ class UserGroupSearch extends UserGroup
      * @return ActiveDataProvider
      */
     public function search($params)
-   {
+    {
 
         $query = UserGroup::find();
         // add conditions that should always apply here
@@ -63,12 +65,13 @@ class UserGroupSearch extends UserGroup
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description]);
-        if (isset($this->type)){
-            $query->andFilterWhere(['type' => $this->type]);
+
+        if (isset($this->is_sys)){
+            $query->andFilterWhere(['is_sys' => $this->is_sys]);
         }
         $count = $query->count();
-        $pageSize =\Yii::$app->request->input('pageSize',10);
-        $page = \Yii::$app->request->input('page',1);
+        $pageSize = \Yii::$app->request->input('pageSize', 10);
+        $page = \Yii::$app->request->input('page', 1);
         // 使用总数来创建一个分页对象
         $pagination = new Pagination([
             'totalCount' => $count,

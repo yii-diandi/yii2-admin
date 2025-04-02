@@ -357,7 +357,7 @@ class DbManager extends \yii\rbac\DbManager
                 $list = AuthUserGroup::find()->alias('u')->joinWith('childs as c')->where([
                     'u.item_id' => $id,
                     'parent_type' => $parent_type,
-                ])->andWhere($where)->select(['c.child as name', 'u.type', 'c.id', 'c.item_id', 'child_type', 'description', 'created_at', 'updated_at', 'c.item_id'])->asArray()->all();
+                ])->andWhere($where)->select(['c.child as name', 'u.is_sys', 'c.id', 'c.item_id', 'child_type', 'description', 'created_at', 'updated_at', 'c.item_id'])->asArray()->all();
 
                 foreach ($list as $row) {
                     $children[$row['id']] = $this->populateItem($row, 'groupTable');
@@ -846,7 +846,7 @@ class DbManager extends \yii\rbac\DbManager
 
     public function removeChild($parent, $child)
     {
-        $parent_id = $parent->parent_id;
+        $parent_id = $parent->parent_id?:$parent->id;
         $child_type = $child->child_type;
         if ($child instanceof Item) {
             $item_id = $child->id;
@@ -1028,7 +1028,6 @@ class DbManager extends \yii\rbac\DbManager
             'id' => $row['id'],
             'name' => $row['name'],
             'module_name' => $row['module_name'],
-            'type' => $row['type'],
             'is_sys' => $row['is_sys'],
             'item_id' => $row['item_id'],
             'child_type' => 2,
@@ -1143,26 +1142,36 @@ class DbManager extends \yii\rbac\DbManager
         }
 
         $AuthItemChild = new AuthItemChild();
-        $AuthItemChild->load([
-            'parent' => $parent->name,
-            'item_id' => $child->item_id,
-            'parent_id' => $parent->id,
-            'parent_item_id' => $parent->item_id,
-            'child' => $child->name,
-            'is_sys' => $child->is_sys,
-            'module_name' => $child->module_name,
-            'child_type' => $child->child_type,
-            'parent_type' => $child->parent_type,
-        ], '');
-
-        $Res = $AuthItemChild->save();
-        $msg = ErrorsHelper::getModelError($AuthItemChild);
-        if (!empty($msg)) {
-            throw new InvalidCallException($msg);
+        $parent_id = $parent->id;
+        if ($parent instanceof Permission){
+            $parent_id = $parent->item_id;
         }
-        $this->invalidateCache();
+        $exists = $AuthItemChild->find()->where([
+            'item_id' => $child->item_id,
+            'parent_id' => $parent_id,
+        ])->exists();
+        if (!$exists){
+            $AuthItemChild->load([
+                'parent' => $parent->name,
+                'item_id' => $child->item_id,
+                'parent_id' => $parent_id,
+                'parent_item_id' => $parent->item_id,
+                'child' => $child->name,
+                'is_sys' => $child->is_sys,
+                'module_name' => $child->module_name,
+                'child_type' => $child->child_type,
+                'parent_type' => $child->parent_type,
+            ], '');
 
-        return $Res;
+            $Res = $AuthItemChild->save();
+            $msg = ErrorsHelper::getModelError($AuthItemChild);
+            if (!empty($msg)) {
+                throw new InvalidCallException($msg);
+            }
+            $this->invalidateCache();
+
+            return $Res;
+        }
     }
 
     // 权限获取 start
@@ -1240,7 +1249,6 @@ class DbManager extends \yii\rbac\DbManager
          * 路由授权
          */
         $directPermission = $this->getDirectPermissionsByUser($userId);
-
         /**
          * 权限授权
          */
@@ -1421,7 +1429,6 @@ class DbManager extends \yii\rbac\DbManager
                 'child' => $row['child']
             ];
         }
-
         return $parents;
     }
 
@@ -1456,13 +1463,11 @@ class DbManager extends \yii\rbac\DbManager
         $query = (new Query())->select('item_id')
             ->from($this->assignmentGroupTable)
             ->where(['user_id' => (string)$userId]);
-
         $assignment2 = $query->column($this->db);
-
         $assignment = array_merge($assignment1, $assignment2);
 
         $childrenList = $this->getChildrenListIndexId();
-
+//        print_r($childrenList);
         $result = [];
         foreach ($assignment as $item_id) {
 //            echo $item_id.PHP_EOL;

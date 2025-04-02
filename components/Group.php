@@ -38,10 +38,7 @@ class Group extends BaseObject
     
 
     public $module_name;
-    /**
-     * @var int the type of the item. This should be either [[TYPE_ROLE]] or [[TYPE_PERMISSION]].
-     */
-    public $type;
+
     
     public $is_sys;
     

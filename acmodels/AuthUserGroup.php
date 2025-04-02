@@ -18,7 +18,7 @@ use Yii;
  *
  * @property int $id
  * @property string $name 用户组名称
- * @property int $type 用户组类型
+ * @property int $is_sys 用户组类型
  * @property string|null $description 用户组名称
  * @property string|null $module_name
  * @property int|null $created_at
@@ -41,8 +41,8 @@ class AuthUserGroup extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'type'], 'required'],
-            [['type', 'created_at', 'updated_at','item_id','pid'], 'integer'],
+            [['name', 'is_sys'], 'required'],
+            [['is_sys', 'created_at', 'updated_at','item_id'], 'integer'],
             [['description'], 'string'],
             [['name'], 'string', 'max' => 64],
             [['module_name'], 'string', 'max' => 50],
@@ -79,7 +79,7 @@ class AuthUserGroup extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => '用户组名称',
-            'type' => '用户组类型',
+            'is_sys' => '用户组类型',
             'description' => '用户组名称',
             'module_name' => 'Module Name',
             'created_at' => 'Created At',
