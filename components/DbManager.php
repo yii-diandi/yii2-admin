@@ -128,14 +128,42 @@ class DbManager extends \yii\rbac\DbManager
      */
     public function getChildren($id)
     {
-        // child_type:1 表示权限
-        $list = AuthItem::find()->alias('a')->joinWith(['childs as c'])->where(['c.parent_id' => $id])->select(['name', 'a.id', 'a.description', 'rule_name', 'data', 'c.child', 'c.parent_id', 'created_at', 'updated_at', 'a.permission_type', 'a.permission_level', 'a.is_sys', 'a.data'])->all();
-        $children = [];
-        foreach ($list as $row) {
-            $children[$row['id']] = $this->populateItem($row, 'itemTable');
+        try {
+            // child_type:1 表示权限
+            $children = [];
+            foreach (AuthItem::find()
+                         ->alias('a')
+                         ->joinWith(['childs as c'], false)
+                         ->where(['c.parent_id' => $id])
+                         ->select([
+                             'a.name',
+                             'a.id',
+                             'a.description',
+                             'a.rule_name',
+                             'a.module_name',
+                             'a.data',
+                             'c.child',
+                             'c.parent_id',
+                             'a.created_at',
+                             'a.updated_at',
+                             'a.permission_type',
+                             'a.permission_level',
+                             'a.is_sys',
+                             'a.data'
+                         ])
+                         ->asArray()
+                         ->batch(100) as $batch) {
+                foreach ($batch as $row) {
+                    $children[$row['id']] = $this->populateItem($row, 'itemTable');
+                }
+            }
+            return $children;
+
+
+        }catch (\Exception $e){
+            throw new InvalidConfigException($e->getMessage());
         }
 
-        return $children;
     }
 
     /**
@@ -152,7 +180,6 @@ class DbManager extends \yii\rbac\DbManager
         if ($child->name === $parent->name && $child->id === $parent->id) {
             return true;
         }
-
         foreach ($this->getChildren($child->id) as $grandchild) {
             if ($this->detectLoop($parent, $grandchild)) {
                 return true;
@@ -586,8 +613,11 @@ class DbManager extends \yii\rbac\DbManager
 
         $items = [];
 
-        foreach ($query->all($this->db) as $row) {
-            $items[$row['id']] = $this->populateItem($row);
+        // 分批处理数据
+        foreach ($query->batch(100, $this->db) as $batch) {
+            foreach ($batch as $row) {
+                $items[$row['id']] = $this->populateItem($row);
+            }
         }
 
         return $items;
@@ -846,7 +876,7 @@ class DbManager extends \yii\rbac\DbManager
 
     public function removeChild($parent, $child)
     {
-        $parent_id = $parent->parent_id?:$parent->id;
+        $parent_id = $parent->id;
         $child_type = $child->child_type;
         if ($child instanceof Item) {
             $item_id = $child->id;
@@ -1129,6 +1159,7 @@ class DbManager extends \yii\rbac\DbManager
      */
     public function addChild($parent, $child)
     {
+
         if ($parent->name === $child->name) {
             throw new InvalidArgumentException("Cannot add '{$parent->name}' as a child of itself.");
         }
@@ -1140,7 +1171,6 @@ class DbManager extends \yii\rbac\DbManager
         if ($this->detectLoop($parent, $child)) {
             throw new InvalidCallException("Cannot add '{$child->name}' as a child of '{$parent->name}'. A loop has been detected.");
         }
-
         $AuthItemChild = new AuthItemChild();
         $parent_id = $parent->id;
         if ($parent instanceof Permission){
@@ -1150,6 +1180,7 @@ class DbManager extends \yii\rbac\DbManager
             'item_id' => $child->item_id,
             'parent_id' => $parent_id,
         ])->exists();
+
         if (!$exists){
             $AuthItemChild->load([
                 'parent' => $parent->name,

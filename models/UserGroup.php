@@ -124,6 +124,7 @@ class UserGroup extends \yii\db\ActiveRecord
                 foreach ($group as $name => $val) {
                     $id = $val;
                     $child = $manager->getGroupPermission($id);
+
                     try {
                         $res = $manager->addChild($this->_item, $child);
                         ++$success;
