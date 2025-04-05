@@ -70,6 +70,8 @@ class DbManager extends \yii\rbac\DbManager
         2 => 'role',
     ];
 
+    public $businessRoles = [];
+
     /**
      * item->item-child :权限库
      * user-group:用户组
@@ -1557,7 +1559,6 @@ class DbManager extends \yii\rbac\DbManager
             // 校验路由权限是否存在，不存在就没有权限
             if (($item = $this->getRoute($itemName)) === null && ($item = $this->getRoute($itemName, 2)) === null) {
                 Yii::info('checkAccessRecursiveAll-0', 'checkAccessRecursiveAll');
-
                 return false;
             }
         } else {
@@ -1628,9 +1629,15 @@ class DbManager extends \yii\rbac\DbManager
                 return true;
             }
         }
+
         Yii::info('checkAccessRecursiveAll-8', 'checkAccessRecursiveAll');
 
         return false;
+    }
+
+    function getBusinessRoles()
+    {
+       return $this->businessRoles;
     }
 
     /**
