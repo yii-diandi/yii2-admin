@@ -70,7 +70,6 @@ class DbManager extends \yii\rbac\DbManager
         2 => 'role',
     ];
 
-    public $businessRoles = [];
 
     /**
      * item->item-child :权限库
@@ -1635,10 +1634,6 @@ class DbManager extends \yii\rbac\DbManager
         return false;
     }
 
-    function getBusinessRoles()
-    {
-       return $this->businessRoles;
-    }
 
     /**
      * Executes the rule associated with the specified auth item.
