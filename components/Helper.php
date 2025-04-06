@@ -135,6 +135,7 @@ class Helper
         $isbusinessRoles = UserService::isbusinessRoles();
         $bloc_id = Yii::$app->request->headers['bloc-id'];
         if ($isbusinessRoles){
+            $userId = Yii::$app->user->id;
             $user_bloc_id = DdUser::find()->where(['id'=>$userId])->select('bloc_id')->scalar();
             if ($user_bloc_id == $bloc_id){
                 return true;
