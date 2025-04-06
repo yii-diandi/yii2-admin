@@ -43,7 +43,7 @@ class AuthItemChild extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['is_sys', 'item_id', 'parent_item_id', 'parent_id', 'child_type', 'parent_type'], 'integer'],
+            [['is_sys', 'item_id', 'parent_item_id', 'parent_id', 'child_type', 'parent_type','route_type'], 'integer'],
             [['parent_id', 'parent', 'child'], 'required'],
             [['parent', 'child'], 'string', 'max' => 255],
             [['module_name'], 'string', 'max' => 50],

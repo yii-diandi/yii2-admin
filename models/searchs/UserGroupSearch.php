@@ -65,9 +65,12 @@ class UserGroupSearch extends UserGroup
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description]);
-
         if (isset($this->is_sys)){
             $query->andFilterWhere(['is_sys' => $this->is_sys]);
+            if ((int) $this->is_sys === 0){
+                $bloc_id = \Yii::$app->request->headers['bloc-id'];
+                $query->andWhere(['bloc_id' => (int)$bloc_id]);
+            }
         }
         $count = $query->count();
         $pageSize = \Yii::$app->request->input('pageSize', 10);

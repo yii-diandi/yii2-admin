@@ -127,7 +127,6 @@ class MenuHelper
                     }
                 }
             }
-
             $assigned = [];
             $query = Menu::find()->select(['id'])->orderBy('order')->asArray();
 
@@ -154,7 +153,6 @@ class MenuHelper
         if ($refresh || $callback !== null || $cache === null || (($result = $cache->get($key)) === false)) {
 
             $result = static::normalizeMenu($assigned, $menus, $callback, $root);
-
             if ($cache !== null && $callback === null) {
                 $cache->set($key, $result, $config->cacheDuration, new TagDependency([
                     'tags' => Configs::CACHE_TAG,

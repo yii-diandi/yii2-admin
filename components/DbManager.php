@@ -1187,6 +1187,7 @@ class DbManager extends \yii\rbac\DbManager
                 'parent' => $parent->name,
                 'item_id' => $child->item_id,
                 'parent_id' => $parent_id,
+                'route_type'=>$child->route_type??1,
                 'parent_item_id' => $parent->item_id,
                 'child' => $child->name,
                 'is_sys' => $child->is_sys,
@@ -1276,7 +1277,6 @@ class DbManager extends \yii\rbac\DbManager
         if ($this->isEmptyUserId($userId)) {
             return [];
         }
-
         /**
          * 路由授权
          */
@@ -1285,6 +1285,7 @@ class DbManager extends \yii\rbac\DbManager
          * 权限授权
          */
         $inheritedPermission = $this->getInheritedPermissionsByUser($userId);
+
         return array_merge($directPermission, $inheritedPermission);
     }
 
@@ -1411,7 +1412,6 @@ class DbManager extends \yii\rbac\DbManager
             return $this->checkAccessFromCache($userId, $permissionName, $params, $assignments);
         }
         Yii::info('准备校验权限-5', 'checkAccess');
-
         return $this->checkAccessRecursiveAll($userId, $permissionName, $params, $assignments, 2);
     }
 
@@ -1499,7 +1499,6 @@ class DbManager extends \yii\rbac\DbManager
         $assignment = array_merge($assignment1, $assignment2);
 
         $childrenList = $this->getChildrenListIndexId();
-//        print_r($childrenList);
         $result = [];
         foreach ($assignment as $item_id) {
 //            echo $item_id.PHP_EOL;
@@ -1576,7 +1575,6 @@ class DbManager extends \yii\rbac\DbManager
                 // 用户组
                 if (($item = $this->getGroup($itemName)) === null && ($item = $this->getGroup($itemName, 1)) === null) {
                     Yii::info('checkAccessRecursiveAll-2', 'checkAccessRecursiveAll');
-
                     return false;
                 }
 
