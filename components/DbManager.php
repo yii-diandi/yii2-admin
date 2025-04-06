@@ -1555,13 +1555,15 @@ class DbManager extends \yii\rbac\DbManager
         $AuthError = new AuthError();
         $AuthError->setAttributes([
             'user_id'=>Yii::$app->user->id,
-            'itemName'=>$itemName,
-            'params'=> $params,
-            'assignments'=> $assignments,
-            'parent_type'=> $parent_type
+            'itemName'=>(string)$itemName,
+            'params'=> json_encode($params),
+            'assignments'=> json_encode($assignments),
+            'parent_type'=> (string)$parent_type
         ]);
         if (!$AuthError->save()){
             $error = $AuthError->getErrors();
+
+            var_dump($error);die;
             throw new \Exception(current($error));
         }
     }
