@@ -878,7 +878,7 @@ class DbManager extends \yii\rbac\DbManager
 
     public function removeChild($parent, $child)
     {
-        $parent_id = $parent->id;
+        $parent_id = $parent->parent_id?:$parent->id;
         $child_type = $child->child_type;
         if ($child instanceof Item) {
             $item_id = $child->id;
