@@ -9,6 +9,8 @@
 
 namespace diandi\admin\components;
 
+use admin\services\UserService;
+use common\models\DdUser;
 use diandi\admin\models\Route;
 use Yii;
 use yii\caching\TagDependency;
@@ -117,14 +119,30 @@ class Helper
         if ($config->onlyRegisteredRoute && !isset(static::getRegisteredRoutes()[$r])) {
             return true;
         }
-
         if ($user === null) {
             $user = Yii::$app->getUser();
+        }
+        /**
+         * 总管理员放行
+         */
+        $isSuperAdmin = UserService::isSuperAdmin();
+        if ($isSuperAdmin){
+            return true;
+        }
+        /**
+         * 业务中心管理员放行自己的公司
+         */
+        $isbusinessRoles = UserService::isbusinessRoles();
+        $bloc_id = Yii::$app->request->headers['bloc-id'];
+        if ($isbusinessRoles){
+            $user_bloc_id = DdUser::find()->where(['id'=>$userId])->select('bloc_id')->scalar();
+            if ($user_bloc_id == $bloc_id){
+                return true;
+            }
         }
         $userId = $user instanceof User ? $user->getId() : $user;
         if ($config->strict) {
             Yii::debug('strict is true','checkRoute');
-
             Yii::info([
                 'r'=> $r,
                 'params'=> $params
@@ -147,7 +165,7 @@ class Helper
             Yii::debug('strict is false','checkRoute');
 
             $routes = static::getRoutesByUser($userId);
-           
+
             if (isset($routes[$r])) {
                 return true;
             }

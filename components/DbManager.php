@@ -16,6 +16,7 @@ use diandi\admin\acmodels\AuthRoute;
 use diandi\admin\acmodels\AuthUserGroup;
 use diandi\admin\models\AuthAssignment;
 use diandi\admin\models\AuthAssignmentGroup;
+use diandi\admin\models\AuthError;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
@@ -1401,7 +1402,6 @@ class DbManager extends \yii\rbac\DbManager
 
         if ($this->hasNoAssignments($assignments)) {
             Yii::info('准备校验权限-3', 'checkAccess');
-
             return false;
         }
 
@@ -1550,6 +1550,22 @@ class DbManager extends \yii\rbac\DbManager
         }
     }
 
+    public function addError($itemName, $params, $assignments, $parent_type)
+    {
+        $AuthError = new AuthError();
+        $AuthError->setAttributes([
+            'user_id'=>Yii::$app->user->id,
+            'itemName'=>$itemName,
+            'params'=> $params,
+            'assignments'=> $assignments,
+            'parent_type'=> $parent_type
+        ]);
+        if (!$AuthError->save()){
+            $error = $AuthError->getErrors();
+            throw new \Exception(current($error));
+        }
+    }
+
     protected function checkAccessRecursiveAll($user, $itemName, $params, $assignments, $parent_type)
     {
         Yii::info(['user' => $user, 'itemName' => $itemName, 'params' => $params, 'assignments' => $assignments, 'parent_type' => $parent_type], 'checkAccessRecursiveAll');
@@ -1557,6 +1573,7 @@ class DbManager extends \yii\rbac\DbManager
             // 校验路由权限是否存在，不存在就没有权限
             if (($item = $this->getRoute($itemName)) === null && ($item = $this->getRoute($itemName, 2)) === null) {
                 Yii::info('checkAccessRecursiveAll-0', 'checkAccessRecursiveAll');
+                $this->addError($itemName, $params, $assignments, $parent_type);
                 return false;
             }
         } else {
@@ -1568,6 +1585,7 @@ class DbManager extends \yii\rbac\DbManager
                 // 检测权限是否存在
                 if (($item = $this->getItem($itemName)) === null) {
                     Yii::info('checkAccessRecursiveAll-1', 'checkAccessRecursiveAll');
+                    $this->addError($itemName, $params, $assignments, $parent_type);
 
                     return false;
                 }
@@ -1575,6 +1593,8 @@ class DbManager extends \yii\rbac\DbManager
                 // 用户组
                 if (($item = $this->getGroup($itemName)) === null && ($item = $this->getGroup($itemName, 1)) === null) {
                     Yii::info('checkAccessRecursiveAll-2', 'checkAccessRecursiveAll');
+                    $this->addError($itemName, $params, $assignments, $parent_type);
+
                     return false;
                 }
 
@@ -1587,6 +1607,8 @@ class DbManager extends \yii\rbac\DbManager
 
                     if (!in_array($itemName, $group_child) && !empty($group_child)) {
                         Yii::info('checkAccessRecursiveAll-3', 'checkAccessRecursiveAll');
+                        $this->addError($itemName, $params, $assignments, $parent_type);
+
                         return false;
                     }
                 }
@@ -1594,6 +1616,7 @@ class DbManager extends \yii\rbac\DbManager
             } elseif ($parent_type == 3) {
                 if (($item = $this->getItem($itemName)) === null) {
                     Yii::info('checkAccessRecursiveAll-4', 'checkAccessRecursiveAll');
+                    $this->addError($itemName, $params, $assignments, $parent_type);
 
                     return false;
                 }
@@ -1603,6 +1626,7 @@ class DbManager extends \yii\rbac\DbManager
 
         if (!$this->executeRule($user, $item, $params)) {
             Yii::info('checkAccessRecursiveAll-5', 'checkAccessRecursiveAll');
+            $this->addError($itemName, $params, $assignments, $parent_type);
 
             return false;
         }
@@ -1628,6 +1652,7 @@ class DbManager extends \yii\rbac\DbManager
         }
 
         Yii::info('checkAccessRecursiveAll-8', 'checkAccessRecursiveAll');
+        $this->addError($itemName, $params, $assignments, $parent_type);
 
         return false;
     }
