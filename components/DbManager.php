@@ -1570,6 +1570,12 @@ class DbManager extends \yii\rbac\DbManager
 
     protected function checkAccessRecursiveAll($user, $itemName, $params, $assignments, $parent_type)
     {
+        /**
+         * 如果$itemName包含星号，直接放行
+         */
+        if (strpos($itemName, '*') !== false) {
+            return true;
+        }
         Yii::info(['user' => $user, 'itemName' => $itemName, 'params' => $params, 'assignments' => $assignments, 'parent_type' => $parent_type], 'checkAccessRecursiveAll');
         if (strpos($itemName, '/') !== false) {
             // 校验路由权限是否存在，不存在就没有权限
