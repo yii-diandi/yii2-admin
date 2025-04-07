@@ -101,7 +101,7 @@ class MenuHelper
                 }
             }
             $authGroups = AuthUserGroup::find()->indexBy('name')->select('item_id')->column();
-
+          
             foreach ($manager->defaultRoles as $role) {
                 foreach ($manager->getPermissionsByRoleId($authGroups[$role]) as $name => $value) {
                     if ($name[0] === '/') {

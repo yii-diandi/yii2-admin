@@ -1286,7 +1286,6 @@ class DbManager extends \yii\rbac\DbManager
          * 权限授权
          */
         $inheritedPermission = $this->getInheritedPermissionsByUser($userId);
-
         return array_merge($directPermission, $inheritedPermission);
     }
 

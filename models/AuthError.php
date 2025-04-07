@@ -38,7 +38,7 @@ class AuthError extends \yii\db\ActiveRecord
         return [
             [['user_id', 'bloc_id', 'store_id'], 'integer'],
             [['create_time', 'update_time', 'assignments'], 'safe'],
-            [['itemName', 'params', 'parent_type'], 'string', 'max' => 255],
+            [['itemName', 'params', 'parent_type'], 'string', 'safe'],
         ];
     }
 
