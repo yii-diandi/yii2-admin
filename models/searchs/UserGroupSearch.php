@@ -9,6 +9,7 @@
 
 namespace diandi\admin\models\searchs;
 
+use admin\services\UserService;
 use common\components\DataProvider\ArrayDataProvider;
 use diandi\admin\models\UserGroup;
 use yii\data\ActiveDataProvider;
@@ -28,7 +29,7 @@ class UserGroupSearch extends UserGroup
     public function rules()
     {
         return [
-            [['id', 'created_at', 'updated_at', 'store_id', 'bloc_id','is_sys'], 'integer'],
+            [['id', 'created_at', 'updated_at', 'store_id', 'bloc_id', 'is_sys'], 'integer'],
             [['name', 'description'], 'safe'],
         ];
     }
@@ -65,9 +66,12 @@ class UserGroupSearch extends UserGroup
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description]);
-        if (isset($this->is_sys)){
+        if (isset($this->is_sys)) {
             $query->andFilterWhere(['is_sys' => $this->is_sys]);
-            if ((int) $this->is_sys === 0){
+            $isbusinessRoles = UserService::isbusinessRoles();
+            $isSuperAdmin = UserService::isSuperAdmin();
+
+            if ($isbusinessRoles === 0 && !$isSuperAdmin === 0 && (int)$this->is_sys === 0) {
                 $bloc_id = \Yii::$app->request->headers['bloc-id'];
                 $query->andWhere(['bloc_id' => (int)$bloc_id]);
             }
