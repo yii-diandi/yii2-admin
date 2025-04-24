@@ -49,7 +49,6 @@ class User extends UserModel
     public function search($params)
     {
         $query = UserModel::find();
-
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([

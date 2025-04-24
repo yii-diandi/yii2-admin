@@ -9,6 +9,8 @@
 
 namespace diandi\admin\components;
 
+use admin\models\BlocAddons;
+use admin\models\User;
 use common\helpers\ErrorsHelper;
 use diandi\admin\acmodels\AuthItem;
 use diandi\admin\acmodels\AuthItemChild;
@@ -162,7 +164,7 @@ class DbManager extends \yii\rbac\DbManager
             return $children;
 
 
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             throw new InvalidConfigException($e->getMessage());
         }
 
@@ -412,7 +414,7 @@ class DbManager extends \yii\rbac\DbManager
                 $list = AuthItem::find()->alias('p')->joinWith('childs as c')->where([
                     'c.item_id' => $id,
                     'parent_type' => $parent_type,
-                ])->andWhere($where)->select(['p.type', 'c.id', 'c.parent_id', 'c.child as name', 'item_id', 'child_type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])->indexBy('item_id')->asArray()->all();
+                ])->andWhere($where)->select(['c.id', 'c.parent_id', 'c.child as name', 'item_id', 'child_type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])->indexBy('item_id')->asArray()->all();
                 foreach ($list as $row) {
                     $children[$row['item_id']] = $this->populateItem($row, 'itemTable');
                 }
@@ -491,7 +493,6 @@ class DbManager extends \yii\rbac\DbManager
     public function getRoutePermission($name, $parent_type = 1)
     {
         $item = $this->getRoute($name, $parent_type);
-
         return $item;
     }
 
@@ -864,7 +865,7 @@ class DbManager extends \yii\rbac\DbManager
         if (!$this->supportsCascadeUpdate()) {
             $itemChild = AuthItemChild::findOne(['or', '[[parent]]=:name', '[[item]]=:name'], [':name' => $item->name]);
             $itemChild->delete();
-            $assignment  = AuthAssignment::findOne(['item_name' => $item->name]);
+            $assignment = AuthAssignment::findOne(['item_name' => $item->name]);
             $assignment->delete();
         }
 
@@ -878,7 +879,7 @@ class DbManager extends \yii\rbac\DbManager
 
     public function removeChild($parent, $child)
     {
-        $parent_id = $parent->parent_id?:$parent->id;
+        $parent_id = $parent->parent_id ?: $parent->id;
         $child_type = $child->child_type;
         if ($child instanceof Item) {
             $item_id = $child->id;
@@ -968,11 +969,11 @@ class DbManager extends \yii\rbac\DbManager
             $item->updatedAt = $time;
         }
 
-        $AuthRoute  = new AuthRoute();
-        $route_name = str_replace('/','-',ltrim($item->name,'/'));
-        $exists = $AuthRoute->find()->where(['route_name'=>$route_name])->exists();
-        if ($exists){
-            $route_name .= '-'.'route';
+        $AuthRoute = new AuthRoute();
+        $route_name = str_replace('/', '-', ltrim($item->name, '/'));
+        $exists = $AuthRoute->find()->where(['route_name' => $route_name])->exists();
+        if ($exists) {
+            $route_name .= '-' . 'route';
         }
 
         $route_type = 1;
@@ -980,39 +981,39 @@ class DbManager extends \yii\rbac\DbManager
         if (str_contains($route_name, "vue")) {
             if (str_contains($route_name, "create") || str_contains($route_name, "update")) {
                 $route_type = 2; //按钮
-            }else{
+            } else {
                 $route_type = 1; //页面
             }
-        }else{
+        } else {
             if (strpos($route_name, "*")) {
                 $route_type = 0;//目录
-            }else{
+            } else {
                 $route_type = 3;//接口
             }
         }
 
-        [$module_name,] = explode('/',ltrim($item->name,'/'));
+        [$module_name,] = explode('/', ltrim($item->name, '/'));
         $modules = array_keys(Yii::$app->modules);
 
-        if (!in_array($module_name,$modules)){
+        if (!in_array($module_name, $modules)) {
             $module_name = 'system';
         }
-        if(!($AuthRoute->load([
-                 'name' => $item->name,
-                 'route_name'=>$route_name,
-                 'pid' => $item->pid,
-                 'route_type'=>$route_type,//1页面2按钮3接口
-                 'item_id'=>0,
-                 'module_name' => $module_name,
-                 'is_sys' => $module_name === 'sysytem'?1:0,
-                 'description' => $item->description,
-                 'data' => $item->data === null ? null : serialize($item->data),
-                 'created_at' => $item->createdAt,
-                 'updated_at' => $item->updatedAt,
-             ],'') && $AuthRoute->save())){
-             $msg = ErrorsHelper::getModelError($AuthRoute);
-             throw new InvalidArgumentException($msg);
-         }
+        if (!($AuthRoute->load([
+                'name' => $item->name,
+                'route_name' => $route_name,
+                'pid' => $item->pid,
+                'route_type' => $route_type,//1页面2按钮3接口
+                'item_id' => 0,
+                'module_name' => $module_name,
+                'is_sys' => $module_name === 'sysytem' ? 1 : 0,
+                'description' => $item->description,
+                'data' => $item->data === null ? null : serialize($item->data),
+                'created_at' => $item->createdAt,
+                'updated_at' => $item->updatedAt,
+            ], '') && $AuthRoute->save())) {
+            $msg = ErrorsHelper::getModelError($AuthRoute);
+            throw new InvalidArgumentException($msg);
+        }
 
         $this->invalidateCache();
 
@@ -1124,9 +1125,9 @@ class DbManager extends \yii\rbac\DbManager
                     'id' => $row['id'],
                     'item_id' => $row['item_id'],
                     'name' => $row['name'],
-                    'module_name' => $row['module_name']??'system',
+                    'module_name' => $row['module_name'] ?? 'system',
                     // 'type' => $row['type'],
-                    'is_sys' => $row['is_sys']??1,
+                    'is_sys' => $row['is_sys'] ?? 1,
                     'child_type' => isset($row['child_type']) ? $row['child_type'] : 0,
                     'description' => $row['description'],
                     'data' => $data,
@@ -1175,7 +1176,7 @@ class DbManager extends \yii\rbac\DbManager
         }
         $AuthItemChild = new AuthItemChild();
         $parent_id = $parent->id;
-        if ($parent instanceof Permission){
+        if ($parent instanceof Permission) {
             $parent_id = $parent->item_id;
         }
         $exists = $AuthItemChild->find()->where([
@@ -1183,12 +1184,12 @@ class DbManager extends \yii\rbac\DbManager
             'parent_id' => $parent_id,
         ])->exists();
 
-        if (!$exists){
+        if (!$exists) {
             $AuthItemChild->load([
                 'parent' => $parent->name,
                 'item_id' => $child->item_id,
                 'parent_id' => $parent_id,
-                'route_type'=>$child->route_type??1,
+                'route_type' => $child->route_type ?? 1,
                 'parent_item_id' => $parent->item_id,
                 'child' => $child->name,
                 'is_sys' => $child->is_sys,
@@ -1278,10 +1279,12 @@ class DbManager extends \yii\rbac\DbManager
         if ($this->isEmptyUserId($userId)) {
             return [];
         }
+
         /**
          * 路由授权
          */
         $directPermission = $this->getDirectPermissionsByUser($userId);
+
         /**
          * 权限授权
          */
@@ -1423,9 +1426,9 @@ class DbManager extends \yii\rbac\DbManager
             return false;
         }
 
-        unset($this->checkAccessAssignments[(string) $userId]);
+        unset($this->checkAccessAssignments[(string)$userId]);
         $result = $this->db->createCommand()
-                ->delete($this->assignmentTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
+                ->delete($this->assignmentTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
                 ->execute() > 0;
 
         $this->invalidateCache();
@@ -1450,9 +1453,13 @@ class DbManager extends \yii\rbac\DbManager
         return $parents;
     }
 
+    /**
+     * 深入改造
+     * @return array
+     */
     protected function getChildrenListIndexId()
     {
-        $query = (new Query())->from($this->itemChildTable);
+        $query = (new Query())->from($this->itemChildTable)->where(['>', 'parent_item_id', 0]);
         $parents = [];
         foreach ($query->all($this->db) as $row) {
             $parents[$row['parent_item_id']][] = [
@@ -1479,41 +1486,47 @@ class DbManager extends \yii\rbac\DbManager
 
         $_permissions = yii::$app->cache->get($cacheKey);
 
-       /* if (!empty($_permissions)) {
+        if (!empty($_permissions)) {
             return $_permissions;
-        }*/
+        }
 
         $assignment = [];
 
         $query = (new Query())->select('item_id')
             ->from($this->assignmentTable)
             ->where(['user_id' => (string)$userId]);
-
         $assignment1 = $query->column($this->db);
-
         $query = (new Query())->select('item_id')
             ->from($this->assignmentGroupTable)
             ->where(['user_id' => (string)$userId]);
-        $assignment2 = $query->column($this->db);
-        $assignment = array_merge($assignment1, $assignment2);
+
+        $assignment2 =  $query->column($this->db);
+
+        /**
+         * 业务中心管理员 给业务中心管理员对应公司的插件权限
+         */
+        $assignment3 = [];
+        $user =  User::find()->andWhere(['id' => $userId])->select(['is_business_admin','bloc_id'])->asArray()->one();
+        if ($user['is_business_admin'] == 1){
+            $authAddons = BlocAddons::find()->where(['bloc_id' => $user['bloc_id']])->select('module_name')->column();
+            $assignment3 = AuthItem::find()
+                ->where(['module_name' => $authAddons])->select('id')->column();
+        }
+        $assignment = array_merge($assignment1, $assignment2,$assignment3);
 
         $childrenList = $this->getChildrenListIndexId();
         $result = [];
         foreach ($assignment as $item_id) {
-//            echo $item_id.PHP_EOL;
             $this->getChildrenRecursiveByItemId($item_id, $childrenList, $result);
-//            print_r($result);
         }
-
         if (empty($result)) {
             return [];
         }
 
         $query = (new Query())->from($this->routeTable)->where([
-            // 'type' => Item::TYPE_PERMISSION,
+//             'type' => Item::TYPE_PERMISSION,
             'item_id' => array_keys($result),
         ]);
-
         $permissions = [];
 
         foreach (array_keys($result) as $itemId) {
@@ -1525,8 +1538,6 @@ class DbManager extends \yii\rbac\DbManager
             $row['parent_id'] = 0;
             $row['child_type'] = 0;
             $row['rule_name'] = 0;
-
-//            $permissions[$row['item_id']] = $this->populateItem($row, 'Role');
             $permissions[$row['item_id']] = $this->populateItem($row, 'routeTable');
         }
         yii::$app->cache->set($cacheKey, $permissions);
@@ -1553,16 +1564,14 @@ class DbManager extends \yii\rbac\DbManager
     {
         $AuthError = new AuthError();
         $AuthError->setAttributes([
-            'user_id'=>Yii::$app->user->id,
-            'itemName'=>(string)$itemName,
-            'params'=> json_encode($params),
-            'assignments'=> json_encode($assignments),
-            'parent_type'=> (string)$parent_type
+            'user_id' => Yii::$app->user->id,
+            'itemName' => (string)$itemName,
+            'params' => json_encode($params),
+            'assignments' => json_encode($assignments),
+            'parent_type' => (string)$parent_type
         ]);
-        if (!$AuthError->save()){
+        if (!$AuthError->save()) {
             $error = $AuthError->getErrors();
-
-            var_dump($error);die;
             throw new \Exception(current($error));
         }
     }
@@ -1606,7 +1615,7 @@ class DbManager extends \yii\rbac\DbManager
                 }
 
                 // 查询用户是否有组的权限
-                $groupsArr = AuthAssignmentGroup::find()->where(['user_id' => $user])->select(['item_name','group_id'])->asArray()->one();
+                $groupsArr = AuthAssignmentGroup::find()->where(['user_id' => $user])->select(['item_name', 'group_id'])->asArray()->one();
                 if (!empty($groupsArr)) {
                     $group_id = $groupsArr['group_id'];
                     $group_child = AuthItemChild::find()->where(['parent_id' => $group_id])->select(['child'])->column();

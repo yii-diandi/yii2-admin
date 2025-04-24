@@ -308,6 +308,7 @@ class User extends ActiveRecord implements IdentityInterface
         return Configs::userDb();
     }
 
+
     /**
      * {@inheritdoc}
      */

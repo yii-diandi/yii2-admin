@@ -59,9 +59,7 @@ class UserGroupSearch extends UserGroup
         $query->andFilterWhere([
             'id' => $this->id,
             'store_id' => $this->store_id,
-            'bloc_id' => $this->bloc_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'bloc_id' => $this->bloc_id
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])

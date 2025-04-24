@@ -90,6 +90,7 @@ class AuthItem extends Model
         ];
     }
 
+
     /**
      * Check role is unique.
      */
@@ -267,7 +268,6 @@ class AuthItem extends Model
                         ++$success;
                     } catch (\Exception $exc) {
                         Yii::error($exc->getMessage(), __METHOD__);
-
                         return $exc->getMessage();
                     }
                 }

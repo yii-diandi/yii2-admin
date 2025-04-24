@@ -70,6 +70,7 @@ class Menu extends \yii\db\ActiveRecord
             'permission_type' =>1,
             'description' =>'',
             'rule_name' =>0,
+            'menu_id' => $this->id,
             'parent_id' => (int) $parent_id,
             'permission_level' =>1,    //权限级别:0: 目录1: 页面 2: 按钮 3: 接口
             'module_name' =>$this->module_name,
@@ -175,6 +176,11 @@ class Menu extends \yii\db\ActiveRecord
         $result = static::find()->where(['parent' => $parentId])->asArray()->all();
 
         return ArrayHelper::map($result, 'id', 'name');
+    }
+
+    function getPermissions()
+    {
+        return $this->hasMany(AcmodelsAuthItem::className(),['menu_id'=>'id']);
     }
     
 
