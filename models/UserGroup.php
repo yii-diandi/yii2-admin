@@ -48,7 +48,7 @@ class UserGroup extends \yii\db\ActiveRecord
             [['bloc_id', 'store_id'], 'default', 'value' => 0],
             ['is_sys', 'default', 'value' => 1],
             [['name'], 'string', 'max' => 64],
-            [['name'], 'unique'],
+            [['name', 'bloc_id'], 'unique', 'targetAttribute' => ['name', 'bloc_id']],
         ];
     }
 

@@ -11,7 +11,6 @@ namespace diandi\admin\components;
 
 use admin\models\BlocAddons;
 use admin\models\User;
-use common\helpers\ErrorsHelper;
 use diandi\admin\acmodels\AuthItem;
 use diandi\admin\acmodels\AuthItemChild;
 use diandi\admin\acmodels\AuthRoute;
@@ -26,6 +25,7 @@ use yii\base\InvalidConfigException;
 use yii\caching\CacheInterface;
 use yii\db\Query;
 use yii\rbac\Rule;
+use yii\web\NotFoundHttpException;
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
@@ -178,16 +178,33 @@ class DbManager extends \yii\rbac\DbManager
      *
      * @return bool whether a loop exists
      */
-    protected function detectLoop($parent, $child)
+    public function detectLoop($parent, $child, $isPc = false)
     {
         // 确定两者不存在相互包含的情况
-        if ($child->name === $parent->name && $child->id === $parent->id) {
+        if ($child->item_id === $parent->item_id) {
+            Yii::debug("Parent and child have the same item_id: {$parent->item_id}", __METHOD__);
             return true;
         }
-        foreach ($this->getChildren($child->id) as $grandchild) {
-            if ($this->detectLoop($parent, $grandchild)) {
-                return true;
-            }
+
+        $parent_item_id = $parent->item_id;
+        $child_item_id = $child->item_id;
+
+        /**
+         * 使用db 查询，避免循环引用导致死循环
+         */
+        $childContainsParent = (new Query())->from($this->itemChildTable)->where([
+            'item_id' => $parent_item_id,
+            'parent_item_id' => $child_item_id
+        ])->exists();
+
+        // 反向查询子级是否包含父级
+
+        Yii::debug("Child contains parent: " . var_export($childContainsParent, true), __METHOD__);
+
+        // 如果两者相互包含，返回 true
+        if ($childContainsParent) {
+            Yii::debug("Loop detected between parent and child", __METHOD__);
+            return true;
         }
 
         return false;
@@ -879,7 +896,7 @@ class DbManager extends \yii\rbac\DbManager
 
     public function removeChild($parent, $child)
     {
-        $parent_id = $parent->parent_id ?: $parent->id;
+        $parent_item_id = $parent->item_id;
         $child_type = $child->child_type;
         if ($child instanceof Item) {
             $item_id = $child->id;
@@ -887,7 +904,7 @@ class DbManager extends \yii\rbac\DbManager
             $item_id = $child->item_id;
         }
         $Res = AuthItemChild::deleteAll([
-            'parent_id' => $parent_id,
+            'parent_item_id' => $parent_item_id,
             'child_type' => $child_type,
             'item_id' => $item_id,
         ]);
@@ -1011,7 +1028,7 @@ class DbManager extends \yii\rbac\DbManager
                 'created_at' => $item->createdAt,
                 'updated_at' => $item->updatedAt,
             ], '') && $AuthRoute->save())) {
-            $msg = ErrorsHelper::getModelError($AuthRoute);
+            $msg = $this->getModelError($AuthRoute);
             throw new InvalidArgumentException($msg);
         }
 
@@ -1162,7 +1179,6 @@ class DbManager extends \yii\rbac\DbManager
      */
     public function addChild($parent, $child)
     {
-
         if ($parent->name === $child->name) {
             throw new InvalidArgumentException("Cannot add '{$parent->name}' as a child of itself.");
         }
@@ -1171,42 +1187,56 @@ class DbManager extends \yii\rbac\DbManager
             throw new InvalidArgumentException('Cannot add a role as a child of a permission.');
         }
 
-        if ($this->detectLoop($parent, $child)) {
-            throw new InvalidCallException("Cannot add '{$child->name}' as a child of '{$parent->name}'. A loop has been detected.");
-        }
-        $AuthItemChild = new AuthItemChild();
         $parent_id = $parent->id;
-        if ($parent instanceof Permission) {
-            $parent_id = $parent->item_id;
-        }
-        $exists = $AuthItemChild->find()->where([
-            'item_id' => $child->item_id,
+        $exists = (new Query())->from($this->itemChildTable)->where([
             'parent_id' => $parent_id,
+            'item_id' => $child->item_id,
         ])->exists();
+        try {
+            if (!$exists) {
+                if ($this->detectLoop($parent, $child, true)) {
+                    throw new InvalidCallException("Cannot add '{$child->name}' as a child of '{$parent->name}'. A loop has been detected.");
+                }
 
-        if (!$exists) {
-            $AuthItemChild->load([
-                'parent' => $parent->name,
-                'item_id' => $child->item_id,
-                'parent_id' => $parent_id,
-                'route_type' => $child->route_type ?? 1,
-                'parent_item_id' => $parent->item_id,
-                'child' => $child->name,
-                'is_sys' => $child->is_sys,
-                'module_name' => $child->module_name,
-                'child_type' => $child->child_type,
-                'parent_type' => $child->parent_type,
-            ], '');
+                $Res = $this->db->createCommand()
+                    ->insert($this->itemChildTable, [
+                        'parent' => $parent->name,
+                        'item_id' => $child->item_id,
+                        'parent_id' => $parent_id,
+                        'route_type' => $child->route_type ?? 1,
+                        'parent_item_id' => $parent->item_id,
+                        'child' => $child->name,
+                        'is_sys' => $child->is_sys,
+                        'module_name' => $child->module_name,
+                        'child_type' => $child->child_type,
+                        'parent_type' => $child->parent_type,
+                    ])->execute();
 
-            $Res = $AuthItemChild->save();
-            $msg = ErrorsHelper::getModelError($AuthItemChild);
-            if (!empty($msg)) {
-                throw new InvalidCallException($msg);
+                $this->invalidateCache();
+                return $Res;
             }
-            $this->invalidateCache();
-
-            return $Res;
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+            Yii::debug($e->getMessage(), __METHOD__);
+            throw new InvalidCallException($e->getMessage());
         }
+
+    }
+
+    /**
+     * function_description.
+     *
+     * @param mixed $model
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    private function getModelError(mixed $model)
+    {
+        $errors = $model->getErrors();    //得到所有的错误信息
+        if (!is_array($errors)) return '';
+        $firstError = array_shift($errors);
+        if (!is_array($firstError)) return '';
+        return array_shift($firstError);
     }
 
     // 权限获取 start
@@ -1500,19 +1530,19 @@ class DbManager extends \yii\rbac\DbManager
             ->from($this->assignmentGroupTable)
             ->where(['user_id' => (string)$userId]);
 
-        $assignment2 =  $query->column($this->db);
+        $assignment2 = $query->column($this->db);
 
         /**
          * 业务中心管理员 给业务中心管理员对应公司的插件权限
          */
         $assignment3 = [];
-        $user =  User::find()->andWhere(['id' => $userId])->select(['is_business_admin','bloc_id'])->asArray()->one();
-        if ($user['is_business_admin'] == 1){
+        $user = User::find()->andWhere(['id' => $userId])->select(['is_business_admin', 'bloc_id'])->asArray()->one();
+        if ($user['is_business_admin'] == 1) {
             $authAddons = BlocAddons::find()->where(['bloc_id' => $user['bloc_id']])->select('module_name')->column();
             $assignment3 = AuthItem::find()
                 ->where(['module_name' => $authAddons])->select('id')->column();
         }
-        $assignment = array_merge($assignment1, $assignment2,$assignment3);
+        $assignment = array_merge($assignment1, $assignment2, $assignment3);
 
         $childrenList = $this->getChildrenListIndexId();
         $result = [];

@@ -65,6 +65,11 @@ class AuthItem extends \yii\db\ActiveRecord
         ];
     }
 
+    function getRoute()
+    {
+        return $this->hasOne(AuthRoute::className(), ['item_id' => 'id']);
+    }
+
 
     public function getChilds()
     {

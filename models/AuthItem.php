@@ -13,6 +13,7 @@ use diandi\admin\components\Configs;
 use diandi\admin\components\Helper;
 use diandi\admin\components\Item;
 use Yii;
+use yii\base\ErrorException;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\helpers\Json;
@@ -242,10 +243,19 @@ class AuthItem extends Model
      */
     public function addChildren($items, $parent_type = 1)
     {
+        /**
+         * 设置超时
+         */
+        set_time_limit(0);
+        /**
+         * 设置内存
+         */
+        ini_set('memory_limit', '1512M');
         $manager = Configs::authManager();
         $success = 0;
         if ($this->_item) {
             if (key_exists('route', $items) && is_array($items['route'])) {
+                $childs = [];
                 foreach ($items['route'] as $id) {
                     $child = $manager->getRoutePermission($id, $this->parent_type);
                     try {
@@ -253,10 +263,10 @@ class AuthItem extends Model
                         ++$success;
                     } catch (\Exception $exc) {
                         Yii::error($exc->getMessage(), __METHOD__);
-
-                        return $exc->getMessage();
+                        throw new ErrorException($exc->getMessage());
                     }
                 }
+
             }
 
             if (key_exists('permission', $items) && is_array($items['permission'])) {
@@ -264,11 +274,12 @@ class AuthItem extends Model
                     $child = $manager->getPermission($id);
                     $child->parent_type = $parent_type;
                     try {
+                        Yii::debug($child->name . '--' . $this->_item->name, __METHOD__);
                         $manager->addChild($this->_item, $child);
                         ++$success;
                     } catch (\Exception $exc) {
                         Yii::error($exc->getMessage(), __METHOD__);
-                        return $exc->getMessage();
+                        throw new ErrorException($exc->getMessage());
                     }
                 }
             }
@@ -304,10 +315,10 @@ class AuthItem extends Model
         $manager = Configs::authManager();
         $success = 0;
         if ($this->_item !== null) {
-            if (array_key_exists('route',$items)) {
+            if (array_key_exists('route', $items)) {
                 foreach ($items['route'] as $name) {
                     $child = $manager->getRoutePermission($name, 3);
-                    if ($child){
+                    if ($child) {
                         try {
                             $manager->removeChild($this->_item, $child);
                             ++$success;
@@ -319,10 +330,10 @@ class AuthItem extends Model
                 }
             }
 
-            if (array_key_exists('permission',$items)) {
+            if (array_key_exists('permission', $items)) {
                 foreach ($items['permission'] as $name) {
                     $child = $manager->getPermission($name);
-                    if ($child){
+                    if ($child) {
                         try {
                             $manager->removeChild($this->_item, $child);
                             ++$success;
