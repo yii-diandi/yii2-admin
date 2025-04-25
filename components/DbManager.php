@@ -459,7 +459,6 @@ class DbManager extends \yii\rbac\DbManager
         $query = (new Query())
             ->from($this->groupTable)
             ->where($where);
-
         $item = $query->one($this->db);
         if ($item === false) {
             return null;
@@ -1314,11 +1313,11 @@ class DbManager extends \yii\rbac\DbManager
          * 路由授权
          */
         $directPermission = $this->getDirectPermissionsByUser($userId);
-
         /**
          * 权限授权
          */
         $inheritedPermission = $this->getInheritedPermissionsByUser($userId);
+
         return array_merge($directPermission, $inheritedPermission);
     }
 
@@ -1489,7 +1488,18 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function getChildrenListIndexId()
     {
-        $query = (new Query())->from($this->itemChildTable)->where(['>', 'parent_item_id', 0]);
+        /**
+         * 查找所有的接口和目录对应的item_id
+         */
+//        $api_item_id = (new Query())->from($this->routeTable)->where(['route_type'=>3])->orWhere(['route_type'=>0])->select('item_id')->column();
+//        $query = (new Query())->from($this->itemChildTable)->where(['>', 'parent_item_id', 0]);
+
+//       route_type 路由级别:0: 目录1: 页面 2: 按钮 3: 接口 放弃目录权限，接口校验单独处理，这个给路由和菜单权限数据
+        $query = (new Query())->from($this->itemChildTable)->leftJoin($this->routeTable,$this->routeTable.'.item_id = '.$this->itemChildTable.'.item_id')
+            ->where(['>', $this->itemChildTable.'.parent_item_id', 0])
+            ->andWhere([$this->routeTable.'.route_type'=>[1,2]]);
+//        $query->andWhere(['not in', 'item_id', $api_item_id]);
+//        echo $query->createCommand()->getRawSql();
         $parents = [];
         foreach ($query->all($this->db) as $row) {
             $parents[$row['parent_item_id']][] = [
@@ -1543,7 +1553,6 @@ class DbManager extends \yii\rbac\DbManager
                 ->where(['module_name' => $authAddons])->select('id')->column();
         }
         $assignment = array_merge($assignment1, $assignment2, $assignment3);
-
         $childrenList = $this->getChildrenListIndexId();
         $result = [];
         foreach ($assignment as $item_id) {
@@ -1553,10 +1562,14 @@ class DbManager extends \yii\rbac\DbManager
             return [];
         }
 
+
         $query = (new Query())->from($this->routeTable)->where([
-//             'type' => Item::TYPE_PERMISSION,
             'item_id' => array_keys($result),
         ]);
+        /**
+         * 非接口权限
+         */
+        $query->andWhere(['!=','route_type',3]);
         $permissions = [];
 
         foreach (array_keys($result) as $itemId) {
@@ -1668,8 +1681,7 @@ class DbManager extends \yii\rbac\DbManager
                 }
             }
         }
-        Yii::debug($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
-
+        $item = $this->getItem($itemName);
         if (!$this->executeRule($user, $item, $params)) {
             Yii::info('checkAccessRecursiveAll-5', 'checkAccessRecursiveAll');
             $this->addError($itemName, $params, $assignments, $parent_type);
