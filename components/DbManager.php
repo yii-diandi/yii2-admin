@@ -1488,18 +1488,31 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function getChildrenListIndexId()
     {
-        /**
-         * 查找所有的接口和目录对应的item_id
-         */
+        $user_id = yii::$app->user->id;
+        $is_sys = User::find()->andWhere(['id' => $user_id])->select('is_sys')->scalar();
+
+        if ($is_sys == 1) {
+            /**
+             * 查找所有的接口和目录对应的item_id
+             */
+            $query = (new Query())->from($this->itemChildTable)->where(['>', 'parent_item_id', 0]);
+
+        } else {
+            /**
+             * 查找所有的接口和目录对应的item_id
+             */
 //        $api_item_id = (new Query())->from($this->routeTable)->where(['route_type'=>3])->orWhere(['route_type'=>0])->select('item_id')->column();
 //        $query = (new Query())->from($this->itemChildTable)->where(['>', 'parent_item_id', 0]);
 
 //       route_type 路由级别:0: 目录1: 页面 2: 按钮 3: 接口 放弃目录权限，接口校验单独处理，这个给路由和菜单权限数据
-        $query = (new Query())->from($this->itemChildTable)->leftJoin($this->routeTable,$this->routeTable.'.item_id = '.$this->itemChildTable.'.item_id')
-            ->where(['>', $this->itemChildTable.'.parent_item_id', 0])
-            ->andWhere([$this->routeTable.'.route_type'=>[1,2]]);
+            $query = (new Query())->from($this->itemChildTable)->leftJoin($this->routeTable, $this->routeTable . '.item_id = ' . $this->itemChildTable . '.item_id')
+                ->where(['>', $this->itemChildTable . '.parent_item_id', 0])
+                ->andWhere([$this->routeTable . '.route_type' => [1, 2]]);
 //        $query->andWhere(['not in', 'item_id', $api_item_id]);
 //        echo $query->createCommand()->getRawSql();
+
+        }
+
         $parents = [];
         foreach ($query->all($this->db) as $row) {
             $parents[$row['parent_item_id']][] = [
@@ -1509,6 +1522,7 @@ class DbManager extends \yii\rbac\DbManager
         }
         return $parents;
     }
+
 
     /**
      * Returns all permissions that the user inherits from the roles assigned to him.
@@ -1546,13 +1560,15 @@ class DbManager extends \yii\rbac\DbManager
          * 业务中心管理员 给业务中心管理员对应公司的插件权限
          */
         $assignment3 = [];
-        $user = User::find()->andWhere(['id' => $userId])->select(['is_business_admin', 'bloc_id'])->asArray()->one();
+
+        $user = User::find()->andWhere(['id' => $userId])->select(['is_business_admin', 'bloc_id','is_sys'])->asArray()->one();
         if ($user['is_business_admin'] == 1) {
             $authAddons = BlocAddons::find()->where(['bloc_id' => $user['bloc_id']])->select('module_name')->column();
             $assignment3 = AuthItem::find()
                 ->where(['module_name' => $authAddons])->select('id')->column();
         }
         $assignment = array_merge($assignment1, $assignment2, $assignment3);
+
         $childrenList = $this->getChildrenListIndexId();
         $result = [];
         foreach ($assignment as $item_id) {
@@ -1566,10 +1582,14 @@ class DbManager extends \yii\rbac\DbManager
         $query = (new Query())->from($this->routeTable)->where([
             'item_id' => array_keys($result),
         ]);
-        /**
-         * 非接口权限
-         */
-        $query->andWhere(['!=','route_type',3]);
+        $is_sys = $user['is_sys'];
+        if ($is_sys == 0){
+            /**
+             * 非接口权限
+             */
+            $query->andWhere(['!=', 'route_type', 3]);
+        }
+
         $permissions = [];
 
         foreach (array_keys($result) as $itemId) {
