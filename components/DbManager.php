@@ -1753,6 +1753,9 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function executeRule($user, $item, $params)
     {
+        if (!is_object($item) && !is_string($item)){
+            return true;
+        }
         // 规则检查
         if ((property_exists($item, 'ruleName') && $item->ruleName === null) || !property_exists($item, 'ruleName')) {
             return true;

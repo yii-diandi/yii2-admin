@@ -148,8 +148,13 @@ class Helper
                 'r'=> $r,
                 'params'=> $params
             ],'checkRoute');
-            if ($user->can($r, $params)) {
-                return true;
+            try {
+
+                if ($user->can($r, $params)) {
+                    return true;
+                }
+            }catch (\Exception $e){
+             var_dump($r);
             }
             Yii::debug('can is false','checkRoute');
 
