@@ -1514,6 +1514,8 @@ class DbManager extends \yii\rbac\DbManager
         }
 
         $parents = [];
+        ini_set('memory_limit', '1024M');
+        $query->select(['item_id', 'child', 'parent_item_id']);
         foreach ($query->all($this->db) as $row) {
             $parents[$row['parent_item_id']][] = [
                 'item_id' => $row['item_id'],
