@@ -21,5 +21,6 @@ if(!class_exists('yii\base\BaseObject')){
  */
 class BaseObject extends \yii\base\BaseObject
 {
+
     //put your code here
 }
