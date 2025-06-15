@@ -786,7 +786,8 @@ class DbManager extends \yii\rbac\DbManager
             return null;
         }
         $row['child_type'] = 1;
-
+        echo (new Query())->from($this->itemTable)
+            ->where($where)->createCommand()->getRawSql();die;
         return $this->populateItem($row, 'itemTable');
     }
 

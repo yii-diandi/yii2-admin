@@ -102,7 +102,7 @@ class Menu extends MenuModel
             ->andFilterWhere(['like', 'lower(parent.name)', $parent_name])->orderBy('order');
 
         $count = $query->count();
-        $pageSize =\Yii::$app->request->input('pageSize') ?? 10;
+        $pageSize = 20;
         $page =\Yii::$app->request->input('page') ?? 1;
         // 使用总数来创建一个分页对象
         $pagination = new Pagination([
@@ -112,7 +112,7 @@ class Menu extends MenuModel
             // 'pageParam'=>'page'
         ]);
 
-        $list = $query->offset($pagination->offset)
+        $list = $query
             // ->limit($pagination->limit)
             ->asArray()
             ->all();
