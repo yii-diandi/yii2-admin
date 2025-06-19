@@ -4,7 +4,7 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-04-12 13:49:05
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-10-28 19:45:02
+ * @Last Modified time: 2025-06-19 13:52:04
  */
 
 namespace diandi\admin\models;
@@ -79,12 +79,14 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'in', 'range' => [UserStatus::ACTIVE, UserStatus::INACTIVE]],
             [
                 [
-                    'username', 'email',
+                    'username',
+                    'email',
                     'verification_token',
                     'avatar',
                     'mobile',
                     'company',
-                ], 'string',
+                ],
+                'string',
             ],
             [[
                 'store_id',
@@ -104,7 +106,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function beforeDelete()
     {
-        $where['user_id'] = $user_id;
+        $where['user_id'] = $this->user_id;
         AuthAssignmentGroup::deleteAll($where);
         AddonsUser::deleteAll($where);
         DdApiAccessToken::deleteAll($where);
@@ -112,8 +114,8 @@ class User extends ActiveRecord implements IdentityInterface
         UserStore::deleteAll($where);
         ActionLog::deleteAll($where);
         //多个用户会共同管理一个商户所以不需要操作删除
-//        BlocStore::deleteAll(['store_id' => $this->store_id]);
-//        StoreLabelLink::deleteAll(['store_id' => $this->store_id]);
+        //        BlocStore::deleteAll(['store_id' => $this->store_id]);
+        //        StoreLabelLink::deleteAll(['store_id' => $this->store_id]);
         parent::beforeDelete();
     }
 
@@ -292,7 +294,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generatePasswordResetToken()
     {
-        $this->password_reset_token = Yii::$app->security->generateRandomString().'_'.time();
+        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
     /**

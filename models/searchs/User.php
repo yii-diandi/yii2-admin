@@ -1,10 +1,9 @@
 <?php
-
 /**
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-09 15:23:37
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2025-06-16 23:04:28
+ * @Last Modified time: 2022-10-28 19:46:34
  */
 
 namespace diandi\admin\models\searchs;
@@ -26,7 +25,7 @@ class User extends UserModel
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at', 'department_id', 'is_super_admin'], 'integer'],
+            [['id', 'status', 'created_at', 'updated_at','department_id','is_super_admin'], 'integer'],
             [['username', 'email', 'mobile'], 'safe'],
         ];
     }
@@ -67,13 +66,14 @@ class User extends UserModel
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
-            'department_id' => $this->department_id,
+            'department_id'=>$this->department_id,
+            'id' => $this->user_ids,
             'mobile' => $this->mobile,
             'email' => $this->email,
             'UserGroup.group_id' => $this->group_id,
         ]);
 
-        if (isset($this->is_super_admin)) {
+        if (isset($this->is_super_admin)){
             $query->andFilterWhere(['is_super_admin' => $this->is_super_admin]);
         }
 

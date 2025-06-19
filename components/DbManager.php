@@ -786,6 +786,7 @@ class DbManager extends \yii\rbac\DbManager
             return null;
         }
         $row['child_type'] = 1;
+
         return $this->populateItem($row, 'itemTable');
     }
 
@@ -1488,7 +1489,7 @@ class DbManager extends \yii\rbac\DbManager
     protected function getChildrenListIndexId()
     {
         $user_id = yii::$app->user->id;
-        $is_sys = User::find()->where(['id' => $user_id])->select('is_sys')->scalar();
+        $is_sys = User::find()->andWhere(['id' => $user_id])->select('is_sys')->scalar();
 
         if ($is_sys == 1) {
             /**
@@ -1564,9 +1565,9 @@ class DbManager extends \yii\rbac\DbManager
 
         $user = User::find()->andWhere(['id' => $userId])->select(['is_business_admin', 'bloc_id','is_sys'])->asArray()->one();
         if ($user['is_business_admin'] == 1) {
-            $authAddons = BlocAddons::find()->where(['bloc_id' => $user['bloc_id']])->select('module_name')->asArray()->column();
+            $authAddons = BlocAddons::find()->where(['bloc_id' => $user['bloc_id']])->select('module_name')->column();
             $assignment3 = AuthItem::find()
-                ->where(['module_name' => $authAddons])->select('id')->asArray()->column();
+                ->where(['module_name' => $authAddons])->select('id')->column();
         }
         $assignment = array_merge($assignment1, $assignment2, $assignment3);
 
@@ -1682,7 +1683,7 @@ class DbManager extends \yii\rbac\DbManager
                 $groupsArr = AuthAssignmentGroup::find()->where(['user_id' => $user])->select(['item_name', 'group_id'])->asArray()->one();
                 if (!empty($groupsArr)) {
                     $group_id = $groupsArr['group_id'];
-                    $group_child = AuthItemChild::find()->where(['parent_id' => $group_id])->select(['child'])->asArray()->column();
+                    $group_child = AuthItemChild::find()->where(['parent_id' => $group_id])->select(['child'])->column();
                     array_push($group_child, $groupsArr['item_name']);
 
                     if (!in_array($itemName, $group_child) && !empty($group_child)) {
