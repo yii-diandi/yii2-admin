@@ -3,15 +3,15 @@
  * @Author: Wang Chunsheng 2192138785@qq.com
  * @Date:   2020-03-28 03:21:27
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2022-05-26 13:09:59
+ * @Last Modified time: 2025-06-19 15:26:38
  */
  
 
 namespace diandi\admin\components;
 
 use admin\services\UserService;
-use common\models\DdUser;
 use diandi\admin\models\Route;
+use diandi\admin\models\User as ModelsUser;
 use Yii;
 use yii\caching\TagDependency;
 use yii\helpers\ArrayHelper;
@@ -136,7 +136,7 @@ class Helper
         $bloc_id = Yii::$app->request->headers['bloc-id'];
         if ($isbusinessRoles){
             $userId = Yii::$app->user->id;
-            $user_bloc_id = DdUser::find()->where(['id'=>$userId])->select('bloc_id')->scalar();
+            $user_bloc_id = ModelsUser::find()->where(['id'=>$userId])->select('bloc_id')->scalar();
             if ($user_bloc_id == $bloc_id){
                 return true;
             }
