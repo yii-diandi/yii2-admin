@@ -42,7 +42,7 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_INACTIVE = 0;
-    const STATUS_ACTIVE = 10;
+    const STATUS_ACTIVE   = 10;
 
     public $type;
 
@@ -63,7 +63,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [
-                'class' => \common\behaviors\SaveBehavior::className(),
+                'class'            => \common\behaviors\SaveBehavior::className(),
                 'createdAttribute' => 'created_at',
                 'updatedAttribute' => 'updated_at',
             ],
@@ -106,7 +106,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function beforeDelete()
     {
-        $where['user_id'] = $this->user_id;
+        // $where['user_id'] = $this->user_id;
+        $where['user_id'] = $this->id;
         AuthAssignmentGroup::deleteAll($where);
         AddonsUser::deleteAll($where);
         DdApiAccessToken::deleteAll($where);
@@ -116,7 +117,7 @@ class User extends ActiveRecord implements IdentityInterface
         //多个用户会共同管理一个商户所以不需要操作删除
         //        BlocStore::deleteAll(['store_id' => $this->store_id]);
         //        StoreLabelLink::deleteAll(['store_id' => $this->store_id]);
-        parent::beforeDelete();
+        return parent::beforeDelete();
     }
 
     /**
@@ -156,29 +157,29 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByPasswordResetToken($token)
     {
-        if (!static::isPasswordResetTokenValid($token)) {
+        if (! static::isPasswordResetTokenValid($token)) {
             return null;
         }
 
         return static::findOne([
             'password_reset_token' => $token,
-            'status' => UserStatus::ACTIVE,
+            'status'               => UserStatus::ACTIVE,
         ]);
     }
 
     public function addChildren($items)
     {
         $AddonsUser = new AddonsUser();
-        $success = 0;
-        $user_id = $this->id;
-        $type = $this->type;
+        $success    = 0;
+        $user_id    = $this->id;
+        $type       = $this->type;
         foreach ($items as $key => $value) {
             $_AddonsUser = clone $AddonsUser;
             $_AddonsUser->setAttributes([
-                'type' => $value == 'sys' ? 0 : 1,
+                'type'        => $value == 'sys' ? 0 : 1,
                 'module_name' => $value,
-                'user_id' => $user_id,
-                'status' => 1,
+                'user_id'     => $user_id,
+                'status'      => 1,
             ]);
             $success += $_AddonsUser->save();
         }
@@ -193,9 +194,9 @@ class User extends ActiveRecord implements IdentityInterface
     public function removeChildren($items)
     {
         $AddonsUser = new AddonsUser();
-        $success = 0;
-        $user_id = $this->id;
-        $type = $this->type;
+        $success    = 0;
+        $user_id    = $this->id;
+        $type       = $this->type;
 
         $success += $AddonsUser->deleteAll(['module_name' => $items]);
 
@@ -228,8 +229,8 @@ class User extends ActiveRecord implements IdentityInterface
         if (empty($token)) {
             return false;
         }
-        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
-        $parts = explode('_', $token);
+        $expire    = Yii::$app->params['user.passwordResetTokenExpire'];
+        $parts     = explode('_', $token);
         $timestamp = (int) end($parts);
 
         return $timestamp + $expire >= time();
@@ -310,18 +311,17 @@ class User extends ActiveRecord implements IdentityInterface
         return Configs::userDb();
     }
 
-
     /**
      * {@inheritdoc}
      */
     public function attributeLabels()
     {
         return [
-            'avatar' => '头像',
-            'username' => '用户名',
-            'email' => '邮箱',
-            'status' => '用户状态',
-            'id' => '用户ID',
+            'avatar'     => '头像',
+            'username'   => '用户名',
+            'email'      => '邮箱',
+            'status'     => '用户状态',
+            'id'         => '用户ID',
             'created_at' => '注册时间',
         ];
     }
