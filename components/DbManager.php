@@ -4,7 +4,7 @@
  * @Author: Wang chunsheng  email:2192138785@qq.com
  * @Date:   2020-05-03 19:56:41
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
- * @Last Modified time: 2023-07-18 16:45:18
+ * @Last Modified time: 2025-07-17 21:12:23
  */
 
 namespace diandi\admin\components;
@@ -135,39 +135,38 @@ class DbManager extends \yii\rbac\DbManager
         try {
             // child_type:1 表示权限
             $children = [];
-            foreach (AuthItem::find()
-                         ->alias('a')
-                         ->joinWith(['childs as c'], false)
-                         ->where(['c.parent_id' => $id])
-                         ->select([
-                             'a.name',
-                             'a.id',
-                             'a.description',
-                             'a.rule_name',
-                             'a.module_name',
-                             'a.data',
-                             'c.child',
-                             'c.parent_id',
-                             'a.created_at',
-                             'a.updated_at',
-                             'a.permission_type',
-                             'a.permission_level',
-                             'a.is_sys',
-                             'a.data'
-                         ])
-                         ->asArray()
-                         ->batch(100) as $batch) {
+            foreach (
+                AuthItem::find()
+                    ->alias('a')
+                    ->joinWith(['childs as c'], false)
+                    ->where(['c.parent_id' => $id])
+                    ->select([
+                        'a.name',
+                        'a.id',
+                        'a.description',
+                        'a.rule_name',
+                        'a.module_name',
+                        'a.data',
+                        'c.child',
+                        'c.parent_id',
+                        'a.created_at',
+                        'a.updated_at',
+                        'a.permission_type',
+                        'a.permission_level',
+                        'a.is_sys',
+                        'a.data'
+                    ])
+                    ->asArray()
+                    ->batch(100) as $batch
+            ) {
                 foreach ($batch as $row) {
                     $children[$row['id']] = $this->populateItem($row, 'itemTable');
                 }
             }
             return $children;
-
-
         } catch (\Exception $e) {
             throw new InvalidConfigException($e->getMessage());
         }
-
     }
 
     /**
@@ -499,8 +498,8 @@ class DbManager extends \yii\rbac\DbManager
         unset($this->_checkAccessAssignments[(string)$userId]);
 
         return $this->db->createCommand()
-                ->delete($this->assignmentGroupTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
-                ->execute() > 0;
+            ->delete($this->assignmentGroupTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
+            ->execute() > 0;
     }
 
     /**
@@ -1002,9 +1001,9 @@ class DbManager extends \yii\rbac\DbManager
             }
         } else {
             if (strpos($route_name, "*")) {
-                $route_type = 0;//目录
+                $route_type = 0; //目录
             } else {
-                $route_type = 3;//接口
+                $route_type = 3; //接口
             }
         }
 
@@ -1015,18 +1014,18 @@ class DbManager extends \yii\rbac\DbManager
             $module_name = 'system';
         }
         if (!($AuthRoute->load([
-                'name' => $item->name,
-                'route_name' => $route_name,
-                'pid' => $item->pid,
-                'route_type' => $route_type,//1页面2按钮3接口
-                'item_id' => 0,
-                'module_name' => $module_name,
-                'is_sys' => $module_name === 'sysytem' ? 1 : 0,
-                'description' => $item->description,
-                'data' => $item->data === null ? null : serialize($item->data),
-                'created_at' => $item->createdAt,
-                'updated_at' => $item->updatedAt,
-            ], '') && $AuthRoute->save())) {
+            'name' => $item->name,
+            'route_name' => $route_name,
+            'pid' => $item->pid,
+            'route_type' => $route_type, //1页面2按钮3接口
+            'item_id' => 0,
+            'module_name' => $module_name,
+            'is_sys' => $module_name === 'sysytem' ? 1 : 0,
+            'description' => $item->description,
+            'data' => $item->data === null ? null : serialize($item->data),
+            'created_at' => $item->createdAt,
+            'updated_at' => $item->updatedAt,
+        ], '') && $AuthRoute->save())) {
             $msg = $this->getModelError($AuthRoute);
             throw new InvalidArgumentException($msg);
         }
@@ -1219,7 +1218,6 @@ class DbManager extends \yii\rbac\DbManager
             Yii::debug($e->getMessage(), __METHOD__);
             throw new InvalidCallException($e->getMessage());
         }
-
     }
 
     /**
@@ -1402,7 +1400,7 @@ class DbManager extends \yii\rbac\DbManager
             ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
             ->andWhere(['a.user_id' => (string)$userId]);
         // ->andWhere(['b.type' => Item::TYPE_PERMISSION]);
-//        echo $query->createCommand()->getRawSql();
+        //        echo $query->createCommand()->getRawSql();
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row, 'assignmentTable');
@@ -1457,8 +1455,8 @@ class DbManager extends \yii\rbac\DbManager
 
         unset($this->checkAccessAssignments[(string)$userId]);
         $result = $this->db->createCommand()
-                ->delete($this->assignmentTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
-                ->execute() > 0;
+            ->delete($this->assignmentTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
+            ->execute() > 0;
 
         $this->invalidateCache();
 
@@ -1489,27 +1487,26 @@ class DbManager extends \yii\rbac\DbManager
     protected function getChildrenListIndexId()
     {
         $user_id = yii::$app->user->id;
-        $is_sys = User::find()->andWhere(['id' => $user_id])->select('is_sys')->scalar();
+        $is_sys = (new AuthUserServer)->getUserIsSys($user_id);
 
         if ($is_sys == 1) {
             /**
              * 查找所有的接口和目录对应的item_id
              */
             $query = (new Query())->from($this->itemChildTable)->where(['>', 'parent_item_id', 0]);
-
         } else {
             /**
              * 查找所有的接口和目录对应的item_id
              */
-//        $api_item_id = (new Query())->from($this->routeTable)->where(['route_type'=>3])->orWhere(['route_type'=>0])->select('item_id')->column();
-//        $query = (new Query())->from($this->itemChildTable)->where(['>', 'parent_item_id', 0]);
+            //        $api_item_id = (new Query())->from($this->routeTable)->where(['route_type'=>3])->orWhere(['route_type'=>0])->select('item_id')->column();
+            //        $query = (new Query())->from($this->itemChildTable)->where(['>', 'parent_item_id', 0]);
 
-//       route_type 路由级别:0: 目录1: 页面 2: 按钮 3: 接口 放弃目录权限，接口校验单独处理，这个给路由和菜单权限数据
+            //       route_type 路由级别:0: 目录1: 页面 2: 按钮 3: 接口 放弃目录权限，接口校验单独处理，这个给路由和菜单权限数据
             $query = (new Query())->from($this->itemChildTable)->leftJoin($this->routeTable, $this->routeTable . '.item_id = ' . $this->itemChildTable . '.item_id')
                 ->where(['>', $this->itemChildTable . '.parent_item_id', 0])
                 ->andWhere([$this->routeTable . '.route_type' => [1, 2]]);
-//        $query->andWhere(['not in', 'item_id', $api_item_id]);
-//        echo $query->createCommand()->getRawSql();
+            //        $query->andWhere(['not in', 'item_id', $api_item_id]);
+            //        echo $query->createCommand()->getRawSql();
 
         }
 
@@ -1562,8 +1559,10 @@ class DbManager extends \yii\rbac\DbManager
          * 业务中心管理员 给业务中心管理员对应公司的插件权限
          */
         $assignment3 = [];
+        $user = (new AuthUserServer)->userInfo($userId, ['is_business_admin', 'bloc_id', 'is_sys']);
 
-        $user = User::find()->andWhere(['id' => $userId])->select(['is_business_admin', 'bloc_id','is_sys'])->asArray()->one();
+
+
         if ($user['is_business_admin'] == 1) {
             $authAddons = BlocAddons::find()->where(['bloc_id' => $user['bloc_id']])->select('module_name')->column();
             $assignment3 = AuthItem::find()
@@ -1585,7 +1584,7 @@ class DbManager extends \yii\rbac\DbManager
             'item_id' => array_keys($result),
         ]);
         $is_sys = $user['is_sys'];
-        if ($is_sys == 0){
+        if ($is_sys == 0) {
             /**
              * 非接口权限
              */
@@ -1693,7 +1692,6 @@ class DbManager extends \yii\rbac\DbManager
                         return false;
                     }
                 }
-
             } elseif ($parent_type == 3) {
                 if (($item = $this->getItem($itemName)) === null) {
                     Yii::info('checkAccessRecursiveAll-4', 'checkAccessRecursiveAll');
@@ -1755,7 +1753,7 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function executeRule($user, $item, $params)
     {
-        if (!is_object($item) && !is_string($item)){
+        if (!is_object($item) && !is_string($item)) {
             return true;
         }
         // 规则检查
