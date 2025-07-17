@@ -1487,7 +1487,7 @@ class DbManager extends \yii\rbac\DbManager
     protected function getChildrenListIndexId()
     {
         $user_id = yii::$app->user->id;
-        $is_sys = (new AuthUserServer)->getUserIsSys($user_id);
+        $is_sys = AuthUserServer::getUserIsSys($user_id);
 
         if ($is_sys == 1) {
             /**
@@ -1559,7 +1559,7 @@ class DbManager extends \yii\rbac\DbManager
          * 业务中心管理员 给业务中心管理员对应公司的插件权限
          */
         $assignment3 = [];
-        $user = (new AuthUserServer)->userInfo($userId, ['is_business_admin', 'bloc_id', 'is_sys']);
+        $user = AuthUserServer::userInfo($userId, ['is_business_admin', 'bloc_id', 'is_sys']);
 
 
 
