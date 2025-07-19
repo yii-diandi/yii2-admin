@@ -497,6 +497,10 @@ class DbManager extends \yii\rbac\DbManager
 
         unset($this->_checkAccessAssignments[(string)$userId]);
 
+        if(empty($role->name)) {
+            return true;
+        }
+
         return $this->db->createCommand()
             ->delete($this->assignmentGroupTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
             ->execute() > 0;
@@ -1489,6 +1493,10 @@ class DbManager extends \yii\rbac\DbManager
         $user_id = yii::$app->user->id;
         $is_sys = AuthUserServer::getUserIsSys($user_id);
 
+        $sql = "select item_id from {{%auth_assignment_group}} where user_id=".$user_id." group by item_id";
+        $user_role = Yii::$app->db->createCommand($sql)->queryAll();
+        $user_role_ids = array_column($user_role, 'item_id');
+
         if ($is_sys == 1) {
             /**
              * 查找所有的接口和目录对应的item_id
@@ -1502,9 +1510,16 @@ class DbManager extends \yii\rbac\DbManager
             //        $query = (new Query())->from($this->itemChildTable)->where(['>', 'parent_item_id', 0]);
 
             //       route_type 路由级别:0: 目录1: 页面 2: 按钮 3: 接口 放弃目录权限，接口校验单独处理，这个给路由和菜单权限数据
-            $query = (new Query())->from($this->itemChildTable)->leftJoin($this->routeTable, $this->routeTable . '.item_id = ' . $this->itemChildTable . '.item_id')
+            $query = (new Query())->from($this->itemChildTable)
+
+
+          /*      ->leftJoin($this->routeTable, $this->routeTable . '.item_id = ' . $this->itemChildTable . '.item_id')
                 ->where(['>', $this->itemChildTable . '.parent_item_id', 0])
-                ->andWhere([$this->routeTable . '.route_type' => [1, 2]]);
+                ->andWhere([$this->routeTable . '.route_type' => [1, 2]]);*/
+          ->where(['in', 'parent_item_id', $user_role_ids])
+                ->andWhere(['parent_type' => 2]);
+
+
             //        $query->andWhere(['not in', 'item_id', $api_item_id]);
             //        echo $query->createCommand()->getRawSql();
 
@@ -1512,7 +1527,8 @@ class DbManager extends \yii\rbac\DbManager
 
         $parents = [];
         ini_set('memory_limit', '1024M');
-        $query->select([$this->itemChildTable . '.item_id', 'child', 'parent_item_id']);
+//        $query->select([$this->itemChildTable . '.item_id', 'child', 'parent_item_id']);
+        $query->select(['item_id', 'child', 'parent_item_id']);
         foreach ($query->all($this->db) as $row) {
             $parents[$row['parent_item_id']][] = [
                 'item_id' => $row['item_id'],
