@@ -38,7 +38,8 @@ use yii\web\NotFoundHttpException;
  *
  * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
  *
- * You may change the names of the three tables used to store the authorization data by setting [[\yii\rbac\DbManager::$itemTable]],
+ * You may change the names of the three tables used to store the authorization data by setting
+ * [[\yii\rbac\DbManager::$itemTable]],
  * [[\yii\rbac\DbManager::$itemChildTable]] and [[\yii\rbac\DbManager::$assignmentTable]].
  *
  */
@@ -88,39 +89,39 @@ class DbManager extends \yii\rbac\DbManager
             return;
         }
         $data = $this->cache->get($this->cacheKey);
-        if (is_array($data) && isset($data[0], $data[1], $data[2])) {
-            list($this->items, $this->rules, $this->parents) = $data;
+        if (is_array($data) && isset($data[ 0 ], $data[ 1 ], $data[ 2 ])) {
+            [$this->items, $this->rules, $this->parents] = $data;
 
             return;
         }
 
-        $query = (new Query())->from($this->itemTable);
+        $query       = (new Query())->from($this->itemTable);
         $this->items = [];
         foreach ($query->all($this->db) as $row) {
-            $this->items[$row['name']] = $this->populateItem($row, 'itemTable');
+            $this->items[ $row[ 'name' ] ] = $this->populateItem($row, 'itemTable');
         }
 
-        $query = (new Query())->from($this->routeTable);
+        $query        = (new Query())->from($this->routeTable);
         $this->routes = [];
         foreach ($query->all($this->db) as $row) {
-            $this->routes[$row['name']] = $this->populateRoute($row);
+            $this->routes[ $row[ 'name' ] ] = $this->populateRoute($row);
         }
 
-        $query = (new Query())->from($this->ruleTable);
+        $query       = (new Query())->from($this->ruleTable);
         $this->rules = [];
         foreach ($query->all($this->db) as $row) {
-            $data = $row['data'];
+            $data = $row[ 'data' ];
             if (is_resource($data)) {
                 $data = stream_get_contents($data);
             }
-            $this->rules[$row['name']] = unserialize($data);
+            $this->rules[ $row[ 'name' ] ] = unserialize($data);
         }
 
-        $query = (new Query())->from($this->itemChildTable);
+        $query         = (new Query())->from($this->itemChildTable);
         $this->parents = [];
         foreach ($query->all($this->db) as $row) {
-            if (isset($this->items[$row['child']])) {
-                $this->parents[$row['child']][] = $row['parent'];
+            if (isset($this->items[ $row[ 'child' ] ])) {
+                $this->parents[ $row[ 'child' ] ][] = $row[ 'parent' ];
             }
         }
 
@@ -155,12 +156,13 @@ class DbManager extends \yii\rbac\DbManager
                         'a.permission_level',
                         'a.is_sys',
                         'a.data'
-                    ])
+                    ]
+                    )
                     ->asArray()
                     ->batch(100) as $batch
             ) {
                 foreach ($batch as $row) {
-                    $children[$row['id']] = $this->populateItem($row, 'itemTable');
+                    $children[ $row[ 'id' ] ] = $this->populateItem($row, 'itemTable');
                 }
             }
             return $children;
@@ -186,15 +188,16 @@ class DbManager extends \yii\rbac\DbManager
         }
 
         $parent_item_id = $parent->item_id;
-        $child_item_id = $child->item_id;
+        $child_item_id  = $child->item_id;
 
         /**
          * 使用db 查询，避免循环引用导致死循环
          */
         $childContainsParent = (new Query())->from($this->itemChildTable)->where([
-            'item_id' => $parent_item_id,
+            'item_id'        => $parent_item_id,
             'parent_item_id' => $child_item_id
-        ])->exists();
+        ]
+        )->exists();
 
         // 反向查询子级是否包含父级
 
@@ -216,19 +219,20 @@ class DbManager extends \yii\rbac\DbManager
     public function getPermissionsByRoleId($roleId)
     {
         $childrenList = $this->getChildrenListIndexId();
-        $result = [];
+        $result       = [];
 
         $this->getChildrenRecursiveByItemId($roleId, $childrenList, $result);
         if (empty($result)) {
             return [];
         }
-        $query = (new Query())->from($this->routeTable)->where([
+        $query       = (new Query())->from($this->routeTable)->where([
             'is_sys' => Item::TYPE_PERMISSION,
-            'name' => array_keys($result),
-        ]);
+            'name'   => array_keys($result),
+        ]
+        );
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row, 'routeTable');
+            $permissions[ $row[ 'name' ] ] = $this->populateItem($row, 'routeTable');
         }
         return $permissions;
     }
@@ -239,7 +243,7 @@ class DbManager extends \yii\rbac\DbManager
     public function getPermissionsByRole($roleName)
     {
         $childrenList = $this->getChildrenList();
-        $result = [];
+        $result       = [];
 
         $this->getChildrenRecursive($roleName, $childrenList, $result);
         if (empty($result)) {
@@ -247,12 +251,13 @@ class DbManager extends \yii\rbac\DbManager
         }
         $query = (new Query())->from($this->routeTable)->where([
             'is_sys' => Item::TYPE_PERMISSION,
-            'name' => array_keys($result),
-        ]);
+            'name'   => array_keys($result),
+        ]
+        );
 
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row, 'routeTable');
+            $permissions[ $row[ 'name' ] ] = $this->populateItem($row, 'routeTable');
         }
         return $permissions;
     }
@@ -273,17 +278,17 @@ class DbManager extends \yii\rbac\DbManager
         $where = [];
 
         if (!empty($module_name)) {
-            $where['module_name'] = $module_name;
+            $where[ 'module_name' ] = $module_name;
         }
         if (in_array($is_sys, [0, 1], true)) {
-            $where['is_sys'] = $is_sys;
+            $where[ 'is_sys' ] = $is_sys;
         }
         $query = (new Query())
             ->from($this->routeTable)
             ->where($where);
         $items = [];
         foreach ($query->all($this->db) as $row) {
-            $items[$row['name']] = $this->populateRoute($row);
+            $items[ $row[ 'name' ] ] = $this->populateRoute($row);
         }
         return $items;
     }
@@ -298,32 +303,32 @@ class DbManager extends \yii\rbac\DbManager
     public function getAuths($group_name, $is_sys = 3)
     {
         $available = [];
-        $assigned = [];
+        $assigned  = [];
         $auth_type = $this->auth_type;
 
         $all = [];
 
         $where = [];
         if (is_numeric($group_name)) {
-            $where['item_id'] = $group_name;
+            $where[ 'item_id' ] = $group_name;
         } else {
-            $where['name'] = $group_name;
+            $where[ 'name' ] = $group_name;
         }
 
         $groupId = AuthUserGroup::find()->where($where)->select('id')->scalar();
 
         // 用户组授权
         foreach ($this->getGroups($is_sys) as $name => $item) {
-            $id = $item->item_id;
-            $available['role'][$id] = $item;
+            $id                         = $item->item_id;
+            $available[ 'role' ][ $id ] = $item;
         }
 
         // 权限授权
         foreach ($this->getPermissions($is_sys) as $id => $item) {
             $name = $item->name;
-            $id = $item->item_id;
+            $id   = $item->item_id;
             if ($item->permission_type === 1) {
-                $available['permission'][$id] = $item;
+                $available[ 'permission' ][ $id ] = $item;
             }
         }
 
@@ -332,34 +337,34 @@ class DbManager extends \yii\rbac\DbManager
         foreach ($this->getRoutes($is_sys) as $name => $item) {
             $id = $item->item_id;
 
-            $available['route'][$id] = $item;
+            $available[ 'route' ][ $id ] = $item;
         }
 
         $all = $available;
 
         foreach ($this->getChildren($groupId) as $item => $val) {
-            $key = $auth_type[$val->permission_type];
-            $id = $val->item_id;
-            $assigned[$key][$id] = $val;
+            $key                     = $auth_type[ $val->permission_type ];
+            $id                      = $val->item_id;
+            $assigned[ $key ][ $id ] = $val;
 
-            unset($available[$key][$id]);
+            unset($available[ $key ][ $id ]);
         }
 
         // 子权限授权
         foreach ($this->getItemChildren($group_name, $is_sys, 2) as $id => $item) {
-            $key = $auth_type[$item->child_type];
+            $key = $auth_type[ $item->child_type ];
 
-            $assigned[$key][$item->item_id] = $item;
+            $assigned[ $key ][ $item->item_id ] = $item;
 
-            unset($available[$key][$item->item_id]);
+            unset($available[ $key ][ $item->item_id ]);
         }
 
-        unset($available['role'][$group_name]);
+        unset($available[ 'role' ][ $group_name ]);
 
         return [
-            'all' => $all,
+            'all'       => $all,
             'available' => $available,
-            'assigned' => $assigned,
+            'assigned'  => $assigned,
         ];
     }
 
@@ -374,9 +379,9 @@ class DbManager extends \yii\rbac\DbManager
     public function getItemChildren($id, $is_sys = 3, $parent_type = 0)
     {
         $children = [];
-        $where = [];
+        $where    = [];
         if (in_array($is_sys, [0, 1], true)) {
-            $where['c.is_sys'] = $is_sys;
+            $where[ 'c.is_sys' ] = $is_sys;
         }
 
         //child_type: 0:route,1:permission,2:role
@@ -385,12 +390,13 @@ class DbManager extends \yii\rbac\DbManager
                 // 路由
                 // 获取route已授权
                 $list = AuthRoute::find()->alias('r')->joinWith('childs as c')->where([
-                    'c.item_id' => $id,
+                    'c.item_id'   => $id,
                     'parent_type' => $parent_type,
-                ])->andWhere($where)->select(['c.child as name', 'r.is_sys', 'c.id', 'child_type', 'description', 'data', 'created_at', 'updated_at', 'c.item_id'])->asArray()->all();
+                ]
+                )->andWhere($where)->select(['c.child as name', 'r.is_sys', 'c.id', 'child_type', 'description', 'data', 'created_at', 'updated_at', 'c.item_id'])->asArray()->all();
 
                 foreach ($list as $row) {
-                    $children[$row['id']] = $this->populateItem($row, 'routeTable');
+                    $children[ $row[ 'id' ] ] = $this->populateItem($row, 'routeTable');
                 }
 
                 break;
@@ -402,12 +408,13 @@ class DbManager extends \yii\rbac\DbManager
             case 2:
                 // 用户组
                 $list = AuthUserGroup::find()->alias('u')->joinWith('childs as c')->where([
-                    'u.item_id' => $id,
+                    'u.item_id'   => $id,
                     'parent_type' => $parent_type,
-                ])->andWhere($where)->select(['c.child as name', 'u.is_sys', 'c.id', 'c.item_id', 'child_type', 'description', 'created_at', 'updated_at', 'c.item_id'])->asArray()->all();
+                ]
+                )->andWhere($where)->select(['c.child as name', 'u.is_sys', 'c.id', 'c.item_id', 'child_type', 'description', 'created_at', 'updated_at', 'c.item_id'])->asArray()->all();
 
                 foreach ($list as $row) {
-                    $children[$row['id']] = $this->populateItem($row, 'groupTable');
+                    $children[ $row[ 'id' ] ] = $this->populateItem($row, 'groupTable');
                 }
 
                 break;
@@ -415,12 +422,13 @@ class DbManager extends \yii\rbac\DbManager
                 // 权限
                 // 获取权限已授权
                 $list = AuthItem::find()->alias('p')->joinWith('childs as c')->where([
-                    'c.item_id' => $id,
+                    'c.item_id'   => $id,
                     'parent_type' => $parent_type,
-                ])->andWhere($where)->select(['p.permission_type', 'c.id', 'c.parent_id', 'c.child as name', 'item_id', 'child_type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])->indexBy('item_id')->asArray()->all();
+                ]
+                )->andWhere($where)->select(['p.permission_type', 'c.id', 'c.parent_id', 'c.child as name', 'item_id', 'child_type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])->indexBy('item_id')->asArray()->all();
 
                 foreach ($list as $row) {
-                    $children[$row['item_id']] = $this->populateItem($row, 'itemTable');
+                    $children[ $row[ 'item_id' ] ] = $this->populateItem($row, 'itemTable');
                 }
 
                 break;
@@ -428,11 +436,12 @@ class DbManager extends \yii\rbac\DbManager
             default:
 
                 $list = AuthItem::find()->alias('p')->joinWith('childs as c')->where([
-                    'c.item_id' => $id,
+                    'c.item_id'   => $id,
                     'parent_type' => $parent_type,
-                ])->andWhere($where)->select(['c.id', 'c.parent_id', 'c.child as name', 'item_id', 'child_type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])->indexBy('item_id')->asArray()->all();
+                ]
+                )->andWhere($where)->select(['c.id', 'c.parent_id', 'c.child as name', 'item_id', 'child_type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])->indexBy('item_id')->asArray()->all();
                 foreach ($list as $row) {
-                    $children[$row['item_id']] = $this->populateItem($row, 'itemTable');
+                    $children[ $row[ 'item_id' ] ] = $this->populateItem($row, 'itemTable');
                 }
 
                 break;
@@ -446,19 +455,19 @@ class DbManager extends \yii\rbac\DbManager
         $where = [];
 
         if (is_numeric($name)) {
-            $where['item_id'] = $name;
+            $where[ 'item_id' ] = $name;
         } else {
-            $where['name'] = $name;
+            $where[ 'name' ] = $name;
         }
 
         if (in_array($is_sys, [0, 1], true)) {
-            $where['is_sys'] = $is_sys;
+            $where[ 'is_sys' ] = $is_sys;
         }
 
         $query = (new Query())
             ->from($this->groupTable)
             ->where($where);
-        $item = $query->one($this->db);
+        $item  = $query->one($this->db);
         if ($item === false) {
             return null;
         }
@@ -467,15 +476,15 @@ class DbManager extends \yii\rbac\DbManager
         return $items;
     }
 
-    public function getGroups($is_sys = 3,$bloc_id = 0)
+    public function getGroups($is_sys = 3, $bloc_id = 0)
     {
         $where = [];
         if (in_array($is_sys, [0, 1], true)) {
-            $where['is_sys'] = $is_sys;
+            $where[ 'is_sys' ] = $is_sys;
         }
 
         if ($bloc_id > 0) {
-            $where['bloc_id'] = $bloc_id;
+            $where[ 'bloc_id' ] = $bloc_id;
         }
 
         $query = (new Query())
@@ -484,7 +493,7 @@ class DbManager extends \yii\rbac\DbManager
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
-            $items[$row['name']] = $this->populateItem($row, 'groupTable');
+            $items[ $row[ 'name' ] ] = $this->populateItem($row, 'groupTable');
         }
 
         return $items;
@@ -499,15 +508,15 @@ class DbManager extends \yii\rbac\DbManager
             return false;
         }
 
-        unset($this->_checkAccessAssignments[(string)$userId]);
+        unset($this->_checkAccessAssignments[ (string) $userId ]);
 
-        if(empty($role->name)) {
+        if (empty($role->name)) {
             return true;
         }
 
         return $this->db->createCommand()
-            ->delete($this->assignmentGroupTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
-            ->execute() > 0;
+                ->delete($this->assignmentGroupTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
+                ->execute() > 0;
     }
 
     /**
@@ -525,15 +534,15 @@ class DbManager extends \yii\rbac\DbManager
             return null;
         }
 
-        if (!empty($this->routes[$name])) {
-            return $this->routes[$name];
+        if (!empty($this->routes[ $name ])) {
+            return $this->routes[ $name ];
         }
 
         $where = [];
         if (is_numeric($name)) {
-            $where['item_id'] = $name;
+            $where[ 'item_id' ] = $name;
         } else {
-            $where['name'] = $name;
+            $where[ 'name' ] = $name;
         }
 
         $row = (new Query())->from($this->routeTable)
@@ -543,7 +552,8 @@ class DbManager extends \yii\rbac\DbManager
             'sql' => (new Query())->from($this->routeTable)
                 ->where($where)->createCommand()->getRawSql(),
             'row' => $row
-        ], 'getRoute');
+        ], 'getRoute'
+        );
         if ($row === false) {
             return null;
         }
@@ -574,7 +584,7 @@ class DbManager extends \yii\rbac\DbManager
     {
         // 替换为ID查询
         if ($this->rules !== null) {
-            return isset($this->rules[$id]) ? $this->rules[$id] : null;
+            return isset($this->rules[ $id ]) ? $this->rules[ $id ] : null;
         }
 
         $row = (new Query())->select(['data'])
@@ -584,7 +594,7 @@ class DbManager extends \yii\rbac\DbManager
         if ($row === false) {
             return null;
         }
-        $data = $row['data'];
+        $data = $row[ 'data' ];
         if (is_resource($data)) {
             $data = stream_get_contents($data);
         }
@@ -601,12 +611,12 @@ class DbManager extends \yii\rbac\DbManager
         $query = (new Query())->from($this->ruleTable);
         $rules = [];
         foreach ($query->all($this->db) as $row) {
-            $data = $row['data'];
+            $data = $row[ 'data' ];
             if (is_resource($data)) {
                 $data = stream_get_contents($data);
             }
-            $rule = unserialize($data);
-            $rules[$row['id']] = $rule;
+            $rule                  = unserialize($data);
+            $rules[ $row[ 'id' ] ] = $rule;
         }
 
         return $rules;
@@ -623,14 +633,14 @@ class DbManager extends \yii\rbac\DbManager
 
         // 默认读取权限数据
 
-        $where['permission_type'] = $permission_type;
+        $where[ 'permission_type' ] = $permission_type;
 
         if (in_array($is_sys, [0, 1], true)) {
-            $where['is_sys'] = $is_sys;
+            $where[ 'is_sys' ] = $is_sys;
         }
 
         if (!empty($module_name)) {
-            $where['module_name'] = $module_name;
+            $where[ 'module_name' ] = $module_name;
         }
 
         $query = (new Query())
@@ -642,7 +652,7 @@ class DbManager extends \yii\rbac\DbManager
         // 分批处理数据
         foreach ($query->batch(100, $this->db) as $batch) {
             foreach ($batch as $row) {
-                $items[$row['id']] = $this->populateItem($row);
+                $items[ $row[ 'id' ] ] = $this->populateItem($row);
             }
         }
 
@@ -658,25 +668,26 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function populateRoute($row, $parent_type = 1)
     {
-        if (!isset($row['data']) || ($data = @unserialize(is_resource($row['data']) ? stream_get_contents($row['data']) : $row['data'])) === false) {
+        if (!isset($row[ 'data' ]) || ($data = @unserialize(is_resource($row[ 'data' ]) ? stream_get_contents($row[ 'data' ]) : $row[ 'data' ])) === false) {
             $data = null;
         }
 
         return new Route([
-            'id' => $row['id'],
-            'item_id' => $row['item_id'],
-            'route_type' => $row['route_type'],
-            'name' => $row['name'],
-            'pid' => $row['pid'],
-            'module_name' => $row['module_name'],
-            'is_sys' => $row['is_sys'],
-            'child_type' => 0,
+            'id'          => $row[ 'id' ],
+            'item_id'     => $row[ 'item_id' ],
+            'route_type'  => $row[ 'route_type' ],
+            'name'        => $row[ 'name' ],
+            'pid'         => $row[ 'pid' ],
+            'module_name' => $row[ 'module_name' ],
+            'is_sys'      => $row[ 'is_sys' ],
+            'child_type'  => 0,
             'parent_type' => $parent_type,
-            'description' => $row['description'],
-            'data' => $data,
-            'createdAt' => $row['created_at'],
-            'updatedAt' => $row['updated_at'],
-        ]);
+            'description' => $row[ 'description' ],
+            'data'        => $data,
+            'createdAt'   => $row[ 'created_at' ],
+            'updatedAt'   => $row[ 'updated_at' ],
+        ]
+        );
     }
 
     /**
@@ -684,7 +695,7 @@ class DbManager extends \yii\rbac\DbManager
      */
     public function createPermission($name)
     {
-        $permission = new Permission();
+        $permission       = new Permission();
         $permission->name = $name;
 
         return $permission;
@@ -695,12 +706,12 @@ class DbManager extends \yii\rbac\DbManager
      */
     public function createRoutePermission($name)
     {
-        $permission = new Route();
+        $permission       = new Route();
         $permission->name = $name;
         if (strpos($name, '_') !== false) {
-            $list = explode('/', $name);
-            $permission->is_sys = 1;
-            $permission->module_name = $list[1];
+            $list                    = explode('/', $name);
+            $permission->is_sys      = 1;
+            $permission->module_name = $list[ 1 ];
         } else {
             $permission->is_sys = 0;
         }
@@ -717,15 +728,15 @@ class DbManager extends \yii\rbac\DbManager
     {
         if ($object instanceof Item) {
             if ($object->ruleName && $this->getRule($object->ruleName) === null) {
-                $rule = \Yii::createObject($object->ruleName);
+                $rule       = \Yii::createObject($object->ruleName);
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
 
             return $this->addItem($object);
-        } elseif ($object instanceof Route) {
+        } else if ($object instanceof Route) {
             return $this->addRoute($object);
-        } elseif ($object instanceof Rule) {
+        } else if ($object instanceof Rule) {
             return $this->addRule($object);
         }
 
@@ -744,13 +755,13 @@ class DbManager extends \yii\rbac\DbManager
     {
         $where = [];
         if (in_array($is_sys, [0, 1], true)) {
-            $where['is_sys'] = $is_sys;
+            $where[ 'is_sys' ] = $is_sys;
         }
 
-        $where['parent_id'] = 0;
+        $where[ 'parent_id' ] = 0;
 
         if (!empty($module_name)) {
-            $where['module_name'] = $module_name;
+            $where[ 'module_name' ] = $module_name;
         }
 
         $query = (new Query())
@@ -759,7 +770,7 @@ class DbManager extends \yii\rbac\DbManager
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
-            $items[$row['name']] = $this->populateItem($row, 'itemTable');
+            $items[ $row[ 'name' ] ] = $this->populateItem($row, 'itemTable');
         }
 
         return $items;
@@ -774,15 +785,15 @@ class DbManager extends \yii\rbac\DbManager
             return null;
         }
 
-        if (!empty($this->items[$name])) {
-            return $this->items[$name];
+        if (!empty($this->items[ $name ])) {
+            return $this->items[ $name ];
         }
 
         $where = [];
         if (is_numeric($name)) {
-            $where['id'] = $name;
+            $where[ 'id' ] = $name;
         } else {
-            $where['name'] = $name;
+            $where[ 'name' ] = $name;
         }
 
         $row = (new Query())->from($this->itemTable)
@@ -792,7 +803,7 @@ class DbManager extends \yii\rbac\DbManager
         if ($row === false) {
             return null;
         }
-        $row['child_type'] = 1;
+        $row[ 'child_type' ] = 1;
 
         return $this->populateItem($row, 'itemTable');
     }
@@ -829,11 +840,12 @@ class DbManager extends \yii\rbac\DbManager
         }
         $this->db->createCommand()
             ->insert($this->routeTable, [
-                'name' => $rule->name,
-                'data' => serialize($rule),
+                'name'       => $rule->name,
+                'data'       => serialize($rule),
                 'created_at' => $rule->createdAt,
                 'updated_at' => $rule->updatedAt,
-            ])->execute();
+            ]
+            )->execute();
 
         $this->invalidateCache();
 
@@ -855,12 +867,13 @@ class DbManager extends \yii\rbac\DbManager
 
         $this->db->createCommand()
             ->update($this->routeTable, [
-                'name' => $rule->name,
-                'data' => serialize($rule),
+                'name'       => $rule->name,
+                'data'       => serialize($rule),
                 'updated_at' => $rule->updatedAt,
             ], [
                 'name' => $name,
-            ])->execute();
+            ]
+            )->execute();
 
         $this->invalidateCache();
 
@@ -874,7 +887,7 @@ class DbManager extends \yii\rbac\DbManager
     {
         if ($object instanceof Item) {
             return $this->removeItem($object);
-        } elseif ($object instanceof Route) {
+        } else if ($object instanceof Route) {
             return $this->removeRoute($object);
         } else {
             return $this->removeRule($object);
@@ -903,7 +916,7 @@ class DbManager extends \yii\rbac\DbManager
     public function removeChild($parent, $child)
     {
         $parent_item_id = $parent->item_id;
-        $child_type = $child->child_type;
+        $child_type     = $child->child_type;
         if ($child instanceof Item) {
             $item_id = $child->id;
         } else {
@@ -911,9 +924,10 @@ class DbManager extends \yii\rbac\DbManager
         }
         $Res = AuthItemChild::deleteAll([
             'parent_item_id' => $parent_item_id,
-            'child_type' => $child_type,
-            'item_id' => $item_id,
-        ]);
+            'child_type'     => $child_type,
+            'item_id'        => $item_id,
+        ]
+        );
 
         return $Res;
     }
@@ -925,13 +939,13 @@ class DbManager extends \yii\rbac\DbManager
     {
         if ($object instanceof Item) {
             if ($object->ruleName && $this->getRule($object->ruleName) === null) {
-                $rule = \Yii::createObject($object->ruleName);
+                $rule       = \Yii::createObject($object->ruleName);
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
 
             return $this->updateItem($id, $object);
-        } elseif ($object instanceof Rule) {
+        } else if ($object instanceof Rule) {
             return $this->updateRule($id, $object);
         }
 
@@ -943,9 +957,9 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function updateItem($id, $item)
     {
-        $query = (new Query())->from($this->itemTable)->where(['id' => $id]);
+        $query   = (new Query())->from($this->itemTable)->where(['id' => $id]);
         $itemOne = $query->one($this->db);
-        $name = $itemOne['name'];
+        $name    = $itemOne[ 'name' ];
         if ($item->name !== $name && !$this->supportsCascadeUpdate()) {
             $this->db->createCommand()
                 ->update($this->itemChildTable, ['parent' => $item->name], ['parent_id' => $id])
@@ -962,18 +976,19 @@ class DbManager extends \yii\rbac\DbManager
 
         $this->db->createCommand()
             ->update($this->itemTable, [
-                'name' => $item->name,
-                'parent_id' => $item->parent_id,
-                'permission_type' => $item->permission_type,
+                'name'             => $item->name,
+                'parent_id'        => $item->parent_id,
+                'permission_type'  => $item->permission_type,
                 'permission_level' => $item->permission_level,
-                'module_name' => $item->module_name,
-                'description' => $item->description,
-                'rule_name' => $item->ruleName,
-                'data' => $item->data === null ? null : serialize($item->data),
-                'updated_at' => $item->updatedAt,
+                'module_name'      => $item->module_name,
+                'description'      => $item->description,
+                'rule_name'        => $item->ruleName,
+                'data'             => $item->data === null ? null : serialize($item->data),
+                'updated_at'       => $item->updatedAt,
             ], [
                 'id' => $id,
-            ])->execute();
+            ]
+            )->execute();
         $this->invalidateCache();
 
         return true;
@@ -992,9 +1007,9 @@ class DbManager extends \yii\rbac\DbManager
             $item->updatedAt = $time;
         }
 
-        $AuthRoute = new AuthRoute();
+        $AuthRoute  = new AuthRoute();
         $route_name = str_replace('/', '-', ltrim($item->name, '/'));
-        $exists = $AuthRoute->find()->where(['route_name' => $route_name])->exists();
+        $exists     = $AuthRoute->find()->where(['route_name' => $route_name])->exists();
         if ($exists) {
             $route_name .= '-' . 'route';
         }
@@ -1022,18 +1037,19 @@ class DbManager extends \yii\rbac\DbManager
             $module_name = 'system';
         }
         if (!($AuthRoute->load([
-            'name' => $item->name,
-            'route_name' => $route_name,
-            'pid' => $item->pid,
-            'route_type' => $route_type, //1页面2按钮3接口
-            'item_id' => 0,
-            'module_name' => $module_name,
-            'is_sys' => $module_name === 'sysytem' ? 1 : 0,
-            'description' => $item->description,
-            'data' => $item->data === null ? null : serialize($item->data),
-            'created_at' => $item->createdAt,
-            'updated_at' => $item->updatedAt,
-        ], '') && $AuthRoute->save())) {
+                'name'        => $item->name,
+                'route_name'  => $route_name,
+                'pid'         => $item->pid,
+                'route_type'  => $route_type, //1页面2按钮3接口
+                'item_id'     => 0,
+                'module_name' => $module_name,
+                'is_sys'      => $module_name === 'sysytem' ? 1 : 0,
+                'description' => $item->description,
+                'data'        => $item->data === null ? null : serialize($item->data),
+                'created_at'  => $item->createdAt,
+                'updated_at'  => $item->updatedAt,
+            ], ''
+            ) && $AuthRoute->save())) {
             $msg = $this->getModelError($AuthRoute);
             throw new InvalidArgumentException($msg);
         }
@@ -1057,18 +1073,19 @@ class DbManager extends \yii\rbac\DbManager
         }
         $this->db->createCommand()
             ->insert($this->itemTable, [
-                'name' => $item->name,
-                'parent_id' => $item->parent_id,
-                'permission_type' => $item->permission_type,
+                'name'             => $item->name,
+                'parent_id'        => $item->parent_id,
+                'permission_type'  => $item->permission_type,
                 'permission_level' => $item->permission_level,
-                'module_name' => $item->module_name,
-                'is_sys' => $item->is_sys,
-                'description' => $item->description,
-                'rule_name' => $item->ruleName,
-                'data' => $item->data === null ? null : serialize($item->data),
-                'created_at' => $item->createdAt,
-                'updated_at' => $item->updatedAt,
-            ])->execute();
+                'module_name'      => $item->module_name,
+                'is_sys'           => $item->is_sys,
+                'description'      => $item->description,
+                'rule_name'        => $item->ruleName,
+                'data'             => $item->data === null ? null : serialize($item->data),
+                'created_at'       => $item->createdAt,
+                'updated_at'       => $item->updatedAt,
+            ]
+            )->execute();
 
         $this->invalidateCache();
 
@@ -1081,17 +1098,18 @@ class DbManager extends \yii\rbac\DbManager
         // 规则   1
         // 用户组 2
         return new Group([
-            'id' => $row['id'],
-            'name' => $row['name'],
-            'module_name' => $row['module_name'],
-            'is_sys' => $row['is_sys'],
-            'item_id' => $row['item_id'],
-            'child_type' => 2,
+            'id'          => $row[ 'id' ],
+            'name'        => $row[ 'name' ],
+            'module_name' => $row[ 'module_name' ],
+            'is_sys'      => $row[ 'is_sys' ],
+            'item_id'     => $row[ 'item_id' ],
+            'child_type'  => 2,
             'parent_type' => 2,
-            'description' => $row['description'],
-            'createdAt' => $row['created_at'],
-            'updatedAt' => $row['updated_at'],
-        ]);
+            'description' => $row[ 'description' ],
+            'createdAt'   => $row[ 'created_at' ],
+            'updatedAt'   => $row[ 'updated_at' ],
+        ]
+        );
     }
 
     /**
@@ -1106,75 +1124,79 @@ class DbManager extends \yii\rbac\DbManager
         // $class =   $type=='Permission' ? Permission::className() : Role::className();
         $class = Permission::className();
 
-        if (!isset($row['data']) || ($data = @unserialize(is_resource($row['data']) ? stream_get_contents($row['data']) : $row['data'])) === false) {
+        if (!isset($row[ 'data' ]) || ($data = @unserialize(is_resource($row[ 'data' ]) ? stream_get_contents($row[ 'data' ]) : $row[ 'data' ])) === false) {
             $data = null;
         }
         switch ($type) {
             case 'itemTable':
                 return new $class([
-                    'id' => $row['id'],
-                    'name' => $row['name'],
-                    'is_sys' => $row['is_sys'],
-                    'module_name' => $row['module_name'],
-                    'parent_type' => 3,
-                    'permission_type' => $row['permission_type'],
-                    'permission_level' => $row['permission_level'],
-                    'item_id' => $row['id'],
-                    'parent_id' => $row['parent_id'],
-                    'child_type' => isset($row['child_type']) ? $row['child_type'] : 0,
-                    'description' => $row['description'],
-                    'ruleName' => $row['rule_name'] ?: null,
-                    'data' => $data,
-                    'createdAt' => $row['created_at'],
-                    'updatedAt' => $row['updated_at'],
-                ]);
+                    'id'               => $row[ 'id' ],
+                    'name'             => $row[ 'name' ],
+                    'is_sys'           => $row[ 'is_sys' ],
+                    'module_name'      => $row[ 'module_name' ],
+                    'parent_type'      => 3,
+                    'permission_type'  => $row[ 'permission_type' ],
+                    'permission_level' => $row[ 'permission_level' ],
+                    'item_id'          => $row[ 'id' ],
+                    'parent_id'        => $row[ 'parent_id' ],
+                    'child_type'       => isset($row[ 'child_type' ]) ? $row[ 'child_type' ] : 0,
+                    'description'      => $row[ 'description' ],
+                    'ruleName'         => $row[ 'rule_name' ] ?: null,
+                    'data'             => $data,
+                    'createdAt'        => $row[ 'created_at' ],
+                    'updatedAt'        => $row[ 'updated_at' ],
+                ]
+                );
                 break;
             case 'routeTable':
                 return new $class([
-                    'id' => $row['id'],
-                    'name' => $row['name'],
-                    'item_id' => $row['item_id'],
-                    'module_name' => $row['module_name'],
-                    'is_sys' => $row['is_sys'],
-                    'child_type' => isset($row['child_type']) ? $row['child_type'] : 0,
-                    'description' => $row['description'],
-                    'data' => $data,
-                    'createdAt' => $row['created_at'],
-                    'updatedAt' => $row['updated_at'],
-                ]);
+                    'id'          => $row[ 'id' ],
+                    'name'        => $row[ 'name' ],
+                    'item_id'     => $row[ 'item_id' ],
+                    'module_name' => $row[ 'module_name' ],
+                    'is_sys'      => $row[ 'is_sys' ],
+                    'child_type'  => isset($row[ 'child_type' ]) ? $row[ 'child_type' ] : 0,
+                    'description' => $row[ 'description' ],
+                    'data'        => $data,
+                    'createdAt'   => $row[ 'created_at' ],
+                    'updatedAt'   => $row[ 'updated_at' ],
+                ]
+                );
                 break;
             case 'groupTable':
                 return new $class([
-                    'id' => $row['id'],
-                    'item_id' => $row['item_id'],
-                    'name' => $row['name'],
-                    'module_name' => $row['module_name'] ?? 'system',
+                    'id'          => $row[ 'id' ],
+                    'item_id'     => $row[ 'item_id' ],
+                    'name'        => $row[ 'name' ],
+                    'module_name' => $row[ 'module_name' ] ?? 'system',
                     // 'type' => $row['type'],
-                    'is_sys' => $row['is_sys'] ?? 1,
-                    'child_type' => isset($row['child_type']) ? $row['child_type'] : 0,
-                    'description' => $row['description'],
-                    'data' => $data,
-                    'createdAt' => $row['created_at'],
-                    'updatedAt' => $row['updated_at'],
-                ]);
+                    'is_sys'      => $row[ 'is_sys' ] ?? 1,
+                    'child_type'  => isset($row[ 'child_type' ]) ? $row[ 'child_type' ] : 0,
+                    'description' => $row[ 'description' ],
+                    'data'        => $data,
+                    'createdAt'   => $row[ 'created_at' ],
+                    'updatedAt'   => $row[ 'updated_at' ],
+                ]
+                );
                 break;
             case 'assignmentTable':
                 return new $class([
-                    'id' => $row['id'],
-                    'name' => $row['name'],
-                    'is_sys' => $row['is_sys'],
-                    'permission_type' => $row['permission_type'],
-                    'parent_id' => $row['parent_id'],
-                    'module_name' => $row['module_name'],
+                    'id'              => $row[ 'id' ],
+                    'name'            => $row[ 'name' ],
+                    'is_sys'          => $row[ 'is_sys' ],
+                    'permission_type' => $row[ 'permission_type' ],
+                    'parent_id'       => $row[ 'parent_id' ],
+                    'module_name'     => $row[ 'module_name' ],
                     // 'type' => $row['type'],
-                    'child_type' => isset($row['child_type']) ? $row['child_type'] : 0,
-                    'parent_type' => 1,
-                    'description' => $row['description'],
-                    'ruleName' => $row['rule_name'] ?: null,
-                    'data' => $data,
-                    'createdAt' => $row['created_at'],
-                    'updatedAt' => $row['updated_at'],
-                ]);
+                    'child_type'      => isset($row[ 'child_type' ]) ? $row[ 'child_type' ] : 0,
+                    'parent_type'     => 1,
+                    'description'     => $row[ 'description' ],
+                    'ruleName'        => $row[ 'rule_name' ] ?: null,
+                    'data'            => $data,
+                    'createdAt'       => $row[ 'created_at' ],
+                    'updatedAt'       => $row[ 'updated_at' ],
+                ]
+                );
                 break;
             default:
         }
@@ -1194,10 +1216,11 @@ class DbManager extends \yii\rbac\DbManager
         }
 
         $parent_id = $parent->id;
-        $exists = (new Query())->from($this->itemChildTable)->where([
+        $exists    = (new Query())->from($this->itemChildTable)->where([
             'parent_id' => $parent_id,
-            'item_id' => $child->item_id,
-        ])->exists();
+            'item_id'   => $child->item_id,
+        ]
+        )->exists();
         try {
             if (!$exists) {
                 if ($this->detectLoop($parent, $child, true)) {
@@ -1206,17 +1229,18 @@ class DbManager extends \yii\rbac\DbManager
 
                 $Res = $this->db->createCommand()
                     ->insert($this->itemChildTable, [
-                        'parent' => $parent->name,
-                        'item_id' => $child->item_id,
-                        'parent_id' => $parent_id,
-                        'route_type' => $child->route_type ?? 1,
+                        'parent'         => $parent->name,
+                        'item_id'        => $child->item_id,
+                        'parent_id'      => $parent_id,
+                        'route_type'     => $child->route_type ?? 1,
                         'parent_item_id' => $parent->item_id,
-                        'child' => $child->name,
-                        'is_sys' => $child->is_sys,
-                        'module_name' => $child->module_name,
-                        'child_type' => $child->child_type,
-                        'parent_type' => $child->parent_type,
-                    ])->execute();
+                        'child'          => $child->name,
+                        'is_sys'         => $child->is_sys,
+                        'module_name'    => $child->module_name,
+                        'child_type'     => $child->child_type,
+                        'parent_type'    => $child->parent_type,
+                    ]
+                    )->execute();
 
                 $this->invalidateCache();
                 return $Res;
@@ -1251,12 +1275,12 @@ class DbManager extends \yii\rbac\DbManager
      */
     public function getAssignments($userId)
     {
-        if (!isset($this->_assignments[$userId])) {
+        if (!isset($this->_assignments[ $userId ])) {
             // $this->_assignments[$userId] =  parent::getAssignments($userId);
-            $this->_assignments[$userId] = $this->getAssignmentsByUid($userId);
+            $this->_assignments[ $userId ] = $this->getAssignmentsByUid($userId);
         }
 
-        return $this->_assignments[$userId];
+        return $this->_assignments[ $userId ];
     }
 
     /**
@@ -1272,34 +1296,36 @@ class DbManager extends \yii\rbac\DbManager
         // 获取授权的权限
         $query = (new Query())
             ->from($this->assignmentTable)
-            ->where(['user_id' => (string)$userId]);
+            ->where(['user_id' => (string) $userId]);
 
         foreach ($query->all($this->db) as $row) {
-            $assignments[$row['item_name']] = new Assignment([
-                'userId' => $row['user_id'],
-                'roleName' => $row['item_name'],
-                'name' => $row['item_name'],
-                'item_id' => $row['item_id'],
-                'createdAt' => $row['created_at'],
+            $assignments[ $row[ 'item_name' ] ] = new Assignment([
+                'userId'      => $row[ 'user_id' ],
+                'roleName'    => $row[ 'item_name' ],
+                'name'        => $row[ 'item_name' ],
+                'item_id'     => $row[ 'item_id' ],
+                'createdAt'   => $row[ 'created_at' ],
                 'parent_type' => 1,
-            ]);
+            ]
+            );
         }
 
         // 获取用户组
         $query = (new Query())
             ->from($this->assignmentGroupTable)
-            ->where(['user_id' => (string)$userId]);
+            ->where(['user_id' => (string) $userId]);
 
         foreach ($query->all($this->db) as $row) {
-            $assignments[$row['item_name']] = new Assignment([
-                'userId' => $row['user_id'],
-                'group_id' => $row['group_id'],
-                'item_id' => $row['item_id'],
-                'roleName' => $row['item_name'],
-                'name' => $row['item_name'],
-                'createdAt' => $row['created_at'],
+            $assignments[ $row[ 'item_name' ] ] = new Assignment([
+                'userId'      => $row[ 'user_id' ],
+                'group_id'    => $row[ 'group_id' ],
+                'item_id'     => $row[ 'item_id' ],
+                'roleName'    => $row[ 'item_name' ],
+                'name'        => $row[ 'item_name' ],
+                'createdAt'   => $row[ 'created_at' ],
                 'parent_type' => 2,
-            ]);
+            ]
+            );
         }
 
         return $assignments;
@@ -1314,7 +1340,6 @@ class DbManager extends \yii\rbac\DbManager
         if ($this->isEmptyUserId($userId)) {
             return [];
         }
-
         /**
          * 路由授权
          */
@@ -1335,23 +1360,25 @@ class DbManager extends \yii\rbac\DbManager
         $manager = Configs::authManager();
 
         $assignment = new Assignment([
-            'group_id' => $role->id,
-            'userId' => $userId,
-            'item_id' => $role->item_id,
-            'roleName' => $role->name,
+            'group_id'  => $role->id,
+            'userId'    => $userId,
+            'item_id'   => $role->item_id,
+            'roleName'  => $role->name,
             'createdAt' => time(),
-        ]);
+        ]
+        );
 
         $this->db->createCommand()
             ->insert($this->assignmentGroupTable, [
-                'group_id' => $assignment->group_id,
-                'item_id' => $assignment->item_id,
-                'user_id' => $assignment->userId,
-                'item_name' => $assignment->roleName,
+                'group_id'   => $assignment->group_id,
+                'item_id'    => $assignment->item_id,
+                'user_id'    => $assignment->userId,
+                'item_name'  => $assignment->roleName,
                 'created_at' => $assignment->createdAt,
-            ])->execute();
+            ]
+            )->execute();
 
-        unset($manager->_checkAccessAssignments[(string)$userId]);
+        unset($manager->_checkAccessAssignments[ (string) $userId ]);
 
         return $assignment;
     }
@@ -1364,19 +1391,21 @@ class DbManager extends \yii\rbac\DbManager
         $assignment = '';
         try {
             $assignment = new Assignment([
-                'item_id' => $role->id,
-                'userId' => $userId,
-                'roleName' => $role->name,
+                'item_id'   => $role->id,
+                'userId'    => $userId,
+                'roleName'  => $role->name,
                 'createdAt' => time(),
-            ]);
+            ]
+            );
             $this->db->createCommand()
                 ->insert($this->assignmentTable, [
-                    'item_id' => $assignment->item_id,
-                    'user_id' => $assignment->userId,
-                    'item_name' => $assignment->roleName,
+                    'item_id'    => $assignment->item_id,
+                    'user_id'    => $assignment->userId,
+                    'item_name'  => $assignment->roleName,
                     'created_at' => $assignment->createdAt,
-                ])->execute();
-            unset($this->_checkAccessAssignments[(string)$userId]);
+                ]
+                )->execute();
+            unset($this->_checkAccessAssignments[ (string) $userId ]);
         } catch (\Exception $e) {
             throw new InvalidCallException($e->getMessage());
         }
@@ -1406,12 +1435,12 @@ class DbManager extends \yii\rbac\DbManager
         $query = (new Query())->select('b.*')
             ->from(['a' => $this->assignmentTable, 'b' => $this->routeTable])
             ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
-            ->andWhere(['a.user_id' => (string)$userId]);
+            ->andWhere(['a.user_id' => (string) $userId]);
         // ->andWhere(['b.type' => Item::TYPE_PERMISSION]);
         //        echo $query->createCommand()->getRawSql();
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row, 'assignmentTable');
+            $permissions[ $row[ 'name' ] ] = $this->populateItem($row, 'assignmentTable');
         }
 
         yii::$app->cache->set($cacheKey, $permissions);
@@ -1425,15 +1454,15 @@ class DbManager extends \yii\rbac\DbManager
     public function checkAccess($userId, $permissionName, $params = [])
     {
         Yii::info('准备校验权限', 'checkAccess');
-        if (isset($this->_checkAccessAssignments[(string)$userId])) {
+        if (isset($this->_checkAccessAssignments[ (string) $userId ])) {
             Yii::info('准备校验权限-0', 'checkAccess');
 
-            $assignments = $this->_checkAccessAssignments[(string)$userId];
+            $assignments = $this->_checkAccessAssignments[ (string) $userId ];
         } else {
             Yii::info('准备校验权限-1', 'checkAccess');
 
-            $assignments = $this->getAssignments($userId);
-            $this->_checkAccessAssignments[(string)$userId] = $assignments;
+            $assignments                                       = $this->getAssignments($userId);
+            $this->_checkAccessAssignments[ (string) $userId ] = $assignments;
         }
         Yii::info('准备校验权限-2', 'checkAccess');
 
@@ -1461,10 +1490,10 @@ class DbManager extends \yii\rbac\DbManager
             return false;
         }
 
-        unset($this->checkAccessAssignments[(string)$userId]);
+        unset($this->checkAccessAssignments[ (string) $userId ]);
         $result = $this->db->createCommand()
-            ->delete($this->assignmentTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
-            ->execute() > 0;
+                ->delete($this->assignmentTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
+                ->execute() > 0;
 
         $this->invalidateCache();
 
@@ -1479,10 +1508,10 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function getChildrenList()
     {
-        $query = (new Query())->from($this->itemChildTable);
+        $query   = (new Query())->from($this->itemChildTable);
         $parents = [];
         foreach ($query->all($this->db) as $row) {
-            $parents[$row['parent']][] = $row['child'];
+            $parents[ $row[ 'parent' ] ][] = $row[ 'child' ];
         }
 
         return $parents;
@@ -1490,15 +1519,16 @@ class DbManager extends \yii\rbac\DbManager
 
     /**
      * 深入改造
+     *
      * @return array
      */
     protected function getChildrenListIndexId()
     {
         $user_id = yii::$app->user->id;
-        $is_sys = AuthUserServer::getUserIsSys($user_id);
+        $is_sys  = AuthUserServer::getUserIsSys($user_id);
 
-        $sql = "select item_id from {{%auth_assignment_group}} where user_id=".$user_id." group by item_id";
-        $user_role = Yii::$app->db->createCommand($sql)->queryAll();
+        $sql           = "select item_id from {{%auth_assignment_group}} where user_id=" . $user_id . " group by item_id";
+        $user_role     = Yii::$app->db->createCommand($sql)->queryAll();
         $user_role_ids = array_column($user_role, 'item_id');
 
         if ($is_sys == 1) {
@@ -1514,13 +1544,16 @@ class DbManager extends \yii\rbac\DbManager
             //        $query = (new Query())->from($this->itemChildTable)->where(['>', 'parent_item_id', 0]);
 
             //       route_type 路由级别:0: 目录1: 页面 2: 按钮 3: 接口 放弃目录权限，接口校验单独处理，这个给路由和菜单权限数据
+
+            $son_user_role_ids = $this->getChildrenRoleArr($user_role_ids, []);
+
+            $count_user_role_ids = array_merge($son_user_role_ids, $user_role_ids);
+
             $query = (new Query())->from($this->itemChildTable)
-
-
-          /*      ->leftJoin($this->routeTable, $this->routeTable . '.item_id = ' . $this->itemChildTable . '.item_id')
-                ->where(['>', $this->itemChildTable . '.parent_item_id', 0])
-                ->andWhere([$this->routeTable . '.route_type' => [1, 2]]);*/
-          ->where(['in', 'parent_item_id', $user_role_ids])
+                /*      ->leftJoin($this->routeTable, $this->routeTable . '.item_id = ' . $this->itemChildTable . '.item_id')
+                      ->where(['>', $this->itemChildTable . '.parent_item_id', 0])
+                      ->andWhere([$this->routeTable . '.route_type' => [1, 2]]);*/
+                ->where(['in', 'parent_item_id', $count_user_role_ids])
                 ->andWhere(['parent_type' => 2]);
 
 
@@ -1534,12 +1567,38 @@ class DbManager extends \yii\rbac\DbManager
 //        $query->select([$this->itemChildTable . '.item_id', 'child', 'parent_item_id']);
         $query->select(['item_id', 'child', 'parent_item_id']);
         foreach ($query->all($this->db) as $row) {
-            $parents[$row['parent_item_id']][] = [
-                'item_id' => $row['item_id'],
-                'child' => $row['child']
+            $parents[ $row[ 'parent_item_id' ] ][] = [
+                'item_id' => $row[ 'item_id' ],
+                'child'   => $row[ 'child' ]
             ];
         }
         return $parents;
+    }
+
+
+    protected function getChildrenRoleArr($user_role_ids, $arr = [])
+    {
+        // 处理初始传入的ID数组，转为逗号分隔字符串
+        if (is_array($user_role_ids)) {
+            $user_role_ids = implode(',', $user_role_ids);
+        }
+        // 避免空值导致SQL错误
+        if (empty($user_role_ids)) {
+            return $arr;
+        }
+
+        $sql        = "select item_id from {{%auth_item_child}} where child_type = 2 and parent_item_id in(" . $user_role_ids . ") group by item_id";
+        $childRoles = Yii::$app->db->createCommand($sql)->queryAll();
+
+        $childIds = array_column($childRoles, 'item_id');
+
+        if (empty($childIds)) {
+            return $arr;
+        }
+
+        $arr = array_merge($arr, $childIds);
+
+        return $this->getChildrenRoleArr($childIds, $arr);
     }
 
 
@@ -1567,43 +1626,47 @@ class DbManager extends \yii\rbac\DbManager
 
         $query = (new Query())->select('item_id')
             ->from($this->assignmentTable)
-            ->where(['user_id' => (string)$userId]);
-        $assignment1 = $query->column($this->db);
-        $query = (new Query())->select('item_id')
-            ->from($this->assignmentGroupTable)
-            ->where(['user_id' => (string)$userId]);
+            ->where(['user_id' => (string) $userId]);
 
+
+        $assignment1 = $query->column($this->db);
+
+        $query       = (new Query())->select('item_id')
+            ->from($this->assignmentGroupTable)
+            ->where(['user_id' => (string) $userId]);
         $assignment2 = $query->column($this->db);
 
         /**
          * 业务中心管理员 给业务中心管理员对应公司的插件权限
          */
         $assignment3 = [];
-        $user = AuthUserServer::userInfo($userId, ['is_business_admin', 'bloc_id', 'is_sys']);
+        $user        = AuthUserServer::userInfo($userId, ['is_business_admin', 'bloc_id', 'is_sys']);
 
 
-
-        if ($user['is_business_admin'] == 1) {
-            $authAddons = BlocAddons::find()->where(['bloc_id' => $user['bloc_id']])->select('module_name')->column();
+        if ($user[ 'is_business_admin' ] == 1) {
+            $authAddons  = BlocAddons::find()->where(['bloc_id' => $user[ 'bloc_id' ]])->select('module_name')->column();
             $assignment3 = AuthItem::find()
                 ->where(['module_name' => $authAddons])->select('id')->column();
         }
         $assignment = array_merge($assignment1, $assignment2, $assignment3);
 
         $childrenList = $this->getChildrenListIndexId();
+
         $result = [];
         foreach ($assignment as $item_id) {
             $this->getChildrenRecursiveByItemId($item_id, $childrenList, $result);
         }
+
         if (empty($result)) {
             return [];
         }
 
 
-        $query = (new Query())->from($this->routeTable)->where([
+        $query  = (new Query())->from($this->routeTable)->where([
             'item_id' => array_keys($result),
-        ]);
-        $is_sys = $user['is_sys'];
+        ]
+        );
+        $is_sys = $user[ 'is_sys' ];
         if ($is_sys == 0) {
             /**
              * 非接口权限
@@ -1614,15 +1677,15 @@ class DbManager extends \yii\rbac\DbManager
         $permissions = [];
 
         foreach (array_keys($result) as $itemId) {
-            if (isset($this->items[$itemId]) && $this->items[$itemId] instanceof Permission) {
-                $permissions[$itemId] = $this->items[$itemId];
+            if (isset($this->items[ $itemId ]) && $this->items[ $itemId ] instanceof Permission) {
+                $permissions[ $itemId ] = $this->items[ $itemId ];
             }
         }
         foreach ($query->all($this->db) as $row) {
-            $row['parent_id'] = 0;
-            $row['child_type'] = 0;
-            $row['rule_name'] = 0;
-            $permissions[$row['item_id']] = $this->populateItem($row, 'routeTable');
+            $row[ 'parent_id' ]               = 0;
+            $row[ 'child_type' ]              = 0;
+            $row[ 'rule_name' ]               = 0;
+            $permissions[ $row[ 'item_id' ] ] = $this->populateItem($row, 'routeTable');
         }
         yii::$app->cache->set($cacheKey, $permissions);
         return $permissions;
@@ -1636,10 +1699,10 @@ class DbManager extends \yii\rbac\DbManager
      */
     protected function getChildrenRecursiveByItemId($item_id, $childrenList, &$result)
     {
-        if (isset($childrenList[$item_id])) {
-            foreach ($childrenList[$item_id] as $child) {
-                $result[$child['item_id']] = true;
-                $this->getChildrenRecursiveByItemId($child['item_id'], $childrenList, $result);
+        if (isset($childrenList[ $item_id ])) {
+            foreach ($childrenList[ $item_id ] as $child) {
+                $result[ $child[ 'item_id' ] ] = true;
+                $this->getChildrenRecursiveByItemId($child[ 'item_id' ], $childrenList, $result);
             }
         }
     }
@@ -1648,12 +1711,13 @@ class DbManager extends \yii\rbac\DbManager
     {
         $AuthError = new AuthError();
         $AuthError->setAttributes([
-            'user_id' => Yii::$app->user->id,
-            'itemName' => (string)$itemName,
-            'params' => json_encode($params),
+            'user_id'     => Yii::$app->user->id,
+            'itemName'    => (string) $itemName,
+            'params'      => json_encode($params),
             'assignments' => json_encode($assignments),
-            'parent_type' => (string)$parent_type
-        ]);
+            'parent_type' => (string) $parent_type
+        ]
+        );
         if (!$AuthError->save()) {
             $error = $AuthError->getErrors();
             throw new \Exception(current($error));
@@ -1689,7 +1753,7 @@ class DbManager extends \yii\rbac\DbManager
 
                     return false;
                 }
-            } elseif ($parent_type == 2) {
+            } else if ($parent_type == 2) {
                 // 用户组
                 if (($item = $this->getGroup($itemName)) === null && ($item = $this->getGroup($itemName, 1)) === null) {
                     Yii::info('checkAccessRecursiveAll-2', 'checkAccessRecursiveAll');
@@ -1701,9 +1765,9 @@ class DbManager extends \yii\rbac\DbManager
                 // 查询用户是否有组的权限
                 $groupsArr = AuthAssignmentGroup::find()->where(['user_id' => $user])->select(['item_name', 'group_id'])->asArray()->one();
                 if (!empty($groupsArr)) {
-                    $group_id = $groupsArr['group_id'];
+                    $group_id    = $groupsArr[ 'group_id' ];
                     $group_child = AuthItemChild::find()->where(['parent_id' => $group_id])->select(['child'])->column();
-                    array_push($group_child, $groupsArr['item_name']);
+                    array_push($group_child, $groupsArr[ 'item_name' ]);
 
                     if (!in_array($itemName, $group_child) && !empty($group_child)) {
                         Yii::info('checkAccessRecursiveAll-3', 'checkAccessRecursiveAll');
@@ -1712,7 +1776,7 @@ class DbManager extends \yii\rbac\DbManager
                         return false;
                     }
                 }
-            } elseif ($parent_type == 3) {
+            } else if ($parent_type == 3) {
                 if (($item = $this->getItem($itemName)) === null) {
                     Yii::info('checkAccessRecursiveAll-4', 'checkAccessRecursiveAll');
                     $this->addError($itemName, $params, $assignments, $parent_type);
@@ -1729,7 +1793,7 @@ class DbManager extends \yii\rbac\DbManager
             return false;
         }
 
-        if (isset($assignments[$itemName]) || in_array($itemName, $this->defaultRoles)) {
+        if (isset($assignments[ $itemName ]) || in_array($itemName, $this->defaultRoles)) {
             Yii::info('checkAccessRecursiveAll-6', 'checkAccessRecursiveAll');
 
             return true;
@@ -1744,7 +1808,7 @@ class DbManager extends \yii\rbac\DbManager
         Yii::info('checkAccessRecursiveAll-7', 'checkAccessRecursiveAll');
 
         foreach ($parents as $parent) {
-            if ($this->checkAccessRecursiveAll($user, $parent['parent'], $params, $assignments, $parent['parent_type'])) {
+            if ($this->checkAccessRecursiveAll($user, $parent[ 'parent' ], $params, $assignments, $parent[ 'parent_type' ])) {
                 return true;
             }
         }
@@ -1767,7 +1831,8 @@ class DbManager extends \yii\rbac\DbManager
      * @param Item $item the auth item that needs to execute its rule
      * @param array $params parameters passed to [[CheckAccessInterface::checkAccess()]] and will be passed to the rule
      *
-     * @return bool the return value of [[Rule::execute()]]. If the auth item does not specify a rule, true will be returned.
+     * @return bool the return value of [[Rule::execute()]]. If the auth item does not specify a rule, true will be
+     *     returned.
      *
      * @throws InvalidConfigException if the auth item has an invalid rule
      */
