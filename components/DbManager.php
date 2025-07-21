@@ -467,11 +467,15 @@ class DbManager extends \yii\rbac\DbManager
         return $items;
     }
 
-    public function getGroups($is_sys = 3)
+    public function getGroups($is_sys = 3,$bloc_id = 0)
     {
         $where = [];
         if (in_array($is_sys, [0, 1], true)) {
             $where['is_sys'] = $is_sys;
+        }
+
+        if ($bloc_id > 0) {
+            $where['bloc_id'] = $bloc_id;
         }
 
         $query = (new Query())
