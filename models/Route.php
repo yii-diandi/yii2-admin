@@ -458,12 +458,14 @@ class Route extends \diandi\admin\BaseObject
             if (!empty($items['route'])) {
                 foreach ($items['route'] as $name) {
                     $child = $manager->getRoutePermission($name, $parent_type);
-                    try {
-                        $Res = $manager->addChild($this->_item, $child);
-                        ++$success;
-                    } catch (\Exception $exc) {
-                        Yii::error($exc->getMessage(), __METHOD__);
-                        throw new InvalidArgumentException($exc->getMessage());
+                    if(!empty($child)){
+                        try {
+                            $Res = $manager->addChild($this->_item, $child);
+                            ++$success;
+                        } catch (\Exception $exc) {
+                            Yii::error($exc->getMessage(), __METHOD__);
+                            throw new InvalidArgumentException($exc->getMessage());
+                        }
                     }
                 }
             }
@@ -490,12 +492,14 @@ class Route extends \diandi\admin\BaseObject
             if (!empty($items['route'])) {
                 foreach ($items['route'] as $name) {
                     $child = $manager->getRoutePermission($name, $this->is_sys);
-                    try {
-                        $manager->removeChild($this->_item, $child);
-                        ++$success;
-                    } catch (\Exception $exc) {
-                        Yii::error($exc->getMessage(), __METHOD__);
-                        throw new InvalidArgumentException($exc->getMessage());
+                    if(!empty($child)){
+                        try {
+                            $manager->removeChild($this->_item, $child);
+                            ++$success;
+                        } catch (\Exception $exc) {
+                            Yii::error($exc->getMessage(), __METHOD__);
+                            throw new InvalidArgumentException($exc->getMessage());
+                        }
                     }
                 }
             }

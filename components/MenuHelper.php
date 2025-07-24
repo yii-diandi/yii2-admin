@@ -10,8 +10,11 @@
 namespace diandi\admin\components;
 
 use common\helpers\loggingHelper;
+use common\models\AuthAssignmentGroupMenu;
 use diandi\admin\acmodels\AuthUserGroup;
+use diandi\admin\models\AuthAssignmentGroup;
 use diandi\admin\models\Menu;
+use diandi\admin\models\User;
 use Yii;
 use yii\caching\TagDependency;
 
@@ -84,64 +87,88 @@ class MenuHelper
         $module_name = !empty($menuwhere['module_name']) ? $menuwhere['module_name'] : '';
         $key = [__METHOD__, $userId, $module_name, $manager->defaultRoles];
         $cache = $config->cache;
-//        $refresh = true;//测试
+       # $refresh = true;//测试
         if ($refresh || $cache === null || ($assigned = $cache->get($key)) === false) {
             $routes = $filter1 = $filter2 = [];
 
             if ($userId !== null) {
                 // 获取所有的权限
+                $user_info = User::findOne($userId);
+                if($user_info->is_super_admin || $user_info->is_super_admin){
+                    $routes = array_column($menus,'item_id');
+                }else{
+                    $group_item_ids =  AuthAssignmentGroup::find()->where(['user_id' => $userId])->select('item_id')->column();
+                }
+                if(!empty($group_item_ids)) {
+                    $group_menu_item_ids = AuthAssignmentGroupMenu::find()->where(['group_item_id'=>$group_item_ids])->select('item_id')->column();
+                    $routes = array_merge($routes, $group_menu_item_ids);
+                }
+
                 foreach ($manager->getPermissionsByUser($userId) as $item_id => $value) {
-                    $name = $value->name;
-                    if ($name[0] === '/') {
-                        if (substr($name, -2) === '/*') {
-                            $name = substr($name, 0, -1);
-                        }
-                        $routes[] = $name;
-                    }
+
+//                    $name = $value->name;
+//                    if ($name[0] === '/') {
+//                        if (substr($name, -2) === '/*') {
+//                            $name = substr($name, 0, -1);
+//                        }
+//                        $routes[] = $name;
+//                    }
+
+                    $item_id = $value->item_id;
+                    $routes[] = $item_id;
                 }
             }
+
             $authGroups = AuthUserGroup::find()->indexBy('name')->select('item_id')->column();
 
             foreach ($manager->defaultRoles as $role) {
                 foreach ($manager->getPermissionsByRoleId($authGroups[$role]) as $name => $value) {
-                    if ($name[0] === '/') {
-                        if (substr($name, -2) === '/*') {
-                            $name = substr($name, 0, -1);
-                        }
-                        $routes[] = $name;
-                    }
+//                    if ($name[0] === '/') {
+//                        if (substr($name, -2) === '/*') {
+//                            $name = substr($name, 0, -1);
+//                        }
+//                        $routes[] = $name;
+//                    }
+                    $item_id = $value->item_id;
+                    $routes[] = $item_id;
                 }
             }
 
             $routes = array_unique($routes);
-
-            sort($routes);
-            $prefix = '\\';
-            foreach ($routes as $route) {
-                if (strpos($route, $prefix) !== 0) {
-                    if (substr($route, -1) === '/') {
-                        $prefix = $route;
-                        $filter1[] = $route . '%';
-                    } else {
-                        $filter2[] = $route;
-                    }
-                }
-            }
+//
+//            sort($routes);
+//            $prefix = '\\';
+//            foreach ($routes as $route) {
+//                if (strpos($route, $prefix) !== 0) {
+//                    if (substr($route, -1) === '/') {
+//                        $prefix = $route;
+//                        $filter1[] = $route . '%';
+//                    } else {
+//                        $filter2[] = $route;
+//                    }
+//                }
+//            }
+//            var_dump(implode(',',$routes));die;
+            /**
+             * 写在这
+             *
+             */
             $assigned = [];
             $query = Menu::find()->select(['id'])->orderBy('order')->asArray();
-           
-            if (count($filter2)) {
-                $assigned = $query->where(['route' => $filter2])->andWhere($menuwhere)->column();
-            }
 
-            if (count($filter1)) {
-                $query->where('route like :filter')->andWhere($menuwhere);
-                foreach ($filter1 as $filter) {
-                    $assigned = array_merge($assigned, $query->params([':filter' => $filter])->column());
-                }
+//            if (count($filter2)) {
+//                $assigned = $query->where(['route' => $filter2])->andWhere($menuwhere)->column();
+//            }
+//            var_dump($routes);die;
+            if ($routes) {
+//                var_dump($menuwhere);die;
+                $assigned = $query->where(['item_id' => $routes])->andWhere($menuwhere)->column();
+//                $query->where('route like :filter')->andWhere($menuwhere);
+//                foreach ($filter1 as $filter) {
+//                    $assigned = array_merge($assigned, $query->params([':filter' => $filter])->column());
+//                }
             }
             $assigned = static::requiredParent($assigned, $menus);
-
             if ($cache !== null) {
                 $cache->set($key, $assigned, $config->cacheDuration, new TagDependency([
                     'tags' => Configs::CACHE_TAG,
