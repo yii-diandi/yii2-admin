@@ -10,6 +10,7 @@
 namespace diandi\admin\components;
 
 use common\helpers\loggingHelper;
+use common\models\AuthAssignmentGroupMenu;
 use diandi\admin\acmodels\AuthUserGroup;
 use diandi\admin\models\AuthAssignmentGroup;
 use diandi\admin\models\Menu;
