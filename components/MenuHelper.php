@@ -10,12 +10,12 @@
 namespace diandi\admin\components;
 
 use common\helpers\loggingHelper;
+use common\models\AuthAssignmentGroupMenu;
 use diandi\admin\acmodels\AuthUserGroup;
-use diandi\admin\models\AuthAssignmentGroup;
 use diandi\admin\models\Menu;
 use diandi\admin\models\User;
-use Yii;
 use yii\caching\TagDependency;
+use yii\db\Query;
 
 /**
  * MenuHelper used to generate menu depend of user role.
@@ -56,8 +56,8 @@ class MenuHelper
     /**
      * Use to get assigned menu of user.
      *
-     * @param mixed    $userId
-     * @param int      $root
+     * @param mixed $userId
+     * @param int $root
      * @param \Closure $callback use to reformat output.
      *                           callback should have format like
      *
@@ -81,45 +81,32 @@ class MenuHelper
         $config = Configs::instance();
         /* @var $manager \yii\rbac\BaseManager */
         $manager = $config::authManager();
-
         $menus = Menu::find()->where($menuwhere)->orderBy('order')->asArray()->indexBy('id')->all();
         $module_name = !empty($menuwhere['module_name']) ? $menuwhere['module_name'] : '';
         $key = [__METHOD__, $userId, $module_name, $manager->defaultRoles];
         $cache = $config->cache;
-       # $refresh = true;//测试
+        # $refresh = true;//测试
         if ($refresh || $cache === null || ($assigned = $cache->get($key)) === false) {
             $routes = $filter1 = $filter2 = [];
 
             if ($userId !== null) {
                 // 获取所有的权限
                 $user_info = User::findOne($userId);
-                if($user_info->is_super_admin || $user_info->is_super_admin){
-                    $routes = array_column($menus,'item_id');
-                }else{
-                    $group_item_ids =  AuthAssignmentGroup::find()->where(['user_id' => $userId])->select('item_id')->column();
-                }
-                if(!empty($group_item_ids)) {
-                    $group_menu_item_ids = AuthAssignmentGroupMenu::find()->where(['group_item_id'=>$group_item_ids])->select('item_id')->column();
-                    $routes = array_merge($routes, $group_menu_item_ids);
-                }
-
-                foreach ($manager->getPermissionsByUser($userId) as $item_id => $value) {
-
-//                    $name = $value->name;
-//                    if ($name[0] === '/') {
-//                        if (substr($name, -2) === '/*') {
-//                            $name = substr($name, 0, -1);
-//                        }
-//                        $routes[] = $name;
-//                    }
-
-                    $item_id = $value->item_id;
-                    $routes[] = $item_id;
+                if ($user_info->is_super_admin || $user_info->is_super_admin) {
+                    $routes = array_column($menus, 'item_id');
+                } else {
+                    foreach ($manager->getPermissionsByUser($userId) as $item_id => $value) {
+                        $item_id = $value->item_id;
+                        $routes[] = $item_id;
+                    }
                 }
             }
 
             $authGroups = AuthUserGroup::find()->indexBy('name')->select('item_id')->column();
 
+            /**
+             * 默认权限
+             */
             foreach ($manager->defaultRoles as $role) {
                 foreach ($manager->getPermissionsByRoleId($authGroups[$role]) as $name => $value) {
 //                    if ($name[0] === '/') {
@@ -133,7 +120,31 @@ class MenuHelper
                 }
             }
 
-            $routes = array_unique($routes);
+
+
+            /**
+             * 获取路由中包含的menu_id
+             */
+            $is_sys = $menuwhere['is_sys']??0;
+            /**
+             * 获取路由中包含的menu_id
+             */
+            $menu_ids = (new Query())->from('{{%auth_item}}')->where(['id' => $routes])->select('menu_id')->column();
+            /**
+             * 获取最后一层
+             */
+            $parentIds = (new Query())->from('{{%auth_menu}}')->where(['id'=>$menu_ids])->select('item_id')->column();
+            /**
+             * 获取上一层
+             */
+            $parentParentIds = (new Query())->from('{{%auth_menu}}')->where(['item_id'=>$parentIds])->select('item_id')->column();
+            /**
+             * 获取上上层
+             */
+            $parentParentIds = (new Query())->from('{{%auth_menu}}')->where(['item_id'=>$parentParentIds])->select('item_id')->column();
+
+            $routes = array_unique(array_merge($routes,$parentIds,$parentParentIds,$parentParentIds));
+//            $routes = array_unique($routes);
 //
 //            sort($routes);
 //            $prefix = '\\';
@@ -158,9 +169,7 @@ class MenuHelper
 //            if (count($filter2)) {
 //                $assigned = $query->where(['route' => $filter2])->andWhere($menuwhere)->column();
 //            }
-//            var_dump($routes);die;
             if ($routes) {
-//                var_dump($menuwhere);die;
                 $assigned = $query->where(['item_id' => $routes])->andWhere($menuwhere)->column();
 //                $query->where('route like :filter')->andWhere($menuwhere);
 //                foreach ($filter1 as $filter) {
@@ -240,10 +249,10 @@ class MenuHelper
     /**
      * Normalize menu.
      *
-     * @param array   $assigned
-     * @param array   $menus
+     * @param array $assigned
+     * @param array $menus
      * @param Closure $callback
-     * @param int     $parent
+     * @param int $parent
      *
      * @return array
      */
@@ -252,7 +261,7 @@ class MenuHelper
         $result = [];
         $order = [];
         foreach ($assigned as $id) {
-            if (!array_key_exists($id,$menus) || empty($menus[$id])) {
+            if (!array_key_exists($id, $menus) || empty($menus[$id])) {
                 continue;
             }
             $menu = $menus[$id];

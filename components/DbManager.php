@@ -173,11 +173,11 @@ class DbManager extends \yii\rbac\DbManager
         }
     }
 
-
-    public function getMenus($group_item_id)
+    public function getMenuAll($group_item_id)
     {
         try {
             // child_type:1 表示权限
+            $group = AuthUserGroup::find()->where(['item_id'=>$group_item_id])->asArray()->one();
             $children = [];
             foreach (
                 AuthAssignmentGroupMenu::find()
@@ -185,27 +185,64 @@ class DbManager extends \yii\rbac\DbManager
                     ->joinWith(['item as c'], false)
                     ->where(['a.group_item_id' => $group_item_id])
                     ->select([
-                            'a.name',
                             'a.id',
-                            'a.description',
-                            'a.rule_name',
+                            'a.item_id',
                             'a.module_name',
-                            'a.data',
-                            'c.child',
-                            'c.parent_id',
-                            'a.created_at',
-                            'a.updated_at',
-                            'a.permission_type',
-                            'a.permission_level',
-                            'a.is_sys',
-                            'a.data'
+                            'a.group_id as parent_id',
+                            'c.permission_type',
+                            'c.permission_level'
                         ]
                     )
                     ->asArray()
                     ->batch(100) as $batch
             ) {
                 foreach ($batch as $row) {
-                    $children[$row['id']] = $this->populateItem($row, 'menuTable');
+                    $row['name'] = $row['description']  = $group['name'];
+                    $row['created_at'] = $group['created_at'];
+                    $row['updated_at'] = $group['updated_at'];
+                    $row['is_sys'] = $group['is_sys'];
+                    $children[$row['item_id']] = $this->populateItem($row, 'menuTable');
+                }
+            }
+
+
+            return $children;
+        } catch (\Exception $e) {
+            throw new InvalidConfigException($e->getMessage());
+        }
+    }
+
+
+
+    public function getMenus($group_item_id,$is_options = 1)
+    {
+        try {
+            // child_type:1 表示权限
+            $group = AuthUserGroup::find()->where(['item_id'=>$group_item_id])->asArray()->one();
+            $children = [];
+            foreach (
+                AuthAssignmentGroupMenu::find()
+                    ->alias('a')
+                    ->joinWith(['item as c'], false)
+                    ->where(['a.group_item_id' => $group_item_id,'a.is_options'=>$is_options])
+                    ->select([
+                            'a.id',
+                            'a.item_id',
+                            'a.module_name',
+                            'a.group_id as parent_id',
+                            'c.permission_type',
+                            'c.permission_level'
+                        ]
+                    )
+                    ->asArray()
+                    ->batch(100) as $batch
+            ) {
+                foreach ($batch as $row) {
+                    $row['name'] = $row['description']  = $group['name'];
+                    $row['created_at'] = $group['created_at'];
+                    $row['updated_at'] = $group['updated_at'];
+                    $row['is_sys'] = $group['is_sys'];
+                    $children[$row['item_id']] = $this->populateItem($row, 'menuTable');
                 }
             }
 
@@ -391,11 +428,11 @@ class DbManager extends \yii\rbac\DbManager
             unset($available[$key][$id]);
         }
 
-
         /**
          * 路由授权
          */
-        foreach ($this->getMenus($group_item_id) as $item => $val) {
+        $is_options = 1;
+        foreach ($this->getMenus($group_item_id,$is_options) as $item => $val) {
             $key = 'menu';
             $id = $val->item_id;
             $assigned[$key][$id] = $val;
@@ -412,8 +449,11 @@ class DbManager extends \yii\rbac\DbManager
             unset($available[$key][$item->item_id]);
         }
 
-        unset($available['role'][$group_item_id]);
 
+        unset($available['role'][$group_item_id]);
+        $assigned['menu'] = $assigned['menu']??[];
+        $assigned['route'] = $assigned['route']??[];
+        $assigned['role'] = $assigned['role']??[];
         return [
             'all' => $all,
             'available' => $available,
@@ -444,10 +484,12 @@ class DbManager extends \yii\rbac\DbManager
                 'c.item_id' => $group_item_id,
                 'parent_type' => $parent_type,
             ]
-        )->andWhere($where)->select(['p.permission_type', 'c.id', 'c.parent_id', 'c.child as name', 'item_id', 'child_type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])->indexBy('item_id')->asArray()->all();
+        )->andWhere($where)->select(['p.permission_level','p.module_name','p.is_sys','p.permission_type', 'c.id', 'c.parent_id', 'c.child as name', 'item_id', 'child_type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])->indexBy('item_id')->asArray()->all();
 
         foreach ($list as $row) {
-            $children[$row['item_id']] = $this->populateItem($row, 'itemTable');
+            if ($row){
+                $children[$row['item_id']] = $this->populateItem($row, 'itemTable');
+            }
         }
 
 
@@ -1206,6 +1248,7 @@ class DbManager extends \yii\rbac\DbManager
             case 'menuTable':
                 return new $class([
                         'id' => $row['id'],
+                        'item_id' => $row['item_id'],
                         'name' => $row['name'],
                         'is_sys' => $row['is_sys'],
                         'permission_type' => $row['permission_type'],
@@ -1215,7 +1258,7 @@ class DbManager extends \yii\rbac\DbManager
                         'child_type' => isset($row['child_type']) ? $row['child_type'] : 0,
                         'parent_type' => 1,
                         'description' => $row['description'],
-                        'ruleName' => $row['rule_name'] ?: null,
+                        'ruleName' => $row['rule_name'] ?? null,
                         'data' => $data,
                         'createdAt' => $row['created_at'],
                         'updatedAt' => $row['updated_at'],
@@ -1363,16 +1406,19 @@ class DbManager extends \yii\rbac\DbManager
         if ($this->isEmptyUserId($userId)) {
             return [];
         }
+
         /**
          * 路由授权
          */
         $directPermission = $this->getDirectPermissionsByUser($userId);
+
         /**
          * 权限授权
          */
         $inheritedPermission = $this->getInheritedPermissionsByUser($userId);
 
-        return array_merge($directPermission, $inheritedPermission);
+        $menus = $this->getMenusByUser($userId);
+        return array_merge($directPermission, $inheritedPermission,$menus);
     }
 
     /**
@@ -1554,8 +1600,7 @@ class DbManager extends \yii\rbac\DbManager
         $is_sys = AuthUserServer::getUserIsSys($user_id);
 
         $sql = "select item_id from {{%auth_assignment_group}} where user_id=" . $user_id . " group by item_id";
-        $user_role = Yii::$app->db->createCommand($sql)->queryAll();
-        $user_role_ids = array_column($user_role, 'item_id');
+        $user_role_ids = Yii::$app->db->createCommand($sql)->queryColumn();
 
         if ($is_sys == 1) {
             /**
@@ -1570,30 +1615,21 @@ class DbManager extends \yii\rbac\DbManager
             //        $query = (new Query())->from($this->itemChildTable)->where(['>', 'parent_item_id', 0]);
 
             //       route_type 路由级别:0: 目录1: 页面 2: 按钮 3: 接口 放弃目录权限，接口校验单独处理，这个给路由和菜单权限数据
-
-            $sql = "select item_id from {{%auth_item_child}} where child_type = 2 and parent_item_id in(" . $user_role_ids . ") group by item_id";
-            $childIds = Yii::$app->db->createCommand($sql)->queryColumn();
-
-            $son_user_role_ids = $this->getChildrenRoleArr($user_role_ids, []);
+            /**
+             * 权限组子项
+             */
+            $all_role_ids = (new query())->from($this->itemChildTable)->select('item_id') ->indexBy('parent_item_id')
+                ->column();
+            $son_user_role_ids =$this->getChildrenRoleArr($all_role_ids,$user_role_ids);
 
             $count_user_role_ids = array_merge($son_user_role_ids, $user_role_ids);
 
             $query = (new Query())->from($this->itemChildTable)
-                /*      ->leftJoin($this->routeTable, $this->routeTable . '.item_id = ' . $this->itemChildTable . '.item_id')
-                      ->where(['>', $this->itemChildTable . '.parent_item_id', 0])
-                      ->andWhere([$this->routeTable . '.route_type' => [1, 2]]);*/
                 ->where(['in', 'parent_item_id', $count_user_role_ids])
                 ->andWhere(['parent_type' => 2]);
-
-
-            //        $query->andWhere(['not in', 'item_id', $api_item_id]);
-            //        echo $query->createCommand()->getRawSql();
-
         }
 
         $parents = [];
-        ini_set('memory_limit', '1024M');
-//        $query->select([$this->itemChildTable . '.item_id', 'child', 'parent_item_id']);
         $query->select(['item_id', 'child', 'parent_item_id']);
         foreach ($query->all($this->db) as $row) {
             $parents[$row['parent_item_id']][] = [
@@ -1605,27 +1641,23 @@ class DbManager extends \yii\rbac\DbManager
     }
 
 
-    protected function getChildrenRoleArr($user_role_ids, $arr = [])
+    protected function getChildrenRoleArr($all_role_ids,$user_role_ids)
     {
-        // 处理初始传入的ID数组，转为逗号分隔字符串
-        if (is_array($user_role_ids)) {
-            $user_role_ids = implode(',', $user_role_ids);
+        $roles_to_check = $user_role_ids;
+        $son_user_role_ids = [];
+        while (!empty($roles_to_check)) {
+            $new_children = [];
+            foreach ($all_role_ids as $parnet_item_id => $parent_id) {
+                if (in_array($parnet_item_id, $roles_to_check)) {
+                    if (!in_array($parent_id, $son_user_role_ids)) {
+                        $son_user_role_ids[] = $parent_id;
+                        $new_children[] = $parent_id;
+                    }
+                }
+            }
+            $roles_to_check = $new_children;
         }
-        // 避免空值导致SQL错误
-        if (empty($user_role_ids)) {
-            return $arr;
-        }
-
-        $sql = "select item_id from {{%auth_item_child}} where child_type = 2 and parent_item_id in(" . $user_role_ids . ") group by item_id";
-        $childIds = Yii::$app->db->createCommand($sql)->queryColumn();
-
-        if (empty($childIds)) {
-            return $arr;
-        }
-
-        $arr = array_merge($arr, $childIds);
-
-        return $this->getChildrenRoleArr($childIds, $arr);
+        return $son_user_role_ids;
     }
 
 
@@ -1716,6 +1748,27 @@ class DbManager extends \yii\rbac\DbManager
         }
         yii::$app->cache->set($cacheKey, $permissions);
         return $permissions;
+    }
+
+    public function getMenusByUser($userId)
+    {
+        /**
+         * 找到用户组
+         */
+        $group_item_ids = (new Query())->select('item_id')
+            ->from($this->assignmentGroupTable)
+            ->where(['user_id' => $userId])
+            ->column();
+        $menus = [];
+        foreach ($group_item_ids as $group_item_id) {
+            $menu = $this->getMenuAll($group_item_id);
+            if ($menu){
+                foreach ($menu as $item) {
+                    $menus[] =  $item;
+                }
+            }
+        }
+        return $menus;
     }
 
     /**

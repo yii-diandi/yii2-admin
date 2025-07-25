@@ -2,6 +2,7 @@
 
 namespace diandi\admin\acmodels;
 
+use diandi\admin\models\UserGroup;
 use Yii;
 
 class AuthAssignmentGroupMenu extends \yii\db\ActiveRecord
@@ -20,7 +21,7 @@ class AuthAssignmentGroupMenu extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'group_id', 'item_id', 'group_item_id', 'group_name', 'created_at','module_name'], 'safe'],
+            [['id', 'group_id', 'item_id', 'group_item_id', 'group_name', 'created_at','module_name','is_options'], 'safe'],
         ];
     }
 
@@ -30,6 +31,14 @@ class AuthAssignmentGroupMenu extends \yii\db\ActiveRecord
     public function getItem()
     {
         return $this->hasOne(AuthItem::className(), ['id' => 'item_id']);
+    }
+
+    /**
+     * 获取group
+     */
+    public function getGroup()
+    {
+        return $this->hasOne(UserGroup::className(), ['item_id' => 'group_item_id']);
     }
 
     /**
