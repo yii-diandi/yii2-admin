@@ -178,13 +178,13 @@ class Assignment extends \diandi\admin\BaseObject
      *
      * @return array
      */
-    public function getItems($is_sys = 0)
+    public function getItems($is_sys = 0,$bloc_id = 0)
     {
         $manager = Configs::authManager();
         $available = [];    
         $all = [];    
         // 用户组授权
-        foreach ($manager->getGroups($is_sys) as $item) {
+        foreach ($manager->getGroups($is_sys,$bloc_id) as $item) {
             $name = $item->name;
             $available['role'][$item->item_id] = $item;
         }

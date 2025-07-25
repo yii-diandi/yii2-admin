@@ -41,9 +41,9 @@ class UserGroup extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'is_sys'], 'required'],
+            [['name', 'is_sys','level'], 'required'],
             ['is_sys', 'in', 'range' => [0, 1]],
-            [['created_at', 'updated_at', 'store_id', 'bloc_id', 'item_id', 'is_sys', 'is_default'], 'integer'],
+            [['created_at', 'updated_at', 'store_id', 'bloc_id', 'item_id', 'is_sys', 'is_default','level'], 'integer'],
             [['description'], 'string'],
             [['bloc_id', 'store_id'], 'default', 'value' => 0],
             ['is_sys', 'default', 'value' => 1],
@@ -88,6 +88,7 @@ class UserGroup extends \yii\db\ActiveRecord
             $this->item_id = $item->item_id;
             $this->is_sys = $item->is_sys;
             $this->name = $item->name;
+            $this->level = $item->level;
             $this->description = $item->description;
         }
         parent::__construct($config);
@@ -190,6 +191,7 @@ class UserGroup extends \yii\db\ActiveRecord
             'name' => '用户组名称',
             'is_sys' => '用户组类型',
             'description' => '用户组说明',
+            'level' => '权限级别',
             'store_id' => '商户',
             'bloc_id' => '公司',
             'created_at' => 'Created At',
