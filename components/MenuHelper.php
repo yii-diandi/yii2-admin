@@ -121,30 +121,7 @@ class MenuHelper
             }
 
 
-
-            /**
-             * 获取路由中包含的menu_id
-             */
-            $is_sys = $menuwhere['is_sys']??0;
-            /**
-             * 获取路由中包含的menu_id
-             */
-            $menu_ids = (new Query())->from('{{%auth_item}}')->where(['id' => $routes])->select('menu_id')->column();
-            /**
-             * 获取最后一层
-             */
-            $parentIds = (new Query())->from('{{%auth_menu}}')->where(['id'=>$menu_ids])->select('item_id')->column();
-            /**
-             * 获取上一层
-             */
-            $parentParentIds = (new Query())->from('{{%auth_menu}}')->where(['item_id'=>$parentIds])->select('item_id')->column();
-            /**
-             * 获取上上层
-             */
-            $parentParentIds = (new Query())->from('{{%auth_menu}}')->where(['item_id'=>$parentParentIds])->select('item_id')->column();
-
-            $routes = array_unique(array_merge($routes,$parentIds,$parentParentIds,$parentParentIds));
-//            $routes = array_unique($routes);
+            $routes = array_unique($routes);
 //
 //            sort($routes);
 //            $prefix = '\\';

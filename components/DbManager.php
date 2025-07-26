@@ -228,6 +228,7 @@ class DbManager extends \yii\rbac\DbManager
                     ->select([
                             'a.id',
                             'a.item_id',
+                            'c.name',
                             'a.module_name',
                             'a.group_id as parent_id',
                             'c.permission_type',
@@ -238,7 +239,8 @@ class DbManager extends \yii\rbac\DbManager
                     ->batch(100) as $batch
             ) {
                 foreach ($batch as $row) {
-                    $row['name'] = $row['description']  = $group['name'];
+                    $row['description'] = $row['name'];
+//                    $row['name'] = $row['description']  = $group['name'];
                     $row['created_at'] = $group['created_at'];
                     $row['updated_at'] = $group['updated_at'];
                     $row['is_sys'] = $group['is_sys'];
