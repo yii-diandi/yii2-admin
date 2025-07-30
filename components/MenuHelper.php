@@ -92,7 +92,7 @@ class MenuHelper
             if ($userId !== null) {
                 // 获取所有的权限
                 $user_info = User::findOne($userId);
-                if ($user_info->is_super_admin || $user_info->is_super_admin) {
+                if ($user_info->is_super_admin || $user_info->is_business_admin) {
                     $routes = array_column($menus, 'item_id');
                 } else {
                     foreach ($manager->getPermissionsByUser($userId) as $item_id => $value) {
