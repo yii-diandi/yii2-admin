@@ -560,9 +560,8 @@ class DbManager extends \yii\rbac\DbManager
         if (empty($role->name)) {
             return true;
         }
-
         return $this->db->createCommand()
-                ->delete($this->assignmentGroupTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
+                ->delete($this->assignmentGroupTable, ['user_id' => (string)$userId, 'item_id' => $role->item_id])
                 ->execute() > 0;
     }
 
