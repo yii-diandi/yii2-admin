@@ -5,16 +5,16 @@
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
  * @Last Modified time: 2021-05-19 16:56:39
  */
- 
+
 
 namespace diandi\admin\models\searchs;
 
+use diandi\admin\components\Configs;
+use diandi\admin\components\RouteRule;
+use diandi\admin\models\BizRule as MBizRule;
 use Yii;
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
-use diandi\admin\models\BizRule as MBizRule;
-use diandi\admin\components\RouteRule;
-use diandi\admin\components\Configs;
 
 /**
  * Description of BizRule
@@ -48,6 +48,7 @@ class BizRule extends Model
 
     /**
      * Search BizRule
+     *
      * @param array $params
      * @return \yii\data\ActiveDataProvider|\yii\data\ArrayDataProvider
      */
@@ -55,8 +56,8 @@ class BizRule extends Model
     {
         /* @var \yii\rbac\Manager $authManager */
         $authManager = Configs::authManager();
-        $models = [];
-        $included = !($this->load($params) && $this->validate() && trim($this->name) !== '');
+        $models      = [];
+        $included    = !($this->load($params) && $this->validate() && trim($this->name) !== '');
         foreach ($authManager->getRules() as $name => $item) {
             if ($name != RouteRule::RULE_NAME && ($included || stripos($item->name, $this->name) !== false)) {
 //                $models[$name] = new MBizRule($item);
@@ -64,8 +65,10 @@ class BizRule extends Model
             }
         }
 
-        return new ArrayDataProvider([
+        $provider = new ArrayDataProvider([
             'allModels' => $models,
         ]);
+        return $provider->toArray();
+        
     }
 }
