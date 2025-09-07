@@ -114,7 +114,7 @@ class UserGroupSearch extends UserGroup
             ],
         ]);
 
-        return $provider;
+        return $provider->toArray();
     }
 
     /**
@@ -196,6 +196,6 @@ class UserGroupSearch extends UserGroup
             ],
         ]);
 
-        return $provider;
+        return $provider->toArray();
     }
 }

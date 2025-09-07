@@ -106,7 +106,7 @@ class MenuTopSearch extends MenuTop
             ]
         ]);
         
-        return $provider;
+        return $provider->toArray();
         
     }
 }

@@ -67,7 +67,7 @@ class StoreCategory    extends \diandi\addons\models\StoreCategory
             ],
         ]);
 
-        return $provider;
+        return $provider->toArray();
     }
 
 }

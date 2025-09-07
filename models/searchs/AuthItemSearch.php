@@ -98,6 +98,6 @@ class AuthItemSearch extends AuthItemModel
             'pagination' => false,
         ]);
 
-        return $provider;
+        return $provider->toArray();
     }
 }

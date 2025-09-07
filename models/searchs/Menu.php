@@ -140,6 +140,6 @@ class Menu extends MenuModel
             ],
         ]);
 
-        return $provider;
+        return $provider->toArray();
     }
 }
