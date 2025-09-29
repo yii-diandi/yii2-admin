@@ -5,7 +5,7 @@
  * @Last Modified by:   Wang chunsheng  email:2192138785@qq.com
  * @Last Modified time: 2025-06-19 15:26:38
  */
- 
+
 
 namespace diandi\admin\components;
 
@@ -113,7 +113,7 @@ class Helper
      */
     public static function checkRoute($route, $params = [], $user = null)
     {
-        Yii::debug('checkRoute start','checkRoute');
+        Yii::debug('checkRoute start', 'checkRoute');
         $config = Configs::instance();
         $r = static::normalizeRoute($route, $config->advanced);
         if ($config->onlyRegisteredRoute && !isset(static::getRegisteredRoutes()[$r])) {
@@ -126,7 +126,7 @@ class Helper
          * 总管理员放行
          */
         $isSuperAdmin = UserService::isSuperAdmin();
-        if ($isSuperAdmin){
+        if ($isSuperAdmin) {
             return true;
         }
         /**
@@ -134,30 +134,30 @@ class Helper
          */
         $isbusinessRoles = UserService::isbusinessRoles();
         $bloc_id = Yii::$app->request->headers['bloc-id'];
-        if ($isbusinessRoles){
+        if ($isbusinessRoles) {
             $userId = Yii::$app->user->id;
-            $user_bloc_id = ModelsUser::find()->where(['id'=>$userId])->select('bloc_id')->scalar();
-            if ($user_bloc_id == $bloc_id){
+            $user_bloc_id = ModelsUser::find()->where(['id' => $userId])->select('bloc_id')->scalar();
+            if ($user_bloc_id == $bloc_id) {
                 return true;
             }
         }
         $userId = $user instanceof User ? $user->getId() : $user;
         if ($config->strict) {
-            Yii::debug('strict is true','checkRoute');
+            Yii::debug('strict is true', 'checkRoute');
             Yii::info([
-                'r'=> $r,
-                'params'=> $params
-            ],'checkRoute');
+                'r' => $r,
+                'params' => $params
+            ], 'checkRoute');
             try {
 
                 if ($user->can($r, $params)) {
                     return true;
                 }
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
 //             var_dump($r);
                 return true;
             }
-            Yii::debug('can is false','checkRoute');
+            Yii::debug('can is false', 'checkRoute');
 
             while (($pos = strrpos($r, '/')) > 0) {
                 $r = substr($r, 0, $pos);
@@ -169,7 +169,7 @@ class Helper
 
             return $user->can('/*', $params);
         } else {
-            Yii::debug('strict is false','checkRoute');
+            Yii::debug('strict is false', 'checkRoute');
 
             $routes = static::getRoutesByUser($userId);
 
@@ -188,8 +188,8 @@ class Helper
 
     /**
      * Normalize route
-     * @param  string  $route    Plain route string
-     * @param  boolean|array $advanced Array containing the advanced configuration. Defaults to false.
+     * @param string $route Plain route string
+     * @param boolean|array $advanced Array containing the advanced configuration. Defaults to false.
      * @return string            Normalized route string
      */
     protected static function normalizeRoute($route, $advanced = false)
