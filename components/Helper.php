@@ -154,7 +154,8 @@ class Helper
                     return true;
                 }
             }catch (\Exception $e){
-             var_dump($r);
+//             var_dump($r);
+                return true;
             }
             Yii::debug('can is false','checkRoute');
 
