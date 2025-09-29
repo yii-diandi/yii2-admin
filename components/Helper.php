@@ -149,7 +149,6 @@ class Helper
                 'params' => $params
             ], 'checkRoute');
             try {
-
                 if ($user->can($r, $params)) {
                     return true;
                 }
